@@ -34,10 +34,10 @@ statsTable1 <- function(cty,place,sYr,eYr,ACS,oType){
     Native <- codemog_api(data="b05002",db=ACS, geonum=paste("1", state, ctyfips, sep=""), meta="no")
     pctNative <- percent((as.numeric(Native$b05002003)/as.numeric(Native$b05002001))*100)
     #Cost of Living Index
-    coli=county_coli%>%
-      filter(countyfips==as.numeric(ctyfips))%>%
-      mutate(coli_level=paste(coli, level, sep=", "))%>%
-      select(coli_level)
+    #coli=county_coli%>%
+      #filter(countyfips==as.numeric(ctyfips))%>%
+      #mutate(coli_level=paste(coli, level, sep=", "))%>%
+      #select(coli_level)
   }
   if(nchar(place) > 0) {  #Places
     tPopyr1 <- muni_est(as.numeric(placefips), sYr,as.numeric(ctyfips),"totalpopulation")
@@ -55,10 +55,10 @@ statsTable1 <- function(cty,place,sYr,eYr,ACS,oType){
       pctNative <- percent(as.numeric(Native$b05002003)/as.numeric(Native$b05002001))
 
     #Cost of Living Index
-    coli=county_coli%>%
-      filter(countyfips==as.numeric(ctyfips))%>%
-      mutate(coli_level=paste(coli, level, sep=", "))%>%
-      select(coli_level)
+    #coli=county_coli%>%
+      #filter(countyfips==as.numeric(ctyfips))%>%
+      #mutate(coli_level=paste(coli, level, sep=", "))%>%
+      #select(coli_level)
   }
 
 
