@@ -143,12 +143,21 @@ educPRO <- function(fips, ctyname, state="08", fips2="", state2="08", ACS, base=
   f.d13cFin$s_pctLOW <- percent(f.d13cFin$s_ciLOW *100)
   f.d13cFin$s_pctHIGH <- percent(f.d13cFin$s_ciHIGH *100)
 
+
+
+
+
+
   f.d13cFinM <- f.d13cFin[, c(3,2,6,8,9)]
   names(f.d13cFinM) <- c("Education_Cat","geoname","prop","propLOW","propHIGH")
 
 
   #Preparing Plot dataset
   d <- rbind(f.d13pFinM,f.d13cFinM)
+
+  d$prop <- d$prop * 100
+  d$propLOW <- d$propLOW * 100
+  d$propHIGH <- d$propHIGH * 100
 
   d$Education_Cat <- factor(d$Education_Cat, levels=c("Less than High School",
                                                       "High School Graduate \n(or GED)",
@@ -157,16 +166,18 @@ educPRO <- function(fips, ctyname, state="08", fips2="", state2="08", ACS, base=
 
   # Preparing Plot
   d$geoname <- factor(d$geoname, levels=c(ctyname, "Colorado"))
-  pltTitle <- "Educational Attaiment,\nPersons Age 25 and Older "
+  pltTitle <- "Educational Attainment,\nPersons Age 25 and Older "
   subTitle <- ctyname  #The is the county Name...
   xTitle <- "Educational Attainment"
+
+  maxProp <-  max(d$propHIGH)  + 10
 
   p=ggplot(d, aes(x=Education_Cat, y=prop, fill=geoname))+
     geom_bar(stat="identity", position="dodge")+
     geom_errorbar(aes(ymin=propLOW, ymax=propHIGH),
                   width=.2,                    # Width of the error bars
                   position=position_dodge(.9)) +
-    scale_y_continuous(label=percent, expand = c(0, 0))+
+    scale_y_continuous(limits=c(0,maxProp),label=percent, expand = c(0, 0))+
     scale_fill_manual(values=c("#6EC4E8","#00953A"),
                       name="Geography")+
     theme_codemog(base_size=base)+

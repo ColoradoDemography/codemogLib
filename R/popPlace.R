@@ -24,7 +24,7 @@ popPlace <- function(level) {
                    user = "codemog", password = pw)
   rm(pw) # removes the password
 
-  if(level == "County") {
+  if(level == "Counties") {
     # f.cLookup contains the county records
     f.cLookup <- dbGetQuery(con, "SELECT countyfips, placefips, municipalityname, year, totalpopulation
                             FROM estimates.county_muni_timeseries WHERE year=2016 and placefips = 0;")
@@ -38,7 +38,7 @@ popPlace <- function(level) {
     f.cLookup <- f.cLookup[c(2:nrow(f.cLookup)),]
     return(f.cLookup)
   }
-  if(level == "Place") {
+  if(level == "Municipalities/Places") {
     #f.pLookup is the place records, includes records with countyfips 999, which are multi
     #county municipalities
 
