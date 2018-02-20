@@ -160,8 +160,8 @@ axs <- setAxis(hhinc$propHIGH)
     theme(plot.title = element_text(hjust = 0.5, size=18),
           panel.background = element_rect(fill = "white", colour = "gray50"),
           panel.grid.major = element_line(colour = "gray80"),
-          axis.text.x = element_text(size=10),
-          axis.text.y = element_text(size=12),
+          axis.text.x = element_text(size=12),
+          axis.text.y = element_text(size=14),
           legend.position= "bottom")
 
   # Building Output dataset

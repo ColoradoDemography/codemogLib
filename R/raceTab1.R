@@ -145,7 +145,7 @@ raceTab1 <- function(fips,ctyname,ACS,oType) {
           caption="Race Trend",
           col.names = names_spaced,
           escape = FALSE)  %>%
-    kable_styling(bootstrap_options = "condensed",full_width = F,font_size = 11) %>%
+    kable_styling(bootstrap_options = "condensed",full_width = F,font_size = 12) %>%
     column_spec(1, width="4in") %>%
     column_spec(2, width="0.5in") %>%
     column_spec(3, width="0.5in") %>%

@@ -77,7 +77,7 @@ medianAgeTab <- function(fips, ACS, ctyname, oType, state="08"){
           caption="Median Age by Gender  Comparison",
           col.names = names_spaced,
           escape = FALSE)  %>%
-    kable_styling(bootstrap_options = "condensed",full_width = F,font_size = 11) %>%
+    kable_styling(bootstrap_options = "condensed",full_width = F,font_size = 12) %>%
     row_spec(0, align = "c") %>%
     column_spec(1, width = "0.5in") %>%
     column_spec(2, width = "0.75in") %>%

@@ -28,7 +28,7 @@ popForecast <- function(fips, ctyname, byr=1990,eyr=2050, base=10) {
     theme_codemog(base_size=base)+
     theme(plot.title = element_text(hjust = 0.5, size=18),
           axis.text.x=element_text(angle=90,size=12),
-          axis.text.y = element_text(size=12),
+          axis.text.y = element_text(size=14),
           legend.title=element_blank())
 
   # Creating Output data file

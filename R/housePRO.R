@@ -82,7 +82,7 @@ housePRO=function(fips, ctyname, ACS, oType, state="08"){
           caption="Housing Units",
           col.names = names_spaced,
           escape = FALSE)  %>%
-    kable_styling(bootstrap_options = "condensed",full_width = F,font_size = 11) %>%
+    kable_styling(bootstrap_options = "condensed",full_width = F,font_size = 12) %>%
     row_spec(0, align = "c") %>%
     column_spec(1, width = "3.5in") %>%
     column_spec(2, width ="0.5in") %>%

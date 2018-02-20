@@ -96,7 +96,7 @@ GenerateVenn <- function(fips, level, ctyname,oType){
                                        "Live in Selected Area, Employed Outside",
                                        "Employed and Live in Selected Area"))),
 
-                   gp=gpar(col=cols, fill="gray", fontsize=10),
+                   gp=gpar(col=cols, fill="gray", fontsize=12),
                    byrow=TRUE)
 
   g <- gTree(children = gList(diag))
@@ -105,7 +105,7 @@ GenerateVenn <- function(fips, level, ctyname,oType){
   #outVenn is the final VennDiagram
   #Formatting citation
   sub.label = textGrob(captionSrc("LODES",""),
-                       gp=gpar(fontsize=10),
+                       gp=gpar(fontsize=12),
                        x = unit(1, "npc"),
                        hjust = 1,
                        vjust = 0)

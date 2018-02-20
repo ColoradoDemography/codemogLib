@@ -117,7 +117,7 @@ baseIndustries <- function(fips, ctyname, curyr, oType,base=10){
           axis.text.x  = element_text(angle=90, vjust=-0.5),
           panel.background = element_rect(fill = "white", colour = "gray50"),
           panel.grid.major = element_line(colour = "gray80"),
-          axis.text = element_text(size=12),
+          axis.text = element_text(size=14),
           legend.position= "none")
 
 

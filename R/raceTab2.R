@@ -168,7 +168,7 @@ raceTab2 <- function(fips,ctyname,ACS, oType) {
           caption="Race Comparison",
           col.names = names_spaced,
           escape = FALSE)  %>%
-    kable_styling(bootstrap_options = "condensed",full_width = F,font_size = 11) %>%
+    kable_styling(bootstrap_options = "condensed",full_width = F,font_size = 12) %>%
     row_spec(0, align = "c") %>%
     column_spec(1, width = "30em") %>%
     column_spec(2, width = "5em") %>%
