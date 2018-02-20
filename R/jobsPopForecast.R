@@ -80,7 +80,7 @@ jobsPopForecast <- function(fips, ctyname, base=10){
     geom_line(size= 1.5)+
     scale_colour_manual("Estimate", values=c("#6EC4E8", "#00953A")) +
     scale_y_continuous(limits=c(axs$minBrk,axs$maxBrk), breaks=axs$yBrk, label=comma)+
-    scale_x_continuous(breaks=seq(2010,2035,5),expand = c(0, 0)) +
+    scale_x_continuous(breaks=seq(2010,2040,5),expand = c(0, 0)) +
     theme_codemog(base_size=base)+
     labs(title = pltTitle,
          subtitle = ctyname,

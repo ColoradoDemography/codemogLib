@@ -169,7 +169,7 @@ educPRO <- function(fips, ctyname, state="08", fips2="", state2="08", ACS, base=
   pltTitle <- "Educational Attainment,\nPersons Age 25 and Older "
   subTitle <- ctyname  #The is the county Name...
   xTitle <- "Educational Attainment"
-browser()
+
   axs <- setAxis(d$propHIGH)
 
   p=ggplot(d, aes(x=Education_Cat, y=prop, fill=geoname))+

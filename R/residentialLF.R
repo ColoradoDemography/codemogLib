@@ -113,6 +113,7 @@ residentialLF <- function(fips, ctyname, base=10){
   LFBar <- f.LFBar %>%
     ggplot(aes(x=year10, y=PctPart, color=geoname))+
     geom_line(size=1.50) +
+    scale_x_continuous(breaks=seq(2010,2040, 5)) +
     scale_y_continuous(limits= c(minPart,maxPart),label=percent, expand = c(0, 0))+
     scale_color_manual(values=c("#6EC4E8","#00953A"), name="Geography") +
     theme_codemog(base_size=base)+

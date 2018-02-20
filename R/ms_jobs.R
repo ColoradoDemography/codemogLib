@@ -34,7 +34,8 @@ ms_jobs=function(fips, ctyname, maxyr,base=10){
          subtitle = ctyname,
          caption= paste0(captionSrc("SDO","") ,"\nNote: Grey shading represents beginning to bottom of U.S. recessions")) +
     theme(plot.title = element_text(hjust = 0.5, size=18),
-          axis.text = element_text(size=14))
+          axis.text.x = element_text(angle=45,size=14),
+          axis.text.y = element_text(size=14))
 
   outList <- list("plot" = jobs_plot, "data" = jobs_data)
   return(outList)
