@@ -20,7 +20,7 @@ popTable <- function(cty,ctyname,sYr,eYr,oType) {
     mutate(name="Colorado",
            totalpopulation=as.numeric(totalpopulation),
            year=as.numeric(year),
-           growthRate=percent(round(ann_gr(lag(totalpopulation), totalpopulation, year-lag(year)))),
+           growthRate=percent(signif((((totalpopulation/lag(totalpopulation))^(1/(year-lag(year)))) -1)*100),digits=1),
            Population=totalpopulation)
   #County Population and Growth Rate
   popCounty=county_profile(cntynum, sYr:eYr, "totalpopulation")%>%
@@ -29,7 +29,7 @@ popTable <- function(cty,ctyname,sYr,eYr,oType) {
     mutate(name=county,
            year=as.numeric(year),
            totalpopulation=as.numeric(totalpopulation),
-           growthRate=percent(round(ann_gr(lag(totalpopulation), totalpopulation, year-lag(year)))),
+           growthRate=percent(signif((((totalpopulation/lag(totalpopulation))^(1/(year-lag(year)))) -1)*100),digits=1),
            Population=totalpopulation)
 
 

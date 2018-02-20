@@ -105,7 +105,7 @@ GenerateVenn <- function(fips, level, ctyname,oType){
   #outVenn is the final VennDiagram
   #Formatting citation
   sub.label = textGrob(captionSrc("LODES",""),
-                       gp=gpar(fontsize=8),
+                       gp=gpar(fontsize=10),
                        x = unit(1, "npc"),
                        hjust = 1,
                        vjust = 0)
@@ -147,7 +147,7 @@ GenerateVenn <- function(fips, level, ctyname,oType){
           caption=capstr1,
           col.names = names_spaced,
           escape = FALSE)  %>%
-    kable_styling(bootstrap_options = "condensed",full_width = F) %>%
+    kable_styling(bootstrap_options = "condensed",full_width = T) %>%
     column_spec(1, width = "3in") %>%
     column_spec(2, width = "1in") %>%
     column_spec(3, width = "1in") %>%
@@ -162,7 +162,7 @@ GenerateVenn <- function(fips, level, ctyname,oType){
           caption=capstr2,
           col.names = names_spaced,
           escape = FALSE)  %>%
-    kable_styling(bootstrap_options = "condensed",full_width = F) %>%
+    kable_styling(bootstrap_options = "condensed",full_width = T) %>%
     column_spec(1, width = "3in") %>%
     column_spec(2, width = "1in") %>%
     column_spec(3, width = "1in") %>%

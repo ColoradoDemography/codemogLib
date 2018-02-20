@@ -37,12 +37,12 @@ ageForecastPRO=function(fips, stYr, mYr, eYr, base=12, agegroup="ten"){
 
  #Setting MaxValue
 
-  maxVal <- max(d$totalpopulation) + 2000
+ axs <- setAxis(d$totalpopulation)
 
   p <- d %>%
     ggplot(aes(x=agecat, y=totalpopulation, fill=Year))+
     geom_bar(stat="identity",color="black", position = position_dodge()) +
-    scale_y_continuous(limits=c(0,maxVal),label=comma, expand = c(0, 0))+
+    scale_y_continuous(limits=c(axs$minBrk,axs$maxBrk), breaks= axs$yBrk, label=comma, expand = c(0, 0))+
     scale_fill_manual(values=barCol) +
     theme_codemog(base_size=base)+
     theme(axis.text.x=element_text(angle=45, hjust=1))+
@@ -54,6 +54,7 @@ ageForecastPRO=function(fips, stYr, mYr, eYr, base=12, agegroup="ten"){
     theme(plot.title = element_text(hjust = 0.5, size=18),
           panel.background = element_rect(fill = "white", colour = "gray50"),
           panel.grid.major = element_line(colour = "gray80"),
+          axis.text = element_text(size=12),
           legend.position= "bottom")
 
   #Regrouping Data

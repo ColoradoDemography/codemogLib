@@ -61,8 +61,9 @@ weeklyWages <- function(fips, ctyname, base=10){
 
   f.plot <- rbind(f.wagePL_L, f.wageST_L)
   maxYr <- as.numeric(max(f.plot$year))
-  minWage <- ((min(f.plot$wages)%/%100)*100) - 100
-  maxWage <- ((max(f.plot$wages)%/%100)*100) + 100
+
+  axs <- setAxis(f.plot$wages)
+
 
   f.plot$geoname <- factor(f.plot$geoname,levels=c(ctyname,"Colorado"))
 
@@ -76,7 +77,7 @@ weeklyWages <- function(fips, ctyname, base=10){
               vjust = -0.75, size = 3,  colour="black",
               position = position_dodge(width = 1),
               inherit.aes = TRUE) +
-    scale_y_continuous(limits=c(minWage,maxWage), label=dollar)+
+    scale_y_continuous(limits=c(axs$minBrk,axs$maxBrk), breaks=axs$yBrk, label=dollar)+
     scale_x_continuous(limits=c(2010,maxYr),breaks=seq(2010,maxYr,1)) +
     scale_fill_manual(values=c("#6EC4E8","#00953A"),
                       name="Geography")+
@@ -89,6 +90,7 @@ weeklyWages <- function(fips, ctyname, base=10){
     theme(plot.title = element_text(hjust = 0.5, size=18),
           panel.background = element_rect(fill = "white", colour = "gray50"),
           panel.grid.major = element_line(colour = "gray80"),
+          axis.text = element_text(size=12),
           legend.position= "bottom")
 
   f.wages <- merge(f.wagePL_L,f.wageST_L,by="year")

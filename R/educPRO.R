@@ -169,19 +169,18 @@ educPRO <- function(fips, ctyname, state="08", fips2="", state2="08", ACS, base=
   pltTitle <- "Educational Attainment,\nPersons Age 25 and Older "
   subTitle <- ctyname  #The is the county Name...
   xTitle <- "Educational Attainment"
-
-  maxProp <-  max(d$propHIGH)  + 10
+browser()
+  axs <- setAxis(d$propHIGH)
 
   p=ggplot(d, aes(x=Education_Cat, y=prop, fill=geoname))+
     geom_bar(stat="identity", position="dodge")+
     geom_errorbar(aes(ymin=propLOW, ymax=propHIGH),
                   width=.2,                    # Width of the error bars
                   position=position_dodge(.9)) +
-    scale_y_continuous(limits=c(0,maxProp),label=percent, expand = c(0, 0))+
+    scale_y_continuous(limits=c(0, axs$maxBrk), breaks=axs$yBrk, label=percent, expand = c(0, 0))+
     scale_fill_manual(values=c("#6EC4E8","#00953A"),
                       name="Geography")+
     theme_codemog(base_size=base)+
-    theme(axis.text.x=element_text(angle=0))+
     labs(title = pltTitle,
          subtitle = subTitle,
          caption = captionSrc("ACS",ACS),
@@ -190,6 +189,8 @@ educPRO <- function(fips, ctyname, state="08", fips2="", state2="08", ACS, base=
     theme(plot.title = element_text(hjust = 0.5, size=18),
           panel.background = element_rect(fill = "white", colour = "gray50"),
           panel.grid.major = element_line(colour = "gray80"),
+          axis.text.x = element_text(size=10),
+          axis.text.y=element_text(size=12),
           legend.position= "bottom")
 
 

@@ -27,7 +27,7 @@ cocPlot <- function(fips, ctyname,lYr,base=12) {
 
   pltTitle <- "Components of Change:\nBirths, Deaths, and Net Migration"
   subTitle <- ctyname
-
+  axs <- setAxis(f.cocLong$Pop)
 
   cocPlt <-  ggplot(data=f.cocLong,aes(x=year, y=Pop, colour=TypeChange)) +
     geom_line() +
@@ -35,7 +35,7 @@ cocPlot <- function(fips, ctyname,lYr,base=12) {
     scale_colour_manual("Type of Change", values=c("#82BC00", "#009ADD", "#5C666F")) +
     scale_shape_manual("Type of Change", values=seq(15, 17, 1)) +
     scale_x_continuous(breaks=seq(1990, lYr, 5)) +
-    scale_y_continuous(label=comma)+
+    scale_y_continuous(limits=c(axs$minBrk,axs$maxBrk), breaks=axs$yBrk,label=comma)+
     theme_codemog(base_size=base)+
     labs(title = pltTitle,
          subtitle = subTitle,
@@ -45,6 +45,7 @@ cocPlot <- function(fips, ctyname,lYr,base=12) {
     theme(plot.title = element_text(hjust = 0.5, size=18),
           panel.background = element_rect(fill = "white", colour = "gray50"),
           panel.grid.major = element_line(colour = "gray80"),
+          axis.text = element_text(size=12),
           legend.position= "bottom")
 
 

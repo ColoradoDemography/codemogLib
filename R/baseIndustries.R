@@ -117,6 +117,7 @@ baseIndustries <- function(fips, ctyname, curyr, oType,base=10){
           axis.text.x  = element_text(angle=90, vjust=-0.5),
           panel.background = element_rect(fill = "white", colour = "gray50"),
           panel.grid.major = element_line(colour = "gray80"),
+          axis.text = element_text(size=12),
           legend.position= "none")
 
 
@@ -146,7 +147,7 @@ baseIndustries <- function(fips, ctyname, curyr, oType,base=10){
             caption=paste0("Jobs by Sector: ",ctyname, ", ",curyr),
             col.names = names_spaced,
             escape = FALSE)  %>%
-      kable_styling(bootstrap_options = "condensed",full_width = F,font_size = 11) %>%
+      kable_styling(bootstrap_options = "condensed",full_width = F,font_size = 12) %>%
       row_spec(0, align = "c") %>%
       column_spec(1, width = "2in") %>%
       column_spec(2, width = "0.75in") %>%

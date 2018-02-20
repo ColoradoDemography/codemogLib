@@ -125,15 +125,15 @@ jobsByIndustry <- function(fips, ctyname, curyr, base=10){
 
   pltTitle <- paste0(as.character(curyr)," Share of Jobs by Industry")
   subTitle <- ctyname  #The is the county Name...
-  maxVal <- max(f.jobsChart$prop_jobs) + 10
+  axs <- setAxis(f.jobsChart$prop_jobs)
 
   p.jobs <- ggplot(f.jobsChart, aes(x=sector_name, y=prop_jobs)) +
     geom_bar(stat="identity", position="dodge", fill= "#6EC4E8")+
     geom_text(mapping=aes(x=sector_name, y=prop_jobs, label=pct_jobs),
-              hjust = -0.5, size = 2,
+              hjust = -0.5, size = 4,
               position = position_dodge(width = 1),
               inherit.aes = TRUE) +
-    scale_y_continuous(limits=c(0,maxVal), expand = c(0, 0), label=percent)  +
+    scale_y_continuous(limits=c(axs$minBrk,axs$maxBrk), breaks=axs$yBrk, expand = c(0, 0), label=percent)  +
     theme_codemog(base_size=base) + coord_flip() +
     theme(axis.text.x=element_text(angle=0))+
     labs(title = pltTitle,
@@ -143,6 +143,7 @@ jobsByIndustry <- function(fips, ctyname, curyr, base=10){
          y = "Percentage") +
     theme(plot.title = element_text(hjust = 0.5, size=18),
           panel.background = element_rect(fill = "white", colour = "gray50"),
+          axis.text = element_text(size=12),
           panel.grid.major = element_line(colour = "gray80"))
 
 

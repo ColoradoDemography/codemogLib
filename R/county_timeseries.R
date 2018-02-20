@@ -25,16 +25,20 @@ county_timeseries=function(fips, beginyear=1990,endYear, base=10){
     select(countyfips, county, year, totalPopulation=totalpopulation)
   d$county <- paste0(d$county, " County")
 
+  d$totalPopulation <- as.numeric(d$totalPopulation)
+  axs <- setAxis(d$totalPopulation)
+
   p=d%>%
-    ggplot(aes(x=as.factor(year), y=as.integer(totalPopulation), group=countyfips))+
+    ggplot(aes(x=as.factor(year), y=totalPopulation, group=countyfips))+
     geom_line(color="#00953A", size=1.75)+
     labs(x="Year", y="Population", title=paste("Population,", beginyear, "to", max(d$year), sep=" "),
          subtitle = d$county,
          caption = captionSrc("SDO",""))+
-    scale_y_continuous(label=comma)+
+    scale_y_continuous(limits=c(axs$minBrk,axs$maxBrk), breaks=axs$yBrk, label=comma)+
     theme_codemog(base_size=base)+
     theme(plot.title = element_text(hjust = 0.5, size=18),
-          axis.text.x=element_text(angle=90,size=8))
+          axis.text.x=element_text(angle=90,size=12),
+          axis.text.y = element_text(size=12))
 
   # Bind List
   outList <- list("plot" = p, "data" = d)

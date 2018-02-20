@@ -87,7 +87,7 @@ jobMigration <- function(fips, ctyname, maxyr, base=10){
     geom_line( aes(x=year5, y=avgmigr, color="Net Migration"), size=1.75) +
     geom_hline(yintercept=0, size=1.05) +
     scale_x_continuous(breaks=seq(1985,maxYr, by=5)) +
-    scale_y_continuous(labels=scales::comma) +
+    scale_y_continuous(limits=c(minmigr,maxjobs), labels=scales::comma) +
     scale_colour_manual(" ", values=c("Jobs" = "#d8c772", "Net Migration" = "#00953A")) +
     scale_fill_manual("",values="#00953A") +
 
@@ -101,6 +101,7 @@ jobMigration <- function(fips, ctyname, maxyr, base=10){
           panel.grid.major = element_line(colour = "gray80"),
           legend.key=element_blank(),
           legend.title=element_blank(),
+          axis.text = element_text(size=12),
           legend.position = "bottom", legend.box="horizontal")
 
 

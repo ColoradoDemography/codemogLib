@@ -72,11 +72,14 @@ jobsPopForecast <- function(fips, ctyname, base=10){
 
   pltTitle <- paste0("Forecast Change in Jobs and Population\n",as.character(min(f.plotdata$year))," to ",as.character(max(f.plotdata$year)))
 
+  axs <- setAxis(f.plotdata$people)
+
+
   Plot <- f.plotdata %>%
     ggplot(aes(x=year, y=people, color=type))+
     geom_line(size= 1.5)+
     scale_colour_manual("Estimate", values=c("#6EC4E8", "#00953A")) +
-    scale_y_continuous(label=comma)+
+    scale_y_continuous(limits=c(axs$minBrk,axs$maxBrk), breaks=axs$yBrk, label=comma)+
     scale_x_continuous(breaks=seq(2010,2035,5),expand = c(0, 0)) +
     theme_codemog(base_size=base)+
     labs(title = pltTitle,
@@ -87,6 +90,7 @@ jobsPopForecast <- function(fips, ctyname, base=10){
     theme(plot.title = element_text(hjust = 0.5, size=18),
           panel.background = element_rect(fill = "white", colour = "gray50"),
           panel.grid.major = element_line(colour = "gray80"),
+          axis.text = element_text(size=12),
           legend.position= "bottom")
 
 
