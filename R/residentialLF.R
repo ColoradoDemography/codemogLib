@@ -81,8 +81,8 @@ residentialLF <- function(fips, ctyname, base=10){
 
   LFLine <-  ggplot(data=f.LFPlaceSum) +
     geom_line(aes(x=population_year, y=Pop16P, colour= "Population 16 +"), size=1.50) +
-    geom_line(aes(x=population_year, y=LForce,color="Labor Force Participation"), size=1.50) +
-    scale_colour_manual(" ", values=c("Labor Force Participation" = "#6EC4E8", "Population 16 +" = "#00953A")) +
+    geom_line(aes(x=population_year, y=LForce,color="Labor Force"), size=1.50) +
+    scale_colour_manual(" ", values=c("Labor Force" = "#6EC4E8", "Population 16 +" = "#00953A")) +
     scale_x_continuous(breaks=seq(2010,2040, 5)) +
     scale_y_continuous(limits=c(minval,maxval), breaks=yBrk, label=comma)+
     theme_codemog(base_size=base)+

@@ -167,7 +167,7 @@ HouseVal <- function(fips, ctyname, ACS, oType, state="08"){
 
   f.HouseVal$var <-  ifelse(f.HouseVal$var == "Med_Val","Median Home Value (Current $)",
                             ifelse(f.HouseVal$var == "Med_Rent","Median Gross Rent (Current $)",
-                                   "Housing Costs as a Percentage of Income"))
+                                   "Median Housing Costs as a Percentage of Income"))
 
 
 

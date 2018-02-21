@@ -74,7 +74,7 @@ weeklyWages <- function(fips, ctyname, base=10){
     geom_line(size=1.5) + geom_point(size=2.5) +
     scale_colour_manual("Geography", values=c("#6EC4E8", "#00953A")) +
     geom_text(mapping=aes(x=year, y=wages, label=fmt_wages),
-              vjust = -0.75, size = 3,  colour="black",
+              vjust = -0.75, size = 4,  colour="black",
               position = position_dodge(width = 1),
               inherit.aes = TRUE) +
     scale_y_continuous(limits=c(axs$minBrk,axs$maxBrk), breaks=axs$yBrk, label=dollar)+
@@ -90,6 +90,8 @@ weeklyWages <- function(fips, ctyname, base=10){
     theme(plot.title = element_text(hjust = 0.5, size=18),
           panel.background = element_rect(fill = "white", colour = "gray50"),
           panel.grid.major = element_line(colour = "gray80"),
+          panel.grid.major.y = element_blank(),
+          panel.grid.minor.y = element_blank(),
           axis.text = element_text(size=14),
           legend.position= "bottom")
 

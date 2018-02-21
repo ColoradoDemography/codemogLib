@@ -143,6 +143,8 @@ jobsByIndustry <- function(fips, ctyname, curyr, base=10){
          y = "Percentage") +
     theme(plot.title = element_text(hjust = 0.5, size=18),
           panel.background = element_rect(fill = "white", colour = "gray50"),
+          panel.grid.major.y = element_blank(),
+          panel.grid.minor.y = element_blank(),
           axis.text = element_text(size=14),
           panel.grid.major = element_line(colour = "gray80"))
 

@@ -16,15 +16,18 @@ popForecast <- function(fips, ctyname, byr=1990,eyr=2050, base=10) {
     group_by(county, datatype, year) %>%
     summarize(Tot_pop = sum(as.numeric(totalpopulation)))
 
-  axs <- setAxis(d$Tot_pop)
+  yaxs <- setAxis(d$Tot_pop)
+  xaxs <- setAxis(d$year)
+
 
   p=d%>%
-    ggplot(aes(x=as.factor(year), y=round(Tot_pop, digits=0), group=datatype))+
+    ggplot(aes(x=year, y=round(Tot_pop, digits=0), group=datatype))+
     geom_line(aes(linetype=datatype), color="#00953A", size=1.75) +
     labs(x="Year", y="Population", title=paste("Population Forecast,", byr, "to", eyr, sep=" "),
          subtitle = ctyname,
          caption = captionSrc("SDO",""))+
-    scale_y_continuous(limits=c(axs$minBrk,axs$maxBrk), breaks=axs$yBrk, label=comma)+
+    scale_y_continuous(limits=c(yaxs$minBrk,yaxs$maxBrk), breaks=yaxs$yBrk, label=comma)+
+    scale_x_continuous(limits=c(xaxs$minBrk,xaxs$maxBrk),breaks= xaxs$yBrk) +
     theme_codemog(base_size=base)+
     theme(plot.title = element_text(hjust = 0.5, size=18),
           axis.text.x=element_text(angle=90,size=12),

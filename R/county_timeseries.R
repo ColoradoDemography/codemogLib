@@ -10,31 +10,38 @@
 #'
 #' @param fips The County FIPS number (without leading Zeros)
 #' @param beginyear The first year in the timeseries Defaults to 1990.
-#' @param endYear The last year in the timeseries Defaults to 2013.
+#' @param endyear The last year in the timeseries Defaults to 2013.
 #' @param base Base font size.
 #' @return ggplot2 graphic and data file
 #' @export
 
 
 
-county_timeseries=function(fips, beginyear=1990,endYear, base=10){
+county_timeseries=function(fips, beginyear=1990,endyear, base=10){
 
   fips=as.numeric(fips)
 
-  d=county_profile(fips, beginyear:endYear, "totalpopulation")%>%
+  d=county_profile(fips, beginyear:endyear, "totalpopulation")%>%
     select(countyfips, county, year, totalPopulation=totalpopulation)
   d$county <- paste0(d$county, " County")
 
   d$totalPopulation <- as.numeric(d$totalPopulation)
-  axs <- setAxis(d$totalPopulation)
+  yaxs <- setAxis(d$totalPopulation)
+  xaxs <- setAxis(d$year)
+  if(xaxs$maxBrk != endyear) {
+    xaxs$maxBrk <- endyear
+    xaxs$yBrk[length(xaxs$yBrk)] <- endyear
+  }
+
 
   p=d%>%
-    ggplot(aes(x=as.factor(year), y=totalPopulation, group=countyfips))+
+    ggplot(aes(x=year, y=totalPopulation, group=countyfips))+
     geom_line(color="#00953A", size=1.75)+
     labs(x="Year", y="Population", title=paste("Population,", beginyear, "to", max(d$year), sep=" "),
          subtitle = d$county,
          caption = captionSrc("SDO",""))+
-    scale_y_continuous(limits=c(axs$minBrk,axs$maxBrk), breaks=axs$yBrk, label=comma)+
+    scale_y_continuous(limits=c(yaxs$minBrk,yaxs$maxBrk), breaks=yaxs$yBrk, label=comma)+
+    scale_x_continuous(limits=c(xaxs$minBrk,xaxs$maxBrk), breaks=xaxs$yBrk) +
     theme_codemog(base_size=base)+
     theme(plot.title = element_text(hjust = 0.5, size=18),
           axis.text.x=element_text(angle=90,size=12),

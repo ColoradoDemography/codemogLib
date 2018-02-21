@@ -43,7 +43,7 @@ houseEstPRO <- function(fips, ctyname,curYr, base=10) {
   f.hhPlace$datatype <- ifelse(f.hhPlace$year <= curYr, "Estimate", "Forecast")
   f.hhPlace$datatype <- factor(f.hhPlace$datatype, levels=c("Estimate","Forecast"))
 
-  pltTitle <- "Total Estimated Households: 2010-2050"
+  pltTitle <- "Total Household Projection: 2010-2050"
   subTitle <- ctyname
   srcTitle <- "Source: State Demography Office"
 
