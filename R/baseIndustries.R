@@ -11,7 +11,7 @@
 
 baseIndustries <- function(fips, ctyname, curyr, oType,base=10){
   #fips is the 3-digit character string
-
+browser()
   # creating alternative fips code for Denver MSA
   if(fips %in% c("001", "005", "013", "014", "031", "035", "059")) {
     fips = "500"
@@ -58,7 +58,7 @@ baseIndustries <- function(fips, ctyname, curyr, oType,base=10){
   f.LFPlace <- f.LFPlace[which(f.LFPlace$population_year == curyr),c(1:6,8)]
 
   f.LFPlaceSum <- f.LFPlace %>%
-    summarize(Pop16P = comma(sum(cni_pop_16pl)))
+    summarize(Pop16P = comma(ceiling(sum(cni_pop_16pl))))
 
   f.LFPlaceT <- as.data.frame(t(f.LFPlaceSum))
   f.LFPlaceT$Type <- "Total Population, 16+"
