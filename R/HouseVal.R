@@ -208,14 +208,14 @@ HouseVal <- function(fips, ctyname, ACS, oType, state="08"){
             caption="Comparative Owner-Occupied Housing Values",
             col.names = names_spaced,
             escape = FALSE)  %>%
-      kable_styling(bootstrap_options = "condensed",full_width = F) %>%
+      kable_styling(bootstrap_options = "condensed",full_width = F,font_size=11) %>%
       row_spec(0, align = "c") %>%
       column_spec(1, width = "3in") %>%
       column_spec(2, width = "0.4in") %>%
       column_spec(3, width ="0.4in") %>%
-      column_spec(4, width ="0.42in") %>%
+      column_spec(4, width ="0.4in") %>%
       column_spec(5, width ="0.4in") %>%
-      column_spec(6, width ="0.41in") %>%
+      column_spec(6, width ="0.4in") %>%
       add_header_above(header=tblHead1) %>%
       add_footnote(captionSrc("ACS",ACS))
 
@@ -226,7 +226,7 @@ HouseVal <- function(fips, ctyname, ACS, oType, state="08"){
             caption="Comparative Rental Housing Values",
             col.names = names_spaced,
             escape = FALSE)  %>%
-      kable_styling(bootstrap_options = "condensed",full_width = F) %>%
+      kable_styling(bootstrap_options = "condensed",full_width = F,font_size=11) %>%
       row_spec(0, align = "c") %>%
       column_spec(1, width = "3in") %>%
       column_spec(2, width = "0.4in") %>%
