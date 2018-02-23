@@ -78,10 +78,13 @@ jobMigration <- function(fips, ctyname, maxyr, base=10){
   f.pltdata <- merge(f.migr5yr,f.jobs5yr,by="year5")
 
   # Generating Plot
+
   maxYr <- as.numeric(max(f.pltdata$year5))
   minmigr <- if_else(min(f.pltdata$avgmigr) < 0, as.numeric(min(f.pltdata$avgmigr)),0)
-  maxjobs <- 1000*ceiling(max(f.pltdata$avgjobs)/1000)
-  chartUnit <- ceiling(abs(abs(maxjobs)-abs(minmigr))/5)
+  maxjobs <- 2000*ceiling(max(f.pltdata$avgjobs)/2000)
+  chartUnit <- ifelse(maxjobs/5 > 100000,100000,
+               ifelse(maxjobs/5 > 10000,10000,
+               ifelse(maxjobs/5 > 1000,1000,100)))
 
   migrPlot <- ggplot(f.pltdata) + geom_bar(aes(x=year5, y=avgjobs,color="Jobs"), stat="identity", fill= "#d8c772") +
     geom_line( aes(x=year5, y=avgmigr, color="Net Migration"), size=1.75) +
