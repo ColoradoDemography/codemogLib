@@ -4,7 +4,7 @@
 #'
 #' Takes some basic input on the time period and county then creates a
 #' plot of the data in \code{ggplot2}.  Similar to the county_ts_data()
-#' function.  Can create timeseries from 1990 to 2040 (beyond 2013 are
+#' function.  Can create timeseries from 2000 to 2040 (beyond 2013 are
 #' forecasts).
 #'
 #'
@@ -17,7 +17,7 @@
 
 
 
-county_timeseries=function(fips, beginyear=1990,endyear, base=10){
+county_timeseries=function(fips, beginyear=2000,endyear, base=10){
 
   fips=as.numeric(fips)
 
@@ -45,7 +45,7 @@ county_timeseries=function(fips, beginyear=1990,endyear, base=10){
     theme_codemog(base_size=base)+
     theme(plot.title = element_text(hjust = 0.5, size=18),
           axis.text.x=element_text(angle=90,size=12),
-          axis.text.y = element_text(size=14))
+          axis.text.y = element_text(size=12))
 
   # Bind List
   outList <- list("plot" = p, "data" = d)

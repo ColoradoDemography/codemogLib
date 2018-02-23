@@ -10,17 +10,10 @@
 GenerateVenn <- function(fips, level, ctyname,oType){
   options(warn=-1)  # Suppressing warning messages produced by VennDiagram
 
-  if(level == "Counties"){
-    fipsc <- substr(fips,3,5)
-    sumSQL <- paste0("SELECT * FROM data.otm_county_summary WHERE fips = '",str_pad(fipsc,3,pad="0"),"' ;")
-    placeSQL <- paste0("SELECT * FROM data.otm_county_place WHERE fips = '",str_pad(fipsc,3,pad="0"),"' ;")
-  }
-  if(level == "Municipalities/Places") {
-    fipsc <- substr(fips,3,7)
-    sumSQL <- paste0("SELECT * FROM data.otm_place_summary WHERE fips = '",str_pad(fipsc,5,pad="0"),"' ;")
-    placeSQL <- paste0("SELECT * FROM data.otm_place_place WHERE fips = '",str_pad(fipsc,5,pad="0"),"' ;")
 
-  }
+    sumSQL <- paste0("SELECT * FROM data.otm_county_summary WHERE fips = '",fips,"' ;")
+    placeSQL <- paste0("SELECT * FROM data.otm_county_place WHERE fips = '",fips,"' ;")
+ 
   #Reading data
   pw <- {
     "demography"
@@ -119,11 +112,27 @@ GenerateVenn <- function(fips, level, ctyname,oType){
 
   f.work_fin <- f.place[which(f.place$type == 1),c(5:7)]
   names(f.work_fin) <- c("Location","Count","Percent")
+  f.work_sum <- f.work_fin %>%
+      summarize(Count = sum(Count),
+                Percent = sum(Percent))
+  f.work_sum$Location <- "Total"
+  f.work_sum <- f.work_sum[,c(3,1,2)]
+  f.work_fin <- rbind(f.work_fin,f.work_sum)
+  
   f.work_fin$Count <- format(f.work_fin$Count,big.mark=",")
   f.work_fin$Percent <- percent(f.work_fin$Percent)
+  
+
 
   f.live_fin <- f.place[which(f.place$type == 2),c(5:7)]
   names(f.live_fin) <- c("Location","Count","Percent")
+  f.live_sum <- f.live_fin %>%
+    summarize(Count = sum(Count),
+              Percent = sum(Percent))
+  f.live_sum$Location <- "Total"
+  f.live_sum <- f.live_sum[,c(3,1,2)]
+  f.live_fin <- rbind(f.live_fin,f.live_sum)
+  
   f.live_fin$Count <- format(f.live_fin$Count,big.mark=",")
   f.live_fin$Percent <- percent(f.live_fin$Percent)
 

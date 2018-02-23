@@ -11,7 +11,7 @@
 
 baseIndustries <- function(fips, ctyname, curyr, oType,base=10){
   #fips is the 3-digit character string
-browser()
+
   # creating alternative fips code for Denver MSA
   if(fips %in% c("001", "005", "013", "014", "031", "035", "059")) {
     fips = "500"
@@ -136,7 +136,7 @@ browser()
           axis.text.x  = element_text(angle=90, vjust=-0.5),
           panel.background = element_rect(fill = "white", colour = "gray50"),
           panel.grid.major = element_line(colour = "gray80"),
-          axis.text = element_text(size=14),
+          axis.text = element_text(size=12),
           legend.position= "none")
 
 

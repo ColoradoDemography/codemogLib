@@ -96,7 +96,7 @@ educPRO <- function(fips, ctyname, state="08", fips2="", state2="08", ACS, base=
     gather(EdLevel, value, ed1:ed5, factor_key=TRUE)%>%  #Needed to change this part of the call
     mutate(educcat=ordered(as.factor(EdLevel), levels=c("ed1", "ed2", "ed3", "ed4",
                                                         "ed5"),
-                           labels=c("Less than High School",
+                           labels=c("Less than\nHigh School",
                                     "High School Graduate \n(or GED)","Some College or \nAssociate's Degree", "Bachelor's Degree",
                                     "Graduate or \nProfessional Degree")))%>%
     mutate(geoname=stri_replace_all_charclass(geoname, "\\p{WHITE_SPACE}", ""))
@@ -119,7 +119,7 @@ educPRO <- function(fips, ctyname, state="08", fips2="", state2="08", ACS, base=
     gather(EdLevel, value, ed1:ed5, factor_key=TRUE)%>%  #Needed to change this part of the call
     mutate(educcat=ordered(as.factor(EdLevel), levels=c("ed1", "ed2", "ed3", "ed4",
                                                         "ed5"),
-                           labels=c("Less than High School",
+                           labels=c("Less than\nHigh School",
                                     "High School Graduate \n(or GED)","Some College or \nAssociate's Degree", "Bachelor's Degree",
                                     "Graduate or \nProfessional Degree")))%>%
     separate(geoname, into=c("geoname","statename"),sep=",")%>%
@@ -190,7 +190,7 @@ educPRO <- function(fips, ctyname, state="08", fips2="", state2="08", ACS, base=
           panel.background = element_rect(fill = "white", colour = "gray50"),
           panel.grid.major = element_line(colour = "gray80"),
           axis.text.x = element_text(size=10),
-          axis.text.y=element_text(size=14),
+          axis.text.y=element_text(size=12),
           legend.position= "bottom")
 
 

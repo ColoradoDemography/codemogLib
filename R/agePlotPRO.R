@@ -45,6 +45,7 @@ agePlotPRO  <- function(fips, ctyname, state=0, yrs, base=10, agegroup="ten") {
   pltTitle <- paste0("Population Distribution by Age for ",yrs)
   subTitle <- ctyname
   f.AgePlot$county <- factor(f.AgePlot$county, levels=c(ctyname, "Colorado"))
+
   axs <- setAxis(f.AgePlot$age_Prop)
 
   AgePlot <- f.AgePlot %>%
@@ -60,7 +61,7 @@ agePlotPRO  <- function(fips, ctyname, state=0, yrs, base=10, agegroup="ten") {
          x = "Age Group",
          y= "Percentage of Total Population") +
     theme(plot.title = element_text(hjust = 0.5, size=18),
-          axis.text=element_text(size=14),
+          axis.text=element_text(size=12),
           panel.background = element_rect(fill = "white", colour = "gray50"),
           panel.grid.major = element_line(colour = "gray80"),
           legend.position= "bottom")

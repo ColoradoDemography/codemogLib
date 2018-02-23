@@ -5,7 +5,7 @@
 #'
 #' Uses the data from the State Demography Office package codemog to
 #' create a graph showing projected population  changes by Age for each Colorado county from
-#' 2010 to 2025.
+#' 2000 to 2025.
 #' The chart is modified from the original.  Now, we show three bars, one for each series.
 #'
 #' @param fips is the fips code for the county being examined
@@ -54,7 +54,7 @@ ageForecastPRO=function(fips, stYr, mYr, eYr, base=12, agegroup="ten"){
     theme(plot.title = element_text(hjust = 0.5, size=18),
           panel.background = element_rect(fill = "white", colour = "gray50"),
           panel.grid.major = element_line(colour = "gray80"),
-          axis.text = element_text(size=14),
+          axis.text = element_text(size=12),
           legend.position= "bottom")
 
   #Regrouping Data

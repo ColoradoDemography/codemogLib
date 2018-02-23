@@ -101,7 +101,7 @@ jobMigration <- function(fips, ctyname, maxyr, base=10){
           panel.grid.major = element_line(colour = "gray80"),
           legend.key=element_blank(),
           legend.title=element_blank(),
-          axis.text = element_text(size=14),
+          axis.text = element_text(size=12),
           legend.position = "bottom", legend.box="horizontal")
 
 

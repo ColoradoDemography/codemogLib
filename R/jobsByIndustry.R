@@ -93,39 +93,20 @@ jobsByIndustry <- function(fips, ctyname, curyr, base=10){
 
 
   f.jobsPLMain$geoname <- ctyname
+  f.jobsPLMain <- f.jobsPLMain[which(f.jobsPLMain$prop_jobs > 0),]  # removing blank categoies
   f.jobsPLMainFin <- f.jobsPLMain[,c(4,13,5,10,11,12)]
 
 
 
   f.jobsChart <- f.jobsPLMainFin
 
-  f.jobsChart$sector_name <- factor(f.jobsChart$sector_name ,
-                                    levels = c(
-                                      "Government",
-                                      "Other Services",
-                                      "Accomodation and Food Services",
-                                      "Arts, Entertainment and Recreation",
-                                      "Healthcare and Social Assistance",
-                                      "Educational Services",
-                                      "Adminstration and Waste Services",
-                                      "Management of Companies",
-                                      "Professional and Technical Services",
-                                      "Real Estate and Rental and Leasing",
-                                      "Finance and Insurance",
-                                      "Information",
-                                      "Transportation and Warehousing",
-                                      "Retail Trade",
-                                      "Wholesale Trade",
-                                      "Manufacturing",
-                                      "Construction",
-                                      "Utilities",
-                                      "Mining",
-                                      "Agriculture"
-                                    ))
+  f.jobsChart$sector_name <- factor(f.jobsChart$sector_name, levels=f.jobsChart$sector_name[order(f.jobsChart$prop_jobs)], ordered=TRUE)
+  
 
   pltTitle <- paste0(as.character(curyr)," Share of Jobs by Industry")
   subTitle <- ctyname  #The is the county Name...
   axs <- setAxis(f.jobsChart$prop_jobs)
+
 
   p.jobs <- ggplot(f.jobsChart, aes(x=sector_name, y=prop_jobs)) +
     geom_bar(stat="identity", position="dodge", fill= "#6EC4E8")+
@@ -145,7 +126,7 @@ jobsByIndustry <- function(fips, ctyname, curyr, base=10){
           panel.background = element_rect(fill = "white", colour = "gray50"),
           panel.grid.major.y = element_blank(),
           panel.grid.minor.y = element_blank(),
-          axis.text = element_text(size=14),
+          axis.text = element_text(size=12),
           panel.grid.major = element_line(colour = "gray80"))
 
 

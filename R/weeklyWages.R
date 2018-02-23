@@ -1,5 +1,5 @@
 #' weeklyWages Produces a plot and dataset showing  average weekly wages
-#'  for the period from 2010 to the present
+#'  for the period from 2000 to the present
 #'
 #'
 #' @param fips is the fips code for the county being examined
@@ -46,7 +46,7 @@ weeklyWages <- function(fips, ctyname, base=10){
   f.wagePL_L$year <- as.numeric(gsub("wkwage_","",f.wagePL_L$year))
   f.wagePL_L$wages <- as.numeric(f.wagePL_L$wages)
   f.wagePL_L$fmt_wages <- paste0("$", formatC(as.numeric(f.wagePL_L$wages), format="f", digits=2, big.mark=","))
-  f.wagePL_L <- f.wagePL_L[which(f.wagePL_L$year >= 2010),]
+  f.wagePL_L <- f.wagePL_L[which(f.wagePL_L$year >= 2000),]
   f.wagePL_L$geoname <- ctyname
 
   # Creating long data set for State data
@@ -54,7 +54,7 @@ weeklyWages <- function(fips, ctyname, base=10){
   f.wageST_L$year <- as.numeric(gsub("wkwage_","",f.wageST_L$year))
   f.wageST_L$wages <- as.numeric(f.wageST_L$wages)
   f.wageST_L$fmt_wages <- paste0("$", formatC(as.numeric(f.wageST_L$wages), format="f", digits=2, big.mark=","))
-  f.wageST_L <- f.wageST_L[which(f.wageST_L$year >= 2010),]
+  f.wageST_L <- f.wageST_L[which(f.wageST_L$year >= 2000),]
   f.wageST_L$geoname <- "Colorado"
 
   #Preparing the Plot
@@ -78,7 +78,7 @@ weeklyWages <- function(fips, ctyname, base=10){
               position = position_dodge(width = 1),
               inherit.aes = TRUE) +
     scale_y_continuous(limits=c(axs$minBrk,axs$maxBrk), breaks=axs$yBrk, label=dollar)+
-    scale_x_continuous(limits=c(2010,maxYr),breaks=seq(2010,maxYr,1)) +
+    scale_x_continuous(limits=c(2000,maxYr),breaks=seq(2000,maxYr,1)) +
     scale_fill_manual(values=c("#6EC4E8","#00953A"),
                       name="Geography")+
     theme_codemog(base_size=base)+
@@ -92,7 +92,7 @@ weeklyWages <- function(fips, ctyname, base=10){
           panel.grid.major = element_line(colour = "gray80"),
           panel.grid.major.y = element_blank(),
           panel.grid.minor.y = element_blank(),
-          axis.text = element_text(size=14),
+          axis.text = element_text(size=12),
           legend.position= "bottom")
 
   f.wages <- merge(f.wagePL_L,f.wageST_L,by="year")
