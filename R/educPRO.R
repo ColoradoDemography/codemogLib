@@ -29,9 +29,9 @@ educPRO <- function(fips, ctyname, state="08", fips2="", state2="08", ACS, base=
     gather(EdLevel, value, ed1:ed5, factor_key=TRUE)%>%  #Needed to change this part of the call
     mutate(educcat=ordered(as.factor(EdLevel), levels=c("ed1", "ed2", "ed3", "ed4",
                                                         "ed5"),
-                           labels=c("Less than High School",
-                                    "High School Graduate \n(or GED)","Some College or \nAssociate's Degree", "Bachelor's Degree",
-                                    "Graduate or \nProfessional Degree")))%>%
+                           labels=c("Less than\nHigh School",
+                                    "High School Graduate\n(or GED)","Some College or\nAssociate's Degree", "Bachelor's Degree",
+                                    "Graduate or\nProfessional Degree")))%>%
     separate(geoname, into=c("geoname","statename"),sep=",")%>%
     select(-statename)%>%
     mutate(geoname=stri_trans_general(geoname,id="Title"))
@@ -53,9 +53,9 @@ educPRO <- function(fips, ctyname, state="08", fips2="", state2="08", ACS, base=
     gather(EdLevel, value, ed1:ed5, factor_key=TRUE)%>%  #Needed to change this part of the call
     mutate(educcat=ordered(as.factor(EdLevel), levels=c("ed1", "ed2", "ed3", "ed4",
                                                         "ed5"),
-                           labels=c("Less than High School",
-                                    "High School Graduate \n(or GED)","Some College or \nAssociate's Degree", "Bachelor's Degree",
-                                    "Graduate or \nProfessional Degree")))%>%
+                           labels=c("Less than\nHigh School",
+                                    "High School Graduate\n(or GED)","Some College or\nAssociate's Degree", "Bachelor's Degree",
+                                    "Graduate or\nProfessional Degree")))%>%
     separate(geoname, into=c("geoname","statename"),sep=",")%>%
     select(-statename)%>%
     mutate(geoname=stri_trans_general(geoname,id="Title"))
@@ -97,8 +97,8 @@ educPRO <- function(fips, ctyname, state="08", fips2="", state2="08", ACS, base=
     mutate(educcat=ordered(as.factor(EdLevel), levels=c("ed1", "ed2", "ed3", "ed4",
                                                         "ed5"),
                            labels=c("Less than\nHigh School",
-                                    "High School Graduate \n(or GED)","Some College or \nAssociate's Degree", "Bachelor's Degree",
-                                    "Graduate or \nProfessional Degree")))%>%
+                                    "High School Graduate\n(or GED)","Some College or\nAssociate's Degree", "Bachelor's Degree",
+                                    "Graduate or\nProfessional Degree")))%>%
     mutate(geoname=stri_replace_all_charclass(geoname, "\\p{WHITE_SPACE}", ""))
 
 
@@ -120,8 +120,8 @@ educPRO <- function(fips, ctyname, state="08", fips2="", state2="08", ACS, base=
     mutate(educcat=ordered(as.factor(EdLevel), levels=c("ed1", "ed2", "ed3", "ed4",
                                                         "ed5"),
                            labels=c("Less than\nHigh School",
-                                    "High School Graduate \n(or GED)","Some College or \nAssociate's Degree", "Bachelor's Degree",
-                                    "Graduate or \nProfessional Degree")))%>%
+                                    "High School Graduate\n(or GED)","Some College or\nAssociate's Degree", "Bachelor's Degree",
+                                    "Graduate or\nProfessional Degree")))%>%
     separate(geoname, into=c("geoname","statename"),sep=",")%>%
     select(-statename)%>%
     mutate(geoname=stri_trans_general(geoname,id="Title"))
@@ -159,10 +159,10 @@ educPRO <- function(fips, ctyname, state="08", fips2="", state2="08", ACS, base=
   d$propLOW <- d$propLOW * 100
   d$propHIGH <- d$propHIGH * 100
 
-  d$Education_Cat <- factor(d$Education_Cat, levels=c("Less than High School",
-                                                      "High School Graduate \n(or GED)",
-                                                      "Some College or \nAssociate's Degree", "Bachelor's Degree",
-                                                      "Graduate or \nProfessional Degree"))
+  d$Education_Cat <- factor(d$Education_Cat, levels=c("Less than\nHigh School",
+                                                      "High School Graduate\n(or GED)",
+                                                      "Some College or\nAssociate's Degree", "Bachelor's Degree",
+                                                      "Graduate or\nProfessional Degree"))
 
   # Preparing Plot
   d$geoname <- factor(d$geoname, levels=c(ctyname, "Colorado"))
@@ -220,7 +220,7 @@ educPRO <- function(fips, ctyname, state="08", fips2="", state2="08", ACS, base=
                        "Percentage: Colorado", "Margin of Error: Colorado",
                        "Lower 90% Conf Int: Colorado","Upper 90% Conf Int: Colorado","Significant Difference")
 
-  f.dwideo$Education_Cat <- gsub("\\n","",f.dwideo$Education_Cat)
+  f.dwideo$Education_Cat <- gsub("\\n"," ",f.dwideo$Education_Cat)
 
   f.dwideo <- f.dwideo[c(4,3,5,1,2),]
 
