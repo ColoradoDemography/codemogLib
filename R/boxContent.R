@@ -4,8 +4,11 @@
 #'
 #' @param title The title of the box content
 #' @param description The long description of the Box
+#' @param source data source citation
+#' @param MSA   A T/F flag describing the MSA adjustment for counties in the Denver MSA
 #' @param stats A T/F value to output information about statistical tests
-#' @param MSA Test describing the MSA adjustment for counties in the Denver MSA
+#' @param muni  A T/F flag indicating whether information is available for municipalities
+#' @param PlFilter a TRUE/FALSE flag identifying municipalities smaller than 200 people
 #' @param table A T/F value to outout information about the output table
 #' @param urlList A list of output links to sources c(name, URL)
 #'
@@ -13,7 +16,8 @@
 #'
 #' @export
 #'
-boxContent <- function(title,description, source, MSA, stats, table, urlList) {
+# boxContent <- function(title,description, source, MSA, stats, muni, PlFilter, table, urlList) {
+  boxContent <- function(title,description, source, MSA, stats, table, urlList) {
   outList <- list()
   i <- 1
   ui0 <- ""
@@ -24,6 +28,8 @@ boxContent <- function(title,description, source, MSA, stats, table, urlList) {
   ui5 <- ""
   ui6 <- ""
   ui7 <- ""
+  ui8 <- ""
+  ui9 <- ""
 
   ui0 <- tags$b(title)
   outList[[i]] <- ui0
@@ -57,11 +63,25 @@ boxContent <- function(title,description, source, MSA, stats, table, urlList) {
     i <- i + 1
 
   }
+  
+  # muni block
+#  if(muni == "T") {
+#    ui6 <- tags$p("Projections and estimates are not availaible for municipalities.  Please contact the SDO office for additional information.")
+#    outList[[i]] <- ui6
+#    i <- i + 1
+#  }
 
+  # PlFilter block
+#  if(PlFilter == "FALSE") {
+#    ui7 <- tags$p("Municipal estimates are not avaialble for places smaller than 200 people.  Please contact the SDO office for additional information.")
+#    outList[[i]] <- ui7
+#    i <- i + 1
+#  }
+  
   #Table block
   if(table == "T") {
-    ui6 <- tags$p("To download the redered table, click on the 'Submit PDF' button and copy the table from the output PDF report.")
-    outList[[i]] <- ui6
+    ui8 <- tags$p("To download the redered table, click on the 'Submit PDF' button and copy the table from the output PDF report.")
+    outList[[i]] <- ui8
     i <- i + 1
   }
 
@@ -74,10 +94,10 @@ boxContent <- function(title,description, source, MSA, stats, table, urlList) {
     links[[j]] <- eleHtml
   }
 
-  ui7 <- tags$ul(HTML(unlist(links)))
+  ui9 <- tags$ul(HTML(unlist(links)))
   outList[[i]] <- tags$p("Source Information:")
   i <- i + 1
-  outList[[i]] <-ui7
+  outList[[i]] <-ui9
 
   box <- tags$div(outList)
 
