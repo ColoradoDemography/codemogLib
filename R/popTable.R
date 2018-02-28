@@ -1,19 +1,23 @@
 #' popTable The population table showing the annual growth rate in the Population Section
 #'
-#' @param cty short FIPS code, without the state code
-#' @param ctyname the place name
+#' @param cty county FIPS code, without the state code
+#' @param ctyname the county name
+#' @param place place fips code, without the state code
+#' @param placename the place name
 #' @param sYr Start Year
 #' @param eYr End year
 #' @param oType Output Type, html or latex
 #' @return kable formatted  table and data file
 #' @export
 #'
-popTable <- function(cty,ctyname,sYr,eYr,oType) {
+popTable <- function(cty,ctyname,place,placename,sYr,eYr,oType) {
   #outputs the population trend table in the population section..
 
   state <- "Colorado"
-  cntynum <- as.numeric(cty)
+  ctynum <- as.numeric(cty)
+  placenum <- as.numeric(place)
   yrs <- as.character(setYrRange(sYr,eYr))
+  
   #State Population and Growth Rate
   popCO=county_profile(0, sYr:eYr, "totalpopulation")%>%
     filter(year %in% yrs)%>%
@@ -21,28 +25,72 @@ popTable <- function(cty,ctyname,sYr,eYr,oType) {
            totalpopulation=as.numeric(totalpopulation),
            year=as.numeric(year),
            growthRate=percent(signif((((totalpopulation/lag(totalpopulation))^(1/(year-lag(year)))) -1)*100),digits=1),
-           Population=totalpopulation)
-  #County Population and Growth Rate
-  popCounty=county_profile(cntynum, sYr:eYr, "totalpopulation")%>%
-    filter(year %in% yrs)%>%
-    arrange(year)%>%
-    mutate(name=county,
-           year=as.numeric(year),
-           totalpopulation=as.numeric(totalpopulation),
-           growthRate=percent(signif((((totalpopulation/lag(totalpopulation))^(1/(year-lag(year)))) -1)*100),digits=1),
-           Population=totalpopulation)
+           Population=comma(totalpopulation))
+  mCO <- as.matrix(popCO[,c(1,5,7,6)])
+  
+  #County Population and Growth Rate  *** need to account for multip county communities...
+  mCty <- matrix(nrow=7,ncol=1)
+  
+  for(i in 1:length(ctynum)) {
+  x=county_profile(ctynum[i], sYr:eYr, "totalpopulation")%>%
+     filter(year %in% yrs)%>%
+     arrange(county,year)%>%
+     mutate(name=county,
+            year=as.numeric(year),
+            totalpopulation=as.numeric(totalpopulation),
+            growthRate=percent(signif((((totalpopulation/lag(totalpopulation))^(1/(year-lag(year)))) -1)*100),digits=1),
+            Population=comma(totalpopulation))
+     mCty <- cbind(mCty, as.matrix(x[,c(3,5,7,6)]))
+  }
+  
 
+  
+  if(nchar(placename) != 0) { #if a placename is present
+    sqlStrPop1 <- paste0("SELECT countyfips, placefips, municipalityname, year, totalpopulation FROM estimates.county_muni_timeseries WHERE placefips = ",placenum,";")
+    # Postgres Call to gather municipal jobs numbers
+    pw <- {
+      "demography"
+    }
+    
+    # loads the PostgreSQL driver
+    drv <- dbDriver("PostgreSQL")
+    # creates a connection to the postgres database
+    # note that "con" will be used later in each connection to the database
+    con <- dbConnect(drv, dbname = "dola",
+                     host = "104.197.26.248", port = 5433,
+                     user = "codemog", password = pw)
+    rm(pw) # removes the password
+    
+    f.popPlace <-  dbGetQuery(con, sqlStrPop1)
+    
+    #closing the connections
+    dbDisconnect(con)
+    dbUnloadDriver(drv)
+    rm(con)
+    rm(drv)
+    
+     f.popPlace <- f.popPlace[which(f.popPlace$countyfips != 999), ]  # removing "Total" for multi-county cities
+     PP <-  f.popPlace %>% group_by(placefips, municipalityname, year)  %>% summarize(tpop = sum(as.numeric(totalpopulation)))
+     
+     popPlace= PP %>% 
+      filter(year %in% yrs)%>%
+      arrange(year)%>%
+      mutate(name=municipalityname,
+             year=as.numeric(year),
+             totalpopulation=as.numeric(tpop),
+             growthRate=percent(signif((((totalpopulation/lag(totalpopulation))^(1/(year-lag(year)))) -1)*100),digits=1),
+             Population=comma(totalpopulation))
+     mPlace <- as.matrix(popPlace[,c(3,5,7,6)])
+  }
+ 
 
+  if(nchar(placename) != 0) { #if a placename is present
+    m.OutTab <- cbind(mPlace,mCty,mCO)
+  }  else {
+    m.OutTab <- cbind(mCty,mCO)
+    m.OutTab <- m.OutTab[,c(2,4,5,8,9)] 
+  } 
 
-  # Creating Output Table
-  f.County <- popCounty[,c(3,5:7)]
-  f.CO <- popCO[,c(1,5:7)]
-  f.Out <- merge(f.County,f.CO,by="year")
-  f.Out2 <- f.Out
-  f.Out2[,4] <- format(f.Out2[,4],big.mark=",")
-  f.Out2[,7] <- format(f.Out2[,7],big.mark=",")
-
-  m.OutTab <- as.matrix(f.Out2[,c(1,4,3,7,6)])
   m.OutTab <- gsub("NA%","",m.OutTab)
 
 
@@ -75,7 +123,7 @@ popTable <- function(cty,ctyname,sYr,eYr,oType) {
       add_footnote(captionSrc("SDO",""))
 
     # Creating Final Data Set
-    f.Out2 <- f.Out2[,c(1,4,3,7,6)]
+    f.Out2 <- as.data.frame(m.OutTab)
     names(f.Out2) <- c("Year",paste0("Population: ",ctyname),paste0("Growth Rate: ",ctyname),
                       "Population: Colorado","Growth Rate: Colorado")
 

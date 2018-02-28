@@ -13,11 +13,11 @@
 
 dashboardMAP <- function(ctyfips,placefips){
   ctyfips <- substr(ctyfips,3,5)
-  
-  #data Call to extract Place
+  ctyfips <- ctyfips[order(ctyfips)]
   
   if(nchar(placefips) != 0){
-    placefips <- substr(placefips,3,7)
+    placefips <- substr(unique(placefips),3,7)
+    
     # create a connection
     # save the password that we can "hide" it as best as we can by collapsing it
     pw <- {
@@ -41,20 +41,27 @@ dashboardMAP <- function(ctyfips,placefips){
     rm(con)
     rm(drv)
     
+    f.muni$lat <- as.numeric(f.muni$y)
+    f.muni$long <- as.numeric(f.muni$x)
+  }
+  
  
-  } 
   
   #Pulls the COunty Outlines
   j=getURL("https://gis.dola.colorado.gov/capi/geojson?table=p1&sumlev=50&db=c2010&state=8&zoom=9")
   gj=readOGR(j, "OGRGeoJSON", verbose=FALSE)
   gj=fortify(gj)
   
+  gj1 <- data.frame()
   
-  
+  for(i in 1:length(ctyfips)) {
   #Pulls the County to Highlight
-  j1=getURL(paste0("https://gis.dola.colorado.gov/capi/geojson?table=p1&sumlev=50&db=c2010&state=8&zoom=9&county=", as.numeric(ctyfips)))
-  gj1=readOGR(j1, "OGRGeoJSON", verbose=FALSE)
-  gj1=fortify(gj1)
+  j1 <- getURL(paste0("https://gis.dola.colorado.gov/capi/geojson?table=p1&sumlev=50&db=c2010&state=8&zoom=9&county=", as.numeric(ctyfips[i])))
+  x <- readOGR(j1, "OGRGeoJSON", verbose=FALSE)
+  x <- fortify(x)
+  gj1 <- rbind(gj1,x)
+  }
+
   
   m=ggplot()+
     geom_map(data=gj, map=gj,
@@ -69,7 +76,7 @@ dashboardMAP <- function(ctyfips,placefips){
           plot.background=element_rect(fill=rgb(239,239,239, max=255), color=rgb(239,239,239, max=255)))
   
   if(nchar(placefips) != 0){  # Adding point for center of municipality
-    m <- m + geom_point(data=f.muni, aes(x=x, y=y,shape="16", color="#655003c"),size=4) + 
+    m <- m + geom_point(data=f.muni, aes(x=x, y=y,shape="16", color="#655003c"),size=2) + 
       theme(legend.position="none")
   }
   
