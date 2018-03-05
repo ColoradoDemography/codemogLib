@@ -9,12 +9,12 @@
 #' @return kable formatted table
 #' @export
 #'
-statsTable1 <- function(cty,place,sYr,eYr,ACS,oType){
+statsTable1 <- function(cty,ctyname,place,placename,sYr,eYr,ACS,oType){
   #outputs the top table in the dashboard
 
   #Need to restructure this to support muni_est...
-  state <- substr(cty,1,2)
-  ctyfips <- substr(cty,3,5)
+  state <- "08"
+  ctyfips <- cty
   ctyfips <- ctyfips[order(ctyfips)]
   placefips <- ""
   multic <- 0
@@ -25,7 +25,7 @@ statsTable1 <- function(cty,place,sYr,eYr,ACS,oType){
   state <- unique(state)
   
   if(nchar(unique(place)) != 0) {
-    placefips <- substr(unique(place),3,7)
+    placefips <- place
     
     sqlStrPop1 <- paste0("SELECT placefips, municipalityname, year, totalpopulation FROM estimates.county_muni_timeseries WHERE placefips = ",as.numeric(placefips)," and year = ", sYr,";")
     sqlStrPop2 <- paste0("SELECT placefips, municipalityname, year, totalpopulation FROM estimates.county_muni_timeseries WHERE placefips = ",as.numeric(placefips)," and year = ", eYr,";")
@@ -145,7 +145,7 @@ statsTable1 <- function(cty,place,sYr,eYr,ACS,oType){
   
   
   #Preparing table
-  
+
   if(placefips != ""){
     mcol <- length(ctyfips) + 3
   } else {
@@ -165,6 +165,7 @@ statsTable1 <- function(cty,place,sYr,eYr,ACS,oType){
   
   if(placefips != ""){
     #place
+    f.tpopp <- f.tpopp[1,]
     outTab[1,nCol] <- format(as.numeric(f.tpopp$tpop2),nsmall=0, big.mark=",")
     outTab[2,nCol] <- format(as.numeric(f.tpopp$popchnp),nsmall=0, big.mark=",")
     outTab[3,nCol] <- format(round(as.numeric(f.muniJobsp$jobs),digits=0),nsmall=0, big.mark=",")
@@ -204,11 +205,11 @@ statsTable1 <- function(cty,place,sYr,eYr,ACS,oType){
   nPos <- 2
   
   if(placefips != "") {
-    names_spaced[nPos] <- as.character(f.tpopp$municipalityname)
+    names_spaced[nPos] <- placename
     nPos <- nPos + 1
   } 
   for(i in 1:length(ctyfips)) {
-    names_spaced[nPos]  <- as.character(f.tpopc[i,2])
+    names_spaced[nPos]  <- ctyname
     nPos <- nPos + 1
   }
   names_spaced[nPos]  <- "Colorado"

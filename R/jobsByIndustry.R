@@ -94,7 +94,7 @@ jobsByIndustry <- function(fips, ctyname, curyr, base=10){
 
   f.jobsPLMain$geoname <- ctyname
   f.jobsPLMain <- f.jobsPLMain[which(f.jobsPLMain$prop_jobs > 0),]  # removing blank categoies
-  f.jobsPLMainFin <- f.jobsPLMain[,c(4,13,5,10,11,12)]
+  f.jobsPLMainFin <- f.jobsPLMain[,c(4,5,10,11,12)]
 
 
 
@@ -135,7 +135,7 @@ jobsByIndustry <- function(fips, ctyname, curyr, base=10){
 
   f.jobsFin <- f.jobsPLMainFin
   f.jobsFin <- f.jobsFin[order(f.jobsFin$sector_id),]
-  f.jobsFin <- f.jobsFin[,c(3,4,6)]
+  f.jobsFin <- f.jobsFin[,c(2,4,5)]
   names(f.jobsFin) <- c("Job Sector", paste0("Number of Jobs: ",ctyname), paste0("Percentage of Jobs: ",ctyname))
 
   outList <- list("plot" = p.jobs,"data"= f.jobsFin)

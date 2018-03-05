@@ -11,13 +11,12 @@
 #' @param placefips is the place fips code for the map bullet
 #' @export
 
-dashboardMAP <- function(ctyfips,placefips){
-  ctyfips <- substr(ctyfips,3,5)
+dashboardMAP <- function(ctyfips,placefips,placelist){
+
   ctyfips <- ctyfips[order(ctyfips)]
   
   if(nchar(placefips) != 0){
     placefips <- substr(unique(placefips),3,7)
-    
     # create a connection
     # save the password that we can "hide" it as best as we can by collapsing it
     pw <- {
@@ -43,8 +42,11 @@ dashboardMAP <- function(ctyfips,placefips){
     
     f.muni$lat <- as.numeric(f.muni$y)
     f.muni$long <- as.numeric(f.muni$x)
+    ctyx <- placelist[which(as.numeric(placefips) == placelist$placefips),]
+    ctyfips <- str_pad(as.character(ctyx$countyfips),width=3,pad="0")
   }
   
+
  
   
   #Pulls the COunty Outlines
