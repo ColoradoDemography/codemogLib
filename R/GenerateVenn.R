@@ -8,11 +8,17 @@
 #' @export
 #'
 GenerateVenn <- function(fips, level, ctyname,oType){
+
   options(warn=-1)  # Suppressing warning messages produced by VennDiagram
 
-
-    sumSQL <- paste0("SELECT * FROM data.otm_county_summary WHERE fips = '",fips,"' ;")
-    placeSQL <- paste0("SELECT * FROM data.otm_county_place WHERE fips = '",fips,"' ;")
+ if(nchar(fips) == 3) {
+   sumSQL <- paste0("SELECT * FROM data.otm_county_summary WHERE fips = '",fips,"' ;")
+   placeSQL <- paste0("SELECT * FROM data.otm_county_place WHERE fips = '",fips,"' ;")
+ }
+if(nchar(fips) == 5) {
+  sumSQL <- paste0("SELECT * FROM data.otm_place_summary WHERE fips = '",fips,"' ;")
+  placeSQL <- paste0("SELECT * FROM data.otm_place_place WHERE fips = '",fips,"' ;")
+}
  
   #Reading data
   pw <- {
@@ -39,9 +45,6 @@ GenerateVenn <- function(fips, level, ctyname,oType){
   rm(con)
   rm(drv)
 
-
-
-
   location <- paste0(ctyname,"\n","All Jobs, ",as.character(f.summary$year))
 
   lout_win <- as.numeric(f.summary$workin_liveout)
@@ -49,8 +52,11 @@ GenerateVenn <- function(fips, level, ctyname,oType){
   lin_win <-  as.numeric(f.summary$livein_workin)
 
   region1 <- lout_win + lin_win #Live outside, work in
-  region2 <- lin_wout + lin_win #Live in, woek outside
-  crossRegion <- lin_win
+  region2 <- lin_wout + lin_win #Live in, work outside
+  
+  crossRegion <- lin_win 
+
+ 
   # By default, VennDiagram outputs the larger Region value in the left hand postion.
   # This code block insures that the diagram is correct
   if(lin_wout >= lout_win){
@@ -72,11 +78,16 @@ GenerateVenn <- function(fips, level, ctyname,oType){
   # Change labels for first three text grobs
   # hard-coded three, but it would be the number of text labels
   # minus the number of groups passed to venn.diagram
+  
+ 
   idx <- sapply(diag, function(i) grepl("text", i$name))
 
   for(i in 1:3){
     diag[idx][[i]]$label <-
       format(as.numeric(diag[idx][[i]]$label), big.mark=",", scientific=FALSE)
+    if(diag[idx][[i]]$label == "NA") {
+      diag[idx][[i]]$label <- ""
+    }
   } #End I Loop
 
 

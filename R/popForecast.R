@@ -11,10 +11,12 @@
 
 popForecast <- function(fips, ctyname, byr=2000,eyr=2050, base=10) {
 
+  fips=as.numeric(fips)
   yrs <- seq(byr,eyr,2)
   d <- county_sya(fips, yrs) %>%
     group_by(county, datatype, year) %>%
     summarize(Tot_pop = sum(as.numeric(totalpopulation)))
+  
 
   yaxs <- setAxis(d$Tot_pop)
   xaxs <- setAxis(d$year)

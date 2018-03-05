@@ -8,7 +8,7 @@
 
 cocPlot <- function(fips, ctyname,fyr=2000,lyr,base=12) {
 
-
+  fips <- as.numeric(fips)
 
   f.coccty <- county_profile(as.numeric(fips), fyr:lyr, vars="totalpopulation,births,deaths,netmigration")%>%
     mutate( totalpopulation = as.numeric(totalpopulation),

@@ -29,8 +29,8 @@ ageForecastPRO=function(fips, stYr, mYr, eYr, base=12, agegroup="ten"){
 
 
   barCol <- c("#82BC00", "#009ADD", "#5C666F")
-  pltTitle <- paste0("Age Forecast")
-  subTitle <- paste0(as.character(d[1,2]), " County: Population by Age: ",stYr," to ",eYr )
+  pltTitle <- paste0("Age Forecast: ",stYr," to ",eYr)
+  subTitle <- paste0(as.character(d[1,2]), " County")
   names(d)[3] <- "Year"
   d$Year <- as.factor(d$Year)
   d$Year <- factor(d$Year, levels=yrs)
