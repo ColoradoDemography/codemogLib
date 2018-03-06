@@ -92,9 +92,11 @@ medianAgeTab <- function(ctyfips, ctyname, placefips, placename, ACS, oType, sta
   
 
   #Column Names
-
-  names_spaced <- c("Gender","Median Age","Margin of Error","Median Age","Margin of Error","Signficant Difference?","Difference from State")
-
+  if(nchar(placename) == 0)  {
+    names_spaced <- c("Gender","Median Age","Margin of Error","Median Age","Margin of Error","Signficant Difference?","Difference from State")
+  } else {
+    names_spaced <- c("Gender","Median Age","Margin of Error","Median Age","Margin of Error","Signficant Difference?","Difference from County")
+  }
   #Span Header
   if(nchar(placefips) == 0) {
     # create vector with colspan

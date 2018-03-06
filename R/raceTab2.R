@@ -15,7 +15,7 @@
 #' @return kable formatted  table and data file
 #' @export
 
-raceTab2 <- function(ctyfips, ctyname, placefips, placename, ACS="acs1216",oType) {
+raceTab2 <- function(ctyfips, ctyname, placefips, placename, ACS, oType) {
 
   state="08"
   #output race tab using pull from API
