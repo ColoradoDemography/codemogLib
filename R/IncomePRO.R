@@ -13,7 +13,7 @@
 #' @return ggplot2 graphic and data file
 #' @export
 #'
-incomePRO=function(ctyfips, ctyname, placefips, placename, state="08", ACS= "acs1115", base=12){
+incomePRO=function(ctyfips, ctyname, placefips, placename, ACS, state="08",  base=12){
   
   hhinc1VAL <- codemog_api(data="b19001",db=ACS, geonum=paste("1", state, ctyfips, sep=""), meta="no") %>%
     select(-b19001001)%>%
