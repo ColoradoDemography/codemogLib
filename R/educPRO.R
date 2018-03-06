@@ -15,7 +15,6 @@
 #' @export
 
 educPRO <- function(ctyfips, ctyname, placefips, placename, state="08", ACS= "acs1115", base=12){
-  options(warn=0) 
   
   #county Education Value
   d13cty <- codemog_api(data="b15003",db=ACS,geonum=paste("1",state , ctyfips,sep=""),meta="no")
@@ -33,10 +32,8 @@ educPRO <- function(ctyfips, ctyname, placefips, placename, state="08", ACS= "ac
                                                         "ed5"),
                            labels=c("Less than\nHigh School",
                                     "High School Graduate\n(or GED)","Some College or\nAssociate's Degree", "Bachelor's Degree",
-                                    "Graduate or\nProfessional Degree")))%>%
-    separate(geoname, into=c("geoname","statename"),sep=",")%>%
-    select(-statename)%>%
-    mutate(geoname=stri_trans_general(geoname,id="Title"))
+                                    "Graduate or\nProfessional Degree")))
+  
   
   # Place Education MOE
   d13ctym <- codemog_api(data="b15003_moe",db=ACS,geonum=paste("1",state , ctyfips,sep=""),meta="no")
@@ -57,10 +54,8 @@ educPRO <- function(ctyfips, ctyname, placefips, placename, state="08", ACS= "ac
                                                         "ed5"),
                            labels=c("Less than\nHigh School",
                                     "High School Graduate\n(or GED)","Some College or\nAssociate's Degree", "Bachelor's Degree",
-                                    "Graduate or\nProfessional Degree")))%>%
-    separate(geoname, into=c("geoname","statename"),sep=",")%>%
-    select(-statename)%>%
-    mutate(geoname=stri_trans_general(geoname,id="Title"))
+                                    "Graduate or\nProfessional Degree")))
+  
   
   #Preparing data
   names(d13ctyMOE)[9] <- "MOE"
@@ -122,10 +117,7 @@ educPRO <- function(ctyfips, ctyname, placefips, placename, state="08", ACS= "ac
                                                         "ed5"),
                            labels=c("Less than\nHigh School",
                                     "High School Graduate\n(or GED)","Some College or\nAssociate's Degree", "Bachelor's Degree",
-                                    "Graduate or\nProfessional Degree"))) %>%
-    separate(geoname, into=c("geoname","statename"),sep=",") %>%
-    select(-statename) %>%
-    mutate(geoname=stri_trans_general(geoname,id="Title"))
+                                    "Graduate or\nProfessional Degree"))) 
   
   #Preparing data
   names(d13STMOE)[9] <- "MOE"
@@ -166,10 +158,8 @@ educPRO <- function(ctyfips, ctyname, placefips, placename, state="08", ACS= "ac
                                                           "ed5"),
                              labels=c("Less than\nHigh School",
                                       "High School Graduate\n(or GED)","Some College or\nAssociate's Degree", "Bachelor's Degree",
-                                      "Graduate or\nProfessional Degree")))%>%
-      separate(geoname, into=c("geoname","statename"),sep=",")%>%
-      select(-statename)%>%
-      mutate(geoname=stri_trans_general(geoname,id="Title"))
+                                      "Graduate or\nProfessional Degree")))
+    
     
     # Place Education MOE
     d13plm <- codemog_api(data="b15003_moe",db=ACS,geonum=paste("1",state , placefips,sep=""),meta="no")
@@ -190,10 +180,7 @@ educPRO <- function(ctyfips, ctyname, placefips, placename, state="08", ACS= "ac
                                                           "ed5"),
                              labels=c("Less than\nHigh School",
                                       "High School Graduate\n(or GED)","Some College or\nAssociate's Degree", "Bachelor's Degree",
-                                      "Graduate or\nProfessional Degree")))%>%
-      separate(geoname, into=c("geoname","statename"),sep=",")%>%
-      select(-statename)%>%
-      mutate(geoname=stri_trans_general(geoname,id="Title"))
+                                      "Graduate or\nProfessional Degree")))
     
     #Preparing data
     names(d13plMOE)[9] <- "MOE"

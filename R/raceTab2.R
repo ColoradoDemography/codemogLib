@@ -16,7 +16,6 @@
 #' @export
 
 raceTab2 <- function(ctyfips, ctyname, placefips, placename, ACS, oType) {
-
   state="08"
   #output race tab using pull from API
   
@@ -93,7 +92,7 @@ raceTab2 <- function(ctyfips, ctyname, placefips, placename, ACS, oType) {
   # State level MOEs
 
   ACSRaceSTMOE=codemog_api(data="b03002_moe", db=ACS, geonum=paste("1", state, sep=""),meta="no")
-
+  ACSRaceSTMOE[is.na(ACSRaceSTMOE)] <- 0
   ACSRaceSTMOE[,7:ncol(ACSRaceSTMOE)]=as.numeric(as.character(ACSRaceSTMOE[,7:ncol(ACSRaceSTMOE)]))
 
   ACSRaceSTMOE2 <- ACSRaceSTMOE %>%
