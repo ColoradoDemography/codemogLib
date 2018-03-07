@@ -58,7 +58,7 @@ downloadObj <- function(input, output, session, place, oname, dobj) {
                    "popem1" = " Jobs and Pop Forecast",
                    "popem2" = " Avg Weekly Wage",
                    "popem3" = " Residential Labor Force Forecast",
-                   "popem4" = " Residential Labor Force Participation"
+                   "popem4" = " Househould Income Sources"
 
   )
 
