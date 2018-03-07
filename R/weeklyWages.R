@@ -65,7 +65,7 @@ weeklyWages <- function(fips, ctyname, base=10){
   f.plot <- f.plot[which(f.plot$year %in% seq(2001,maxYr,3)),]
 
   axs <- setAxis(f.plot$wages)
-  #axs$maxBrk <- axs$maxBrk + (1500 - axs$maxBrk) 
+  axs$maxBrk <- axs$maxBrk + 50
 
   f.plot$geoname <- factor(f.plot$geoname,levels=c(ctyname,"Colorado"))
 
