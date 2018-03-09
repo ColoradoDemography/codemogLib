@@ -1,12 +1,23 @@
 #' migbyagePRO Creates a Chart showing the 2000-2010 net Migration rate by age
 #'
-#' @param fips is the numeric fips code for the main area to be compared
-#' @param ctyname is the cplace name from input$unit
+#' @param listID the list containing place id and Place names
 #' @param base is the base text size for the ggplot2 object and codemog_theme()
 #' @return ggplot2 graphic and data file
 #' @export
 #'
-migbyagePRO <- function(fips, ctyname, base=10) {
+migbyagePRO <- function(listID, base=10) {
+  
+  # Collecting place ids from  idList, setting default values
+  
+  ctyfips <- listID$ctyNum
+  ctyname <- listID$ctyName
+  placefips <- listID$plNum
+  placename <- listID$plName
+  if(listID$PlFilter == "T") {
+    placefips <- ""
+    placename <- ""
+  }
+  
   state= 0
 
   # create a connection
@@ -24,7 +35,7 @@ migbyagePRO <- function(fips, ctyname, base=10) {
                    user = "codemog", password = pw)
   rm(pw) # removes the password
 
-  sqlPlace <- paste0("SELECT fips, county, agegroup, rate0010 FROM data.netmigrbyage WHERE fips = ",fips,";")
+  sqlPlace <- paste0("SELECT fips, county, agegroup, rate0010 FROM data.netmigrbyage WHERE fips = ",as.numeric(ctyfips),";")
   f.migPlace <- dbGetQuery(con, sqlPlace)
 
   sqlState <- paste0("SELECT fips, county, agegroup, rate0010 FROM data.netmigrbyage WHERE fips = ",state,";")

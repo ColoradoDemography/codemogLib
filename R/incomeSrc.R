@@ -1,7 +1,7 @@
 #' incomeSrc Displays a table showinf sources of incomes
 #'
 #' @param level the data level from input$level
-#' @param listID is the list with place identifiers
+#' @param listID the list containing place id and Place names
 #' @param ACS Specifies the ACS data set to be used, reads curACS from Shiny program
 #' @param oType output type html table or latex table
 #' @return kable formatted  table and data file

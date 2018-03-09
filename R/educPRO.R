@@ -4,13 +4,8 @@
 #' Uses the codemog_api function to access ACS data (defaults to 13-5yr) to create a ggplot2 chart for
 #' use in profiles.
 #'
-#' @param ctyfips is the fips code for the selected county
-#' @param ctyname is the name of the selected county
-#' @param placefips is the fips code for the selected municipality
-#' @param placename is the name of the selected municipality
-#' @param state is the state that the original fips
+#' @param listID the list containing place id and Place names
 #' @param ACS Specifies the ACS data set to be used, reads curACS from Shiny program
-#' @param base is the base text size for the ggplot2 object and codemog_theme()
 #' @return ggplot2 graphic aand data file
 #' @export
 

@@ -5,15 +5,24 @@
 #' Uses State Demography Office data to create a chart showing the timeseries of Total Estimated Jobs
 #' (which means it includes Proprietors and Agricultural Workers) for a selected Colorado County
 #'
-#' @param fips is the fips code for the county being examined
-#' @param ctyname  This parameter puts the name of the county in the chart
+#' @param listID the list containing place id and Place names
 #' @param maxyr The maximum year value, from CurYr
 #' @param base is the abse text size for the ggplot2 object and codemog_theme()
 #' @return ggplot graphic and data file
 #' @export
 #'
-jobsPlot=function(fips, ctyname, maxyr,base=10){
-  jobs_data <- county_jobs(as.numeric(fips), 2001:maxyr) %>%
+jobsPlot=function(listID, maxyr,base=10){
+  
+  ctyfips <- listID$ctyNum
+  ctyname <- listID$ctyName
+  placefips <- listID$plNum
+  placename <- listID$plName
+  if(listID$PlFilter == "T") {
+    placefips <- ""
+    placename <- ""
+  }
+  
+  jobs_data <- county_jobs(as.numeric(ctyfips), 2001:maxyr) %>%
     mutate(jobs=car::recode(totalJobs, "'S'=NA"),
            jobs=round(as.numeric(jobs),0),
            year=as.numeric(as.character(year)))

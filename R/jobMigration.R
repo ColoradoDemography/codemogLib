@@ -6,18 +6,26 @@
 #'
 #' Changes format to a basic bar chart with text annotations from the original formattable output.
 #'
-#' @param fips is the fips code for the county being examined
-#' @param ctyname  This parameter puts the name of the county in the chart
+#' @param listID the list containing place id and Place names
 #' @param maxyr The maximum year value, from CurYr
 #' @param base is the abse text size for the ggplot2 object and codemog_theme(), defaults to base = 10
 #' @return ggplot graphic and data file
 #' @export
 #'
-jobMigration <- function(fips, ctyname, maxyr, base=10){
+jobMigration <- function(listID, maxyr, base=10){
+  
+  ctyfips <- listID$ctyNum
+  ctyname <- listID$ctyName
+  placefips <- listID$plNum
+  placename <- listID$plName
+  if(listID$PlFilter == "T") {
+    placefips <- ""
+    placename <- ""
+  }
 
   # options(warn=-1)  # Suppressing warning messages produced by VennDiagram
 
-  jobsSQL <- paste0("SELECT * FROM estimates.bea_jobs WHERE fips = ",as.numeric(fips), ";")
+  jobsSQL <- paste0("SELECT * FROM estimates.bea_jobs WHERE fips = ",as.numeric(ctyfips), ";")
   jobslyr <- paste0("jobs_",maxyr)
 
   pw <- {
@@ -64,7 +72,7 @@ jobMigration <- function(fips, ctyname, maxyr, base=10){
 
   #Net Migration
   # convert datasets to wide
-  f.migr1yr <- county_profile(as.numeric(fips), 1985:maxyr, vars="netmigration")
+  f.migr1yr <- county_profile(as.numeric(ctyfips), 1985:maxyr, vars="netmigration")
   f.migr1yr$netmigration <- as.numeric(f.migr1yr$netmigration)
   f.migr1yr$year5 <- f.migr1yr$year - (f.migr1yr$year %% 5)
 

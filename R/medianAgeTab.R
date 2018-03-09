@@ -1,17 +1,25 @@
 #' medianAgeTab Creates table showing the Median Age by Gender
 #' for a selected place and county or for a copunty and for the state
 #'
-#' @param ctyfips The County FIPS number (without leading Zeros)
-#' @param ctyname a string identiying the county name
-#' @param placefips The County FIPS number (without leading Zeros)
-#' @param placename a string identiying the county name
+#' @param listID the list containing place id and Place names
 #' @param ACS a string identifying the input dataset eg: "acs1115"
 #' @param state the State FIPS code, defaluts to "08" for Colorado.
 #' @param oType type of output, html or latex
 #' @return a formatted table and dataset
 #' @export
 
-medianAgeTab <- function(ctyfips, ctyname, placefips, placename, ACS, oType, state="08"){
+medianAgeTab <- function(listID, ACS, oType, state="08"){
+  
+  # Collecting place ids from  idList, setting default values
+  
+  ctyfips <- listID$ctyNum
+  ctyname <- listID$ctyName
+  placefips <- listID$plNum
+  placename <- listID$plName
+  if(listID$PlFilter == "T") {
+    placefips <- ""
+    placename <- ""
+  }
 
   #County  Age
   medAgecty <- codemog_api(data="b01002",db=ACS, geonum=paste("1", state, ctyfips, sep=""), meta="no")

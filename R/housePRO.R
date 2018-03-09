@@ -3,17 +3,25 @@
 #'
 #'  This function compares housing occupancy and vacancy rates for a place to the state
 #'
-#' @param ctyfips is the fips code for the selected county
-#' @param ctyname is the name of the selected county
-#' @param placefips is the fips code for the selected municipality
-#' @param placename is the name of the selected municipality
+#' @param listID the list containing place id and Place names
 #' @param ACS Specifies the ACS data set to be used, reads curACS from Shiny program
 #' @param oType output type html table or latex table
 #' @return kable formatted  table and data file
 #' @export
 #'
 
-housePRO=function(ctyfips,ctyname, placefips, placename, ACS,oType="html"){
+housePRO=function(listID, ACS,oType="html"){
+  
+  # Collecting place ids from  idList, setting default values
+  
+  ctyfips <- listID$ctyNum
+  ctyname <- listID$ctyName
+  placefips <- listID$plNum
+  placename <- listID$plName
+  if(listID$PlFilter == "T") {
+    placefips <- ""
+    placename <- ""
+  }
 state <- "08"
 
   if(nchar(placefips) == 0) {

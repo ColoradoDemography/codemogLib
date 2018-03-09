@@ -2,17 +2,24 @@
 #'  for the period from 2000 to the present
 #'
 #'
-#' @param fips is the fips code for the county being examined
-#' @param ctyname the name of the place being output
-#'
+#' @param listID the list containing place id and Place names
 #' @param base is the base text size for the ggplot2 object and codemog_theme()
 #' @return ggplot2 graphic, a html or lates table and a dataset
 #' @export
 #'
 
-weeklyWages <- function(fips, ctyname, base=10){
+weeklyWages <- function(listID, base=10){
+  
+  ctyfips <- listID$ctyNum
+  ctyname <- listID$ctyName
+  placefips <- listID$plNum
+  placename <- listID$plName
+  if(listID$PlFilter == "T") {
+    placefips <- ""
+    placename <- ""
+  }
 
-  wagePLSQL <- paste0("SELECT * FROM estimates.weekly_wages WHERE fips = '",as.numeric(fips), "';")
+  wagePLSQL <- paste0("SELECT * FROM estimates.weekly_wages WHERE fips = '",as.numeric(ctyfips), "';")
   wageSTSQL <- paste0("SELECT * FROM estimates.weekly_wages WHERE fips = '0';")
 
 

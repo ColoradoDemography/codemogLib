@@ -9,19 +9,29 @@
 #' @return ggplot2 graphic and data file
 #' @export
 
-baseIndustries <- function(fips, ctyname, curyr, oType,base=10){
+baseIndustries <- function(listID, curyr, oType,base=10){
+  
+  
+  ctyfips <- listID$ctyNum
+  ctyname <- listID$ctyName
+  placefips <- listID$plNum
+  placename <- listID$plName
+  if(listID$PlFilter == "T") {
+    placefips <- ""
+    placename <- ""
+  }
   #fips is the 3-digit character string
 
   # creating alternative fips code for Denver MSA
-  if(fips %in% c("001", "005", "013", "014", "031", "035", "059")) {
-    fips = "500"
+  if(ctyfips %in% c("001", "005", "013", "014", "031", "035", "059")) {
+    ctyfips = "500"
     ctyname = "Denver-Boulder MSA"
     fipslist = c(1, 5, 13, 14, 31, 35, 59)
   } else {
-    fipslist = as.numeric(fips)
+    fipslist = as.numeric(ctyfips)
   }
 
-  jobsSQL <- paste0("SELECT * FROM estimates.base_analysis WHERE fips = '",fips, "';")
+  jobsSQL <- paste0("SELECT * FROM estimates.base_analysis WHERE fips = '",ctyfips, "';")
   LFSQLPL <- paste0("SELECT * FROM estimates.labor_force_participation WHERE area_code in (")
   for(i in 1:length(fipslist)){
     LFSQLPL <- paste0(LFSQLPL,fipslist[i], ", ")

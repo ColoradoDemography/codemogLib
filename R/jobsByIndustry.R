@@ -4,14 +4,23 @@
 #' Uses State Demography Office data to create a chart compaing jobs by major sector
 #' for a selected place, compared to Colorado.
 #'
-#' @param fips is the fips code for the county being examined
-#' @param ctyname  This parameter puts the name of the county in the chart
+#' @param listID the list containing place id and Place names
 #' @param curyr The maximum year value, from CurYr
 #' @param base is the abse text size for the ggplot2 object and codemog_theme(), defaults to base = 10
 #' @return  ggplot graphic and data file
 #' @export
 #'
-jobsByIndustry <- function(fips, ctyname, curyr, base=10){
+jobsByIndustry <- function(listID, curyr, base=10){
+  
+  ctyfips <- listID$ctyNum
+  ctyname <- listID$ctyName
+  placefips <- listID$plNum
+  placename <- listID$plName
+  if(listID$PlFilter == "T") {
+    placefips <- ""
+    placename <- ""
+  }
+  
   options(warn=-1)  # Suppressing warning messages produced by VennDiagram
   #Reading data
   pw <- {
@@ -28,7 +37,7 @@ jobsByIndustry <- function(fips, ctyname, curyr, base=10){
   rm(pw) # removes the password
 
   # Read data files
-  f.jobsPL <- dbGetQuery(con, paste0("SELECT * FROM estimates.jobs_by_sector WHERE (area_code = ", as.character(as.numeric(fips)),
+  f.jobsPL <- dbGetQuery(con, paste0("SELECT * FROM estimates.jobs_by_sector WHERE (area_code = ", as.character(as.numeric(ctyfips)),
                                      " AND population_year = ", as.character(curyr), ");"))
   f.jobsST <- dbGetQuery(con, paste0("SELECT * FROM estimates.jobs_by_sector WHERE (area_code = 0 AND population_year = ",
                                      as.character(curyr), ");"))

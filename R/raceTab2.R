@@ -5,11 +5,7 @@
 #'    This table reports the MOEs and a significance test for each series
 #'    comparing the percentages from each table...
 #'
-#' @param ctyfips is the fips code for the selected county
-#' @param ctyname is the name of the selected county
-#' @param placefips is the fips code for the selected municipality
-#' @param placename is the name of the selected municipality
-#' @param state is the state that the original fips
+#' @param listID the list containing place id and Place names
 #' @param ACS Specifies the ACS data set to be used, reads curACS from Shiny program
 #' @param oType output type html table or latex table
 #' @return kable formatted  table and data file

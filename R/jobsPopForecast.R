@@ -4,26 +4,34 @@
 #'   This includes code to output data for the Denver-Boulder MSA when Adams, Arapahoe, Boulder,
 #'     Broomfield, Denver, Douglas, or Jefferson County are selected.
 #'
-#' @param fips is the fips code for the county being examined
-#' @param ctyname the name of the place being output
-#'
+#' @param listID the list containing place id and Place names
 #' @param base is the base text size for the ggplot2 object and codemog_theme()
 #' @return ggplot2 graphic, a html or latex table and a dataset
 #' @export
 
-jobsPopForecast <- function(fips, ctyname, base=10){
+jobsPopForecast <- function(listID, base=10){
+  
+  ctyfips <- listID$ctyNum
+  ctyname <- listID$ctyName
+  placefips <- listID$plNum
+  placename <- listID$plName
+  if(listID$PlFilter == "T") {
+    placefips <- ""
+    placename <- ""
+  }
+  
   #fips is the 3-digit character string
 
   # creating alternative fips code for Denver MSA
-  if(fips %in% c("001", "005", "013", "014", "031", "035", "059")) {
-    fips = "500"
+  if(ctyfips %in% c("001", "005", "013", "014", "031", "035", "059")) {
+    ctyfips = "500"
     MSAList <- c(1,5,13,14,31,35,59)
     ctyname = "Denver-Boulder MSA"
   } else {
-    MSAList <- as.numeric(fips)
+    MSAList <- as.numeric(ctyfips)
   }
 
-  jobsSQL <- paste0("SELECT * FROM estimates.jobs_forecast WHERE countyfips = '",as.numeric(fips), "';")
+  jobsSQL <- paste0("SELECT * FROM estimates.jobs_forecast WHERE countyfips = '",as.numeric(ctyfips), "';")
 
 
   pw <- {

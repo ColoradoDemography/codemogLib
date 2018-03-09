@@ -1,23 +1,32 @@
 #' GenerateVenn Generates a Venn diagram using LODES data
 #' V2 revised 2/15/2018 AB
-#' @param fips is the numeric fips code for counties and municiaplities/places
-#' @param level the measurement uit, taken from input$level
-#' @param ctyname is the place name from input$unit
+#' @param listID Id list with fips and location names
 #' @param oType output type html or latex
 #' @return ggplot2 graphic, formatted datatables, and datasets
 #' @export
 #'
-GenerateVenn <- function(fips, level, ctyname,oType){
+GenerateVenn <- function(listID, oType){
 
+  
+  # Collecting place ids from  idList, setting default values
+  
+  ctyfips <- listID$ctyNum
+  ctyname <- listID$ctyName
+  placefips <- listID$plNum
+  placename <- listID$plName
+  if(listID$PlFilter == "T") {
+    placefips <- ""
+    placename <- ""
+  }
+  
   options(warn=-1)  # Suppressing warning messages produced by VennDiagram
 
- if(nchar(fips) == 3) {
-   sumSQL <- paste0("SELECT * FROM data.otm_county_summary WHERE fips = '",fips,"' ;")
-   placeSQL <- paste0("SELECT * FROM data.otm_county_place WHERE fips = '",fips,"' ;")
- }
-if(nchar(fips) == 5) {
-  sumSQL <- paste0("SELECT * FROM data.otm_place_summary WHERE fips = '",fips,"' ;")
-  placeSQL <- paste0("SELECT * FROM data.otm_place_place WHERE fips = '",fips,"' ;")
+if(nchar(placefips) != 0) {
+  sumSQL <- paste0("SELECT * FROM data.otm_place_summary WHERE fips = '",placefips,"' ;")
+  placeSQL <- paste0("SELECT * FROM data.otm_place_place WHERE fips = '",placefips,"' ;")
+} else {
+  sumSQL <- paste0("SELECT * FROM data.otm_county_summary WHERE fips = '",ctyfips,"' ;")
+  placeSQL <- paste0("SELECT * FROM data.otm_county_place WHERE fips = '",ctyfips,"' ;")
 }
  
   #Reading data
@@ -45,7 +54,12 @@ if(nchar(fips) == 5) {
   rm(con)
   rm(drv)
 
-  location <- paste0(ctyname,"\n","All Jobs, ",as.character(f.summary$year))
+  if(nchar(placefips) != 0) {
+    location <- paste0(placename,"\n","All Jobs, ",as.character(f.summary$year))
+  } else {
+    location <- paste0(ctyname,"\n","All Jobs, ",as.character(f.summary$year))
+  }
+  
 
   lout_win <- as.numeric(f.summary$workin_liveout)
   lin_wout <- as.numeric(f.summary$livein_workout)

@@ -1,7 +1,6 @@
 #' statsTable1 outputs the summary table in the stats section of the dashboard, draws data from the census API
 #'
-#' @param cty the County  FIPS code, including the state value
-#' @param place the Place FIPS Code, including the state value.
+#' @param listID list containing id numbers and place names
 #' @param sYr Start Year
 #' @param eYr End year
 #' @param ACS American Cummunity Survey Data series
@@ -9,23 +8,26 @@
 #' @return kable formatted table
 #' @export
 #'
-statsTable1 <- function(cty,ctyname,place,placename,sYr,eYr,ACS,oType){
+statsTable1 <- function(listID,sYr,eYr,ACS,oType){
   #outputs the top table in the dashboard
-
-  #Need to restructure this to support muni_est...
-  state <- "08"
-  ctyfips <- cty
-  ctyfips <- ctyfips[order(ctyfips)]
-  placefips <- ""
-  multic <- 0
-  if(length(ctyfips) > 1) {
-    multic <- 1
+  
+  # Collecting place ids from  idList, setting default values
+  
+  ctyfips <- listID$ctyNum
+  ctyname <- listID$ctyName
+  placefips <- listID$plNum
+  placename <- listID$plName
+  if(listID$PlFilter == "T") {
+    placefips <- ""
+    placename <- ""
   }
   
-  state <- unique(state)
+  state <- "08"
+
   
-  if(nchar(unique(place)) != 0) {
-    placefips <- place
+ 
+  
+  if(nchar(placefips) != 0) {
     
     sqlStrPop1 <- paste0("SELECT placefips, municipalityname, year, totalpopulation FROM estimates.county_muni_timeseries WHERE placefips = ",as.numeric(placefips)," and year = ", sYr,";")
     sqlStrPop2 <- paste0("SELECT placefips, municipalityname, year, totalpopulation FROM estimates.county_muni_timeseries WHERE placefips = ",as.numeric(placefips)," and year = ", eYr,";")
@@ -54,15 +56,7 @@ statsTable1 <- function(cty,ctyname,place,placename,sYr,eYr,ACS,oType){
     rm(con)
     rm(drv)
     
-    #Removing "Total for munis in muliple counties 
-    if(multic != 0) {
-      f.tPopyr1p <- f.tPopyr1p[which(!grepl("(Total)",f.tPopyr1p$municipalityname)), ]
-      f.tPopyr2p <- f.tPopyr2p[which(!grepl("(Total)",f.tPopyr2p$municipalityname)), ]
-      
-      f.tPopyr1p$municipalityname <- substr(f.tPopyr1p$municipalityname,1,nchar(f.tPopyr1p$municipalityname)-7)
-      f.tPopyr2p$municipalityname <- substr(f.tPopyr2p$municipalityname,1,nchar(f.tPopyr2p$municipalityname)-7)
-    }
-    
+
     f.tpop1ps <- f.tPopyr1p %>% group_by(municipalityname,year) %>% summarize(tpop1 = sum(totalpopulation))
     f.tpop2ps <- f.tPopyr2p %>% group_by(municipalityname,year) %>% summarize(tpop2 = sum(totalpopulation))
     

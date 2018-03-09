@@ -1,22 +1,29 @@
 #' popTable The population table showing the annual growth rate in the Population Section
 #'
-#' @param cty county FIPS code, without the state code
-#' @param ctyname the county name
-#' @param place place fips code, without the state code
-#' @param placename the place name
+#' @param listID the list containing place id and Place names
 #' @param sYr Start Year
 #' @param eYr End year
 #' @param oType Output Type, html or latex
 #' @return kable formatted  table and data file
 #' @export
 #'
-popTable <- function(cty,ctyname,place,placename,sYr,eYr,oType) {
+popTable <- function(listID,sYr,eYr,oType) {
+  
+  # Collecting place ids from  idList, setting default values
+
+  ctyfips <- listID$ctyNum
+  ctyname <- listID$ctyName
+  placefips <- listID$plNum
+  placename <- listID$plName
+  if(listID$PlFilter == "T") {
+    placefips <- ""
+    placename <- ""
+  }
   #outputs the Population Growth Rate table in the population section..
 
-  placename <- as.character(unique(placename))
   state <- "Colorado"
-  ctynum <- as.numeric(cty)
-  placenum <- as.numeric(place)
+  ctynum <- as.numeric(ctyfips)
+  placenum <- as.numeric(placefips)
   yrs <- as.character(setYrRange(sYr,eYr))
   
   #State Population and Growth Rate
@@ -27,13 +34,10 @@ popTable <- function(cty,ctyname,place,placename,sYr,eYr,oType) {
            year=as.numeric(year),
            growthRate=percent(signif((((totalpopulation/lag(totalpopulation))^(1/(year-lag(year)))) -1)*100),digits=2),
            Population=comma(totalpopulation))
-  mCO <- as.matrix(popCO[,c(1,5,7,6)])
+  mCO <- popCO[,c(1,5,7,6)]
   
   #County Population and Growth Rate  *** need to account for multip county communities...
-  mCty <- matrix(nrow=7,ncol=1)
-  
-  for(i in 1:length(ctynum)) {
-  x=county_profile(ctynum[i], sYr:eYr, "totalpopulation")%>%
+  mCty <- county_profile(ctynum, sYr:eYr, "totalpopulation")%>%
      filter(year %in% yrs)%>%
      arrange(county,year)%>%
      mutate(name=county,
@@ -41,8 +45,8 @@ popTable <- function(cty,ctyname,place,placename,sYr,eYr,oType) {
             totalpopulation=as.numeric(totalpopulation),
             growthRate=percent(signif((((totalpopulation/lag(totalpopulation))^(1/(year-lag(year)))) -1)*100),digits=2),
             Population=comma(totalpopulation))
-     mCty <- cbind(mCty, as.matrix(x[,c(3,5,7,6)]))
-  }
+
+  
   
 
   
@@ -85,12 +89,12 @@ popTable <- function(cty,ctyname,place,placename,sYr,eYr,oType) {
 
   if(nchar(placename) != 0) { #if a placename is present
     m.OutTab <- cbind(mPlace,mCty,mCO)
-      m.OutTab <- m.OutTab[,c(1,3,4,8,9,12,13)]
+      m.OutTab <- m.OutTab[,c(1,3,4,11,10,14,15)]
     }  else {
     m.OutTab <- cbind(mCty,mCO)
-    m.OutTab <- m.OutTab[,c(2,4,5,8,9)] 
+    m.OutTab <- m.OutTab[,c(3,7,6,11,10)] 
     } 
-
+  m.OutTab <- as.matrix(m.OutTab)
   m.OutTab <- gsub("NA%","",m.OutTab)
 
   if(nchar(placename) != 0) {

@@ -7,16 +7,24 @@
 #'    if a place is selected, the county is outlined and a dagger is posted at the center of the place.
 #'
 #'
-#' @param ctyFips is the county fips code for the county to highlight
-#' @param placefips is the place fips code for the map bullet
+#' @param listID the list containing place id and Place names
 #' @export
 
-dashboardMAP <- function(ctyfips,placefips,placelist){
-
+dashboardMAP <- function(listID,placelist){
+  # Collecting place ids from  idList, setting default values
+  
+  ctyfips <- listID$ctyNum
+  ctyname <- listID$ctyName
+  placefips <- listID$plNum
+  placename <- listID$plName
+  if(listID$PlFilter == "T") {
+    placefips <- ""
+    placename <- ""
+  }
+  
   ctyfips <- ctyfips[order(ctyfips)]
   
   if(nchar(placefips) != 0){
-    placefips <- substr(unique(placefips),3,7)
     # create a connection
     # save the password that we can "hide" it as best as we can by collapsing it
     pw <- {

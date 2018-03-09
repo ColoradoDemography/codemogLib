@@ -1,16 +1,26 @@
 #' houseEstPRO Produces a plot of the housing projections from 2010 to 2050
 #'   from the household_projections data table
 #'
-#' @param fips is the numeric fips code for county
-#' @param ctyname is the cplace name from input$unit
+#' @param listID the list containing place id and Place names
 #' @param curYr Ins the current year value
 #' @param base is the abse text size for the ggplot2 object and codemog_theme()
 #' @return ggplot2 graphic and data file
 #' @export
 #'
-houseEstPRO <- function(fips, ctyname,curYr, base=10) {
+houseEstPRO <- function(listID,curYr, base=10) {
 
-  fipsN <- as.numeric(fips)
+  
+  # Collecting place ids from  idList, setting default values
+  
+  ctyfips <- listID$ctyNum
+  ctyname <- listID$ctyName
+  placefips <- listID$plNum
+  placename <- listID$plName
+  if(listID$PlFilter == "T") {
+    placefips <- ""
+    placename <- ""
+  }
+  fipsN <- as.numeric(ctyfips)
   state= 0
 
   # create a connection

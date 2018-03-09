@@ -1,9 +1,6 @@
 #' agePlotPRO Creates a Chart comparing The age distribution of a selected place to the state for a simgle year
 #'
-#' @param ctyfips is the numeric ctyfips code for the main area to be compared
-#' @param ctyname is the county place name 
-#' @param placefips is the numeric ctyfips code for the main area to be compared
-#' @param placename is the municipality name from input$unit
+#' @param listID the list containing place id and Place names
 #' @param ACS is the code for the current Americn Ciommunity Survey data set (for municipalities)
 #' @param state is the numeric state code , it defaults to 0 in the county_sya call
 #' @param yrs is the single year value to be extracted by county_sya
@@ -11,7 +8,18 @@
 #' @return ggplot2 graphic and data file
 #' @export
 
-agePlotPRO  <- function(ctyfips, ctyname, placefips, placename, ACS, state=0, yrs, base=10, agegroup="ten") {
+agePlotPRO  <- function(listID, ACS, state=0, yrs, base=10, agegroup="ten") {
+  
+  # Collecting place ids from  idList, setting default values
+  
+  ctyfips <- listID$ctyNum
+  ctyname <- listID$ctyName
+  placefips <- listID$plNum
+  placename <- listID$plName
+  if(listID$PlFilter == "T") {
+    placefips <- ""
+    placename <- ""
+  }
 
   if(nchar(placefips) == 0) { # County data call
     ctyfips <- as.numeric(ctyfips)
@@ -58,7 +66,7 @@ agePlotPRO  <- function(ctyfips, ctyname, placefips, placename, ACS, state=0, yr
                            "Population: Colorado", "Population percentage: Colorado")
   }
 
-  if(nchar(placefips) != 0) { # this is municpal Call from the ACS
+  if(nchar(placefips) != 0) { # this is municipal Call from the ACS
     state <- "08"
     f.place <- codemog_api(data="b01001",db=ACS,geonum=paste("1",state , placefips,sep=""),meta="no")
     f.place[,8:56]=as.numeric(as.character(f.place[,8:56]))

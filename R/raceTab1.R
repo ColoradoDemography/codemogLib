@@ -5,11 +5,7 @@
 #'
 #'    This table does not report MOEs for ACS series, because of the lack of cunsus MOEs...
 #'
-#' @param fips the short FIPS code
-#' @param ctyfips is the fips code for the selected county
-#' @param ctyname is the name of the selected county
-#' @param placefips is the fips code for the selected municipality
-#' @param placename is the name of the selected municipality
+#' @param listID the list containing place id and Place names
 #' @param state is the state that the original fips
 #' @param ACS Specifies the ACS data set to be used, reads curACS from Shiny program
 #' @param oType output type html table or latex table

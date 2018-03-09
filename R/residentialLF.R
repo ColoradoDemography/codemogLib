@@ -4,18 +4,26 @@
 #'     persons age 16 and older.
 #' Plor2: a bar chart comparing forcasted labor force participation for a place and Colorado
 #'
-#' @param fips is the numeric fips code for the main area to be compared
-#' @param ctyname is the cplace name from input$unit
+#' @param listID the list containing place id and Place names
 #' @param base is the abse text size for the ggplot2 object and codemog_theme()
 #' @return ggplot2 graphics and associated data sets
 #' @export
 
-residentialLF <- function(fips, ctyname, base=10){
+residentialLF <- function(listID, base=10){
+  
+  ctyfips <- listID$ctyNum
+  ctyname <- listID$ctyName
+  placefips <- listID$plNum
+  placename <- listID$plName
+  if(listID$PlFilter == "T") {
+    placefips <- ""
+    placename <- ""
+  }
   #fips is the 3-digit character string
 
 
 
-  LFSQLPL <- paste0("SELECT * FROM estimates.labor_force_participation WHERE area_code = ",as.numeric(fips), ";")
+  LFSQLPL <- paste0("SELECT * FROM estimates.labor_force_participation WHERE area_code = ",as.numeric(ctyfips), ";")
   LFSQLST <- paste0("SELECT * FROM estimates.labor_force_participation WHERE area_code = 0;")
 
 

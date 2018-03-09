@@ -8,16 +8,28 @@
 #' 2000 to 2025.
 #' The chart is modified from the original.  Now, we show three bars, one for each series.
 #'
-#' @param fips is the fips code for the county being examined
+#' @param listID the list containing place id and Place names
 #' @param base is the base text size for the ggplot2 object and codemog_theme()
 #' @return ggplot2 graphic and data file
 #' @export
 
-ageForecastPRO=function(fips, stYr, mYr, eYr, base=12, agegroup="ten"){
+ageForecastPRO=function(listID, sYr, mYr, eYr, base=12, agegroup="ten"){
 
-  fips=as.numeric(fips)
+  
+  # Collecting place ids from  idList, setting default values
+  
+  ctyfips <- listID$ctyNum
+  ctyname <- listID$ctyName
+  placefips <- listID$plNum
+  placename <- listID$plName
+  if(listID$PlFilter == "T") {
+    placefips <- ""
+    placename <- ""
+  }
+  
+  fips=as.numeric(ctyfips)
 
-  yrs=c(stYr, mYr, eYr)
+  yrs=c(sYr, mYr, eYr)
 
   d=county_sya(fips, yrs)%>%
     mutate(agecat=age_cat(., "age", groups=agegroup))%>%
@@ -29,7 +41,7 @@ ageForecastPRO=function(fips, stYr, mYr, eYr, base=12, agegroup="ten"){
 
 
   barCol <- c("#82BC00", "#009ADD", "#5C666F")
-  pltTitle <- paste0("Age Forecast: ",stYr," to ",eYr)
+  pltTitle <- paste0("Age Forecast: ",sYr," to ",eYr)
   subTitle <- paste0(as.character(d[1,2]), " County")
   names(d)[3] <- "Year"
   d$Year <- as.factor(d$Year)
@@ -60,7 +72,7 @@ ageForecastPRO=function(fips, stYr, mYr, eYr, base=12, agegroup="ten"){
   #Regrouping Data
 
   dWide <- spread(d, Year, totalpopulation)
-  names(dWide)[4] <- paste0("totalPop_",stYr)
+  names(dWide)[4] <- paste0("totalPop_",sYr)
   names(dWide)[5] <- paste0("totalPop_",mYr)
   names(dWide)[6] <- paste0("totalPop_",eYr)
 

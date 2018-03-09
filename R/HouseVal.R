@@ -2,17 +2,26 @@
 #'     the Median Gross Rent, and Median Costs as a Percentage of Income for
 #'     Owners and Renters for a place and the State of Colorado
 #'
-#' @param ctyfips is the fips code for the selected county
-#' @param ctyname is the name of the selected county
-#' @param placefips is the fips code for the selected municipality
-#' @param placename is the name of the selected municipality
+#' @param listID the list containing place id and Place names
 #' @param ACS Specifies the ACS data set to be used, reads curACS from Shiny program
 #' @param oType output type html table or latex table
 #' @return kable formatted  table and data file
 #' @export
 #'
 
-HouseVal <- function(ctyfips,ctyname, placefips, placename, ACS, oType, state="08"){
+HouseVal <- function(listID, ACS, oType, state="08"){
+  
+  # Collecting place ids from  idList, setting default values
+  
+  ctyfips <- listID$ctyNum
+  ctyname <- listID$ctyName
+  placefips <- listID$plNum
+  placename <- listID$plName
+  if(listID$PlFilter == "T") {
+    placefips <- ""
+    placename <- ""
+  }
+  state <- "08"
 
   # Raw County data Owners
   f.b25077 <- codemog_api(data="b25077", db=ACS, geonum=paste0("1", state, ctyfips),meta="no") # Median Value

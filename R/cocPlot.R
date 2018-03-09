@@ -1,16 +1,26 @@
 #' cocPlot: Components of Change Chart, this is a county-level chart, regardless of output level
 #'
-#' @param  fips numeric, county-level FIPS code  ** will need to extract county level FIPS code in all calls
+#' @param listID the list containing place id and Place names
 #' @param  ctyname County Name string, from input$unit
 #' @param  lyr the last year of the output date range
 #' @return ggplot2 graphic and data file
 #' @export
 
-cocPlot <- function(fips, ctyname,fyr=2000,lyr,base=12) {
+cocPlot <- function(listID,fyr=2000,lyr,base=12) {
 
-  fips <- as.numeric(fips)
+  # Collecting place ids from  idList, setting default values
+  
+  ctyfips <- listID$ctyNum
+  ctyname <- listID$ctyName
+  placefips <- listID$plNum
+  placename <- listID$plName
+  if(listID$PlFilter == "T") {
+    placefips <- ""
+    placename <- ""
+  }  
+  
 
-  f.coccty <- county_profile(as.numeric(fips), fyr:lyr, vars="totalpopulation,births,deaths,netmigration")%>%
+  f.coccty <- county_profile(as.numeric(ctyfips), fyr:lyr, vars="totalpopulation,births,deaths,netmigration")%>%
     mutate( totalpopulation = as.numeric(totalpopulation),
             births=as.numeric(births),
             deaths=as.numeric(deaths),

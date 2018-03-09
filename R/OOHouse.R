@@ -1,17 +1,26 @@
 #' OOHouse Summary table for owner-occupied Housing
 #'
 #'
-#' @param ctyfips is the fips code for the selected county
-#' @param ctyname is the name of the selected county
-#' @param placefips is the fips code for the selected municipality
-#' @param placename is the name of the selected municipality
+#' @param listID the list containing place id and Place names
 #' @param ACS Specifies the ACS data set to be used, reads curACS from Shiny program
 #' @param oType output type html table or latex table
 #' @return kable formatted  table and data file
 #' @export
 #'
 
-OOHouse=function(ctyfips,ctyname, placefips, placename, ACS, oType, state="08"){
+OOHouse=function(listID, ACS, oType, state="08"){
+  
+  # Collecting place ids from  idList, setting default values
+  
+  ctyfips <- listID$ctyNum
+  ctyname <- listID$ctyName
+  placefips <- listID$plNum
+  placename <- listID$plName
+  if(listID$PlFilter == "T") {
+    placefips <- ""
+    placename <- ""
+  }
+  
 if(nchar(placefips) == 0) {
   # Raw Place data
   f.b25033 <- codemog_api(data="b25033", db=ACS, geonum=paste0("1", state, ctyfips),meta="no") # Population by housing type

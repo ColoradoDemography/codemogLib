@@ -5,10 +5,7 @@
 #'  This function pulls data and generates a graph of the income distribution
 #'  for the areas selected based on the ACS
 #'
-#' @param ctyfips The FIPS of the Place or County to use
-#' @param ctyname  the county name
-#' @param placefips The FIPS of municipality
-#' @param placename The Municipality name.
+#' @param listID the list containing place id and Place names
 #' @param ACS  Data set id, eg: for 2015 ACS: "acs1115"
 #' @return ggplot2 graphic and data file
 #' @export

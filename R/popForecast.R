@@ -1,17 +1,27 @@
 #' popForecast Creates a Chart showing population and estmates
 #'
 #'
-#' @param fips is the numeric fips code for the main area to be compared
-#' @param ctyname is the cplace name from input$unit
+#' @param listID the list containing place id and Place names
 #' @param byr is the first year of the series to be extracted by county_sya (min 2000)
 #' @param eyr is the last  year of the series to be extracted by county_sya (max 2050)
 #' @param base is the base text size for the ggplot2 object and codemog_theme()
 #' @return ggplot2 graphic and data file
 #' @export
 
-popForecast <- function(fips, ctyname, byr=2000,eyr=2050, base=10) {
+popForecast <- function(listID, byr=2000,eyr=2050, base=10) {
 
-  fips=as.numeric(fips)
+  # Collecting place ids from  idList, setting default values
+  
+  ctyfips <- listID$ctyNum
+  ctyname <- listID$ctyName
+  placefips <- listID$plNum
+  placename <- listID$plName
+  if(listID$PlFilter == "T") {
+    placefips <- ""
+    placename <- ""
+  }
+  
+  fips=as.numeric(ctyfips)
   yrs <- seq(byr,eyr,2)
   d <- county_sya(fips, yrs) %>%
     group_by(county, datatype, year) %>%

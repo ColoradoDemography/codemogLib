@@ -8,7 +8,7 @@
 #' forecasts).
 #'
 #'
-#' @param fips The County FIPS number (without leading Zeros)
+#' @param listID the list containing place id and Place names
 #' @param beginyear The first year in the timeseries Defaults to 1990.
 #' @param endyear The last year in the timeseries Defaults to 2013.
 #' @param base Base font size.
@@ -17,13 +17,24 @@
 
 
 
-pop_timeseries=function(fips, beginyear=2000,endyear, base=10){
+pop_timeseries=function(listID, beginyear=2000,endyear, base=10){
+  
+  # Collecting place ids from  idList, setting default values
+  
+  ctyfips <- listID$ctyNum
+  ctyname <- listID$ctyName
+  placefips <- listID$plNum
+  placename <- listID$plName
+  if(listID$PlFilter == "T") {
+    placefips <- ""
+    placename <- ""
+  }
 
   # Checking length of fips to idenify municipality data series
-  if(nchar(fips) == 5) {
-    fipsn <- as.numeric(fips)
-    sqlStrPop1 <- paste0("SELECT countyfips, placefips, municipalityname, year, totalpopulation FROM estimates.county_muni_timeseries WHERE (placefips = ",fipsn,") and (year >= ",beginyear,") and (year <= ",endyear,");")
-    # Postgres Call to gather municipal jobs numbers
+  if(nchar(placefips) != 0) {
+    sqlStrPop1 <- paste0("SELECT countyfips, placefips, municipalityname, year, totalpopulation FROM estimates.county_muni_timeseries WHERE (placefips = ",as.numeric(placefips),") 
+                            and (year >= ",beginyear,") and (year <= ",endyear,");")
+    
     pw <- {
       "demography"
     }
@@ -50,9 +61,8 @@ pop_timeseries=function(fips, beginyear=2000,endyear, base=10){
     d$placename <-sub(' \\([P,p]art\\)','',d$municipalityname)
     
    } else { #fips is a county code
-        fipsn=as.numeric(fips)
-      
-        d=county_profile(fipsn, beginyear:endyear, "totalpopulation")%>%
+        
+        d=county_profile(as.numeric(ctyfips), beginyear:endyear, "totalpopulation")%>%
           select(countyfips, county, year, totalPopulation=totalpopulation)
         d$placename <- paste0(d$county, " County")
    }
