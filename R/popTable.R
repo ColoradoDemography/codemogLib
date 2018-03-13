@@ -178,42 +178,40 @@ popTable <- function(listID,sYr,eYr,oType) {
 
   if(oType == "latex") {
     if(nchar(placename) != 0) {
-        OutTab  <- m.OutTab %>%
-          kable(format ="latex", booktabs=TRUE,
-                caption = "Population Growth Rate",
-                row.names=FALSE,
-                align='lrrrrrr',
-                col.names = names_spaced,
-                escape = FALSE) %>%
-          kable_styling(bootstrap_options = "condensed", font_size=10.5) %>%
+      OutTab <- m.OutTab %>%
+        kable(caption="Population Growth Rate",
+              align="lrrrrrr",
+              col.names = names_spaced,
+              format ="latex", booktabs=TRUE) %>%
+        kable_styling(latex_options="HOLD_position") %>%
+        row_spec(0, align="c") %>%
           column_spec(1, width = "0.4in") %>%
-          column_spec(2, width = "0.5in") %>%
-          column_spec(3, width = "0.5in") %>%
-          column_spec(4, width = "0.5in") %>%
-          column_spec(5, width = "0.5in") %>%
-          column_spec(6, width = "0.5in") %>%
-          column_spec(7, width = "0.5in") %>%
+          column_spec(2, width = "0.4in") %>%
+          column_spec(3, width = "0.4in") %>%
+          column_spec(4, width = "0.4in") %>%
+          column_spec(5, width = "0.4in") %>%
+          column_spec(6, width = "0.4in") %>%
+          column_spec(7, width = "0.4in") %>%
           add_header_above(header=tblHead)  %>%
           add_footnote(captionSrc("SDO",""))
      }  else { 
-      OutTab  <- m.OutTab %>%
-        kable(format ="latex", booktabs=TRUE,
-              caption = "Population Growth Rate",
-              row.names=FALSE,
-              align='lrrrr',
-              col.names = names_spaced,
-              escape = FALSE) %>%
-        kable_styling(bootstrap_options = "condensed", font_size=10.5) %>%
+       OutTab <- m.OutTab %>%
+         kable(caption="Population Growth Rates",
+               align="lrrrr",
+               col.names = names_spaced,
+               format ="latex", booktabs=TRUE) %>%
+         kable_styling(latex_options="HOLD_position") %>%
+         row_spec(0, align="c") %>%
         column_spec(1, width = "0.4in") %>%
-        column_spec(2, width = "0.5in") %>%
-        column_spec(3, width = "0.5in") %>%
-        column_spec(4, width = "0.5in") %>%
-        column_spec(5, width = "0.5in") %>%
+        column_spec(2, width = "0.4in") %>%
+        column_spec(3, width = "0.4in") %>%
+        column_spec(4, width = "0.4in") %>%
+        column_spec(5, width = "0.4in") %>%
         add_header_above(header=tblHead)  %>%
         add_footnote(captionSrc("SDO",""))
     }
 
-  outList <- list("table" = outKable)
+  outList <- list("table" = OutTab)
   return(outList)
   }
 

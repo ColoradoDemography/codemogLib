@@ -214,7 +214,7 @@ if(oType == "html") {
             caption="Household Income Source(s)",
             col.names = names_spaced,
             format="latex", booktabs=TRUE)  %>%
-      kable_styling(latex_options=c("scale_down","HOLD_position")) %>%
+      kable_styling(latex_options="HOLD_position") %>%
       row_spec(0, align = "c") %>%
       column_spec(1, width="3in") %>%
       column_spec(2, width="0.75in") %>%

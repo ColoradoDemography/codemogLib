@@ -42,6 +42,7 @@ cocPlot <- function(listID,fyr=2000,lyr,base=12) {
   cocPlt <-  ggplot(data=f.cocLong,aes(x=year, y=Pop, colour=TypeChange)) +
     geom_line() +
     geom_point(aes(x=year, y=Pop, colour=TypeChange, shape=TypeChange),size=2) +
+    geom_hline(yintercept=0, size=1.05) +
     scale_colour_manual("Type of Change", values=c("#82BC00", "#009ADD", "#5C666F")) +
     scale_shape_manual("Type of Change", values=seq(15, 17, 1)) +
     scale_x_continuous(breaks=seq(fyr, lyr, 2)) +

@@ -460,21 +460,18 @@ if(nchar(placefips) == 0) {
       add_header_above(header=tblHead1) %>%
       add_footnote(captionSrc("ACS",ACS))
 
-    outList <- list("table0" = Housing_tab1, "tableR" = Housing_tab2, "data" = f.HouseVal_Fin)
+    outList <- list("OOTab" = Housing_tab1, "RTTab" = Housing_tab2, "data" = f.HouseVal_Fin)
     return(outList)
   }
 
   if(oType == "latex") {
-
-    OOTab <-  kable(m.oocc,
+    Housing_tab1 <-  kable(m.oocc,
                      col.names = names_spaced,
                      align=c("lrrrrr"),
                      caption="Comparison of Housing Values", row.names=FALSE,
                      format="latex", booktabs=TRUE)  %>%
       kable_styling(latex_options="HOLD_position") %>%
       row_spec(0, align = "c") %>%
-      row_spec(1, bold = TRUE, italic = TRUE) %>%
-      row_spec(4, bold = TRUE, italic = TRUE) %>%
       column_spec(1, width = "3in") %>%
       column_spec(2, width = "0.4in") %>%
       column_spec(3, width ="0.4in") %>%
@@ -484,15 +481,13 @@ if(nchar(placefips) == 0) {
       add_header_above(header=tblHead1) %>%
       add_footnote(captionSrc("ACS",ACS))
     
-    RTTab <-  kable(m.rental,
+    Housing_tab2 <-  kable(m.rental,
                     col.names = names_spaced,
                     align=c("lrrrrr"),
                     caption="Comparison of Housing Values", row.names=FALSE,
                     format="latex", booktabs=TRUE)  %>%
       kable_styling(latex_options="HOLD_position") %>%
       row_spec(0, align = "c") %>%
-      row_spec(1, bold = TRUE, italic = TRUE) %>%
-      row_spec(4, bold = TRUE, italic = TRUE) %>%
       column_spec(1, width = "3in") %>%
       column_spec(2, width = "0.4in") %>%
       column_spec(3, width ="0.4in") %>%
@@ -502,7 +497,7 @@ if(nchar(placefips) == 0) {
       add_header_above(header=tblHead1) %>%
       add_footnote(captionSrc("ACS",ACS))
 
-    outList <- list("OOTab" = OOTab, "RTTab" = RTTab)
+    outList <- list("OOTab" = Housing_tab1, "RTTab" = Housing_tab2)
     return(outList)
   }
 }
