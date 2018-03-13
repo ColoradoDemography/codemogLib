@@ -166,8 +166,14 @@ if(nchar(placefips) != 0) {
 
   # Formatting Work Output table.
   names_spaced <- c("Location","Count","Percent")
-  capstr1 <- paste0("Employees in ",ctyname," but living elsewhere")
-  capstr2 <- paste0("Residents of ",ctyname," but working elsewhere")
+  
+  if(nchar(placefips) != 0) {
+  capstr1 <- paste0("Employees in ",placename," living elsewhere")
+  capstr2 <- paste0("Residents of ",placename," working elsewhere")
+  } else {
+    capstr1 <- paste0("Employees in ",ctyname," living elsewhere")
+    capstr2 <- paste0("Residents of ",ctyname," working elsewhere")
+  }
 
   m.work <- as.matrix(f.work_fin)
   m.live <- as.matrix(f.live_fin)
