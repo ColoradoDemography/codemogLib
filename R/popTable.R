@@ -92,7 +92,7 @@ popTable <- function(listID,sYr,eYr,oType) {
       m.OutTab <- m.OutTab[,c(1,3,4,11,10,14,15)]
     }  else {
     m.OutTab <- cbind(mCty,mCO)
-    m.OutTab <- m.OutTab[,c(3,7,6,11,10)] 
+    m.OutTab <- m.OutTab[,c(3,7,6,10,11)] 
     } 
   m.OutTab <- as.matrix(m.OutTab)
   m.OutTab <- gsub("NA%","",m.OutTab)
