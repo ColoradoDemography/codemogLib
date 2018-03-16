@@ -11,7 +11,7 @@
 
 baseIndustries <- function(listID, curyr, oType,base=10){
   
-  
+
   ctyfips <- listID$ctyNum
   ctyname <- listID$ctyName
   placefips <- listID$plNum
@@ -124,8 +124,9 @@ baseIndustries <- function(listID, curyr, oType,base=10){
                   "Other Income" =	"gold2",
                   "Retiree(s)" =	"gold1"
   )
-
-
+  
+  axs <- setAxis(f.jobsBaseFin$prop)
+  
   BaseBars <-  f.jobsBaseFin %>%
     ggplot(aes(x=industry, y=prop, fill=industry), color="black")+
     geom_bar(stat="identity", position="dodge")+
@@ -135,7 +136,7 @@ baseIndustries <- function(listID, curyr, oType,base=10){
               inherit.aes = TRUE) +
     geom_hline(yintercept=0, size=1.05) +
     scale_fill_manual( values = cPallette) +
-    scale_y_continuous(limits=c(0,60), breaks = seq(0,60,by = 10),  label=percent) +
+    scale_y_continuous(limits=c(axs$minBrk,axs$maxBrk), breaks=axs$yBrk,  label=percent) +
     theme_codemog(base_size=base) +
     labs(title = pltTitle,
          subtitle = ctyname,
