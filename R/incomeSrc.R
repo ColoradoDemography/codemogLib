@@ -152,7 +152,7 @@ incomeSrc <- function(level, listID, ACS, oType) {
                        Agg_Income_moe=mincCTot_moe)
   mincCtyHH <- rbind(totRow,mincCtyHH)
   
-  
+
   # Producing final File
   mincCtyF <- mincCtyHH[,c(1,3,4)]
   incCtyFin <- merge(incCtyHH, mincCtyF, by ="ID")

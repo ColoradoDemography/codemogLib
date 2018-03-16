@@ -9,7 +9,7 @@
 #' @return ggplot2 graphics and associated data sets
 #' @export
 
-residentialLF <- function(listID, base=10){
+residentialLF <- function(listID, curyr, base=10){
   
   ctyfips <- listID$ctyNum
   ctyname <- listID$ctyName
@@ -56,6 +56,9 @@ residentialLF <- function(listID, base=10){
     group_by(population_year) %>%
     summarize(LForce = sum(laborforce),
               Pop16P = sum(cni_pop_16pl))
+  
+  f.LFPlaceSum$datatype <-  ifelse(f.LFPlaceSum$population_year > curyr,"Forecast","Estimate")
+ 
 
 
   # Creating 10-year data file
@@ -88,10 +91,10 @@ residentialLF <- function(listID, base=10){
    yBrk <- pretty(minval:maxval, n=5)
 
   LFLine <-  ggplot(data=f.LFPlaceSum) +
-    geom_line(aes(x=population_year, y=Pop16P, colour= "Population 16 +"), size=1.50) +
-    geom_line(aes(x=population_year, y=LForce,color="Labor Force"), size=1.50) +
+    geom_line(aes(x=population_year, y=Pop16P, colour= "Population 16 +",linetype=datatype), size=1.50) +
+    geom_line(aes(x=population_year, y=LForce,color="Labor Force",linetype=datatype), size=1.50) +
     scale_colour_manual(" ", values=c("Labor Force" = "#6EC4E8", "Population 16 +" = "#00953A")) +
-    scale_x_continuous(breaks=seq(2000,2040, 5)) +
+    scale_x_continuous(breaks=seq(2010,2040, 5)) +
     scale_y_continuous(limits=c(minval,maxval), breaks=yBrk, label=comma)+
     theme_codemog(base_size=base)+
     labs(title = pltTitle,
@@ -106,40 +109,13 @@ residentialLF <- function(listID, base=10){
           legend.position= "bottom")
 
 
-  #Building Bar Chart
-  f.LFPlaceSum10$geoname <- ctyname
-  f.LFStateSum10$geoname <- "Colorado"
 
-  f.LFBar <- rbind(f.LFPlaceSum10, f.LFStateSum10)
-  pltTitle <- "Forecast Labor Force Participation Rate\n Persons Age 16 +"
-
-  f.LFBar$geoname <- factor(f.LFBar$geoname, levels=c(ctyname, "Colorado"))
-
-  minPart <- ((min(f.LFBar$PctPart)%/%5) * 5) - 5
-  maxPart <- ((max(f.LFBar$PctPart)%/%5) * 5) + 5
-
-  LFBar <- f.LFBar %>%
-    ggplot(aes(x=year10, y=PctPart, color=geoname))+
-    geom_line(size=1.50) +
-    scale_x_continuous(breaks=seq(2000,2040, 5)) +
-    scale_y_continuous(limits= c(minPart,maxPart),label=percent, expand = c(0, 0))+
-    scale_color_manual(values=c("#6EC4E8","#00953A"), name="Geography") +
-    theme_codemog(base_size=base)+
-    labs(title = pltTitle,
-         subtitle = ctyname,
-         caption = captionSrc("SDO",""),
-         x = "Year",
-         y= "Percentage of Labor Force Participation") +
-    theme(plot.title = element_text(hjust = 0.5, size=18),
-          panel.background = element_rect(fill = "white", colour = "gray50"),
-          panel.grid.major = element_line(colour = "gray80"),
-          axis.text = element_text(size=12),
-          legend.position= "bottom")
 
   # preparing datasets
 
 
   #line data
+
   f.LFPlaceSum$geoname <- ctyname
   f.LFPlaceSum <- f.LFPlaceSum[,c(5,1,2,3)]
 
@@ -148,20 +124,8 @@ residentialLF <- function(listID, base=10){
 
   names(f.LFPlaceSum) <- c("Place","Year", "Persons in Labor Force", "Persons  Age 16 +")
 
-  # BarData
 
-  f.LFBarData <- merge(f.LFPlaceSum10, f.LFStateSum10, by="year10")
-  f.LFBarData <- f.LFBarData[,c(1:4,6:8)]
-  f.LFBarData[,c(2,3)] <- round(f.LFBarData[,c(2,3)])
-  f.LFBarData[,c(5,6)] <- round(f.LFBarData[,c(5,6)])
-
-  f.LFBarData[,4] <- percent(f.LFBarData[,4])
-  f.LFBarData[,7] <- percent(f.LFBarData[,7])
-
-  names(f.LFBarData) <- c("Year",paste0("Persons in Labor Force: ", ctyname), paste0("Persons  Age 16 +: ", ctyname), paste0("Labor Force Participation: ",ctyname),
-                          "Persons in Labor Force: Colorado", "Persons  Age 16 +: Colorado", "Labor Force Participation: Colorado")
-
-  outList <- list("plot1" = LFLine, "data1" = f.LFPlaceSum, "plot2" = LFBar, "data2" = f.LFBarData)
+  outList <- list("plot1" = LFLine, "data1" = f.LFPlaceSum)
 
   return(outList)
 }

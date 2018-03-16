@@ -34,7 +34,7 @@ popForecast <- function(listID, byr=2000,eyr=2050, base=10) {
 
   p=d%>%
     ggplot(aes(x=year, y=round(Tot_pop, digits=0), group=datatype))+
-    geom_line(aes(linetype=datatype), color="#00953A", size=1.75) +
+    geom_line(aes(linetype=datatype), color="#00953A", size=1.5) +
     labs(x="Year", y="Population", title=paste("Population Forecast,", byr, "to", eyr, sep=" "),
          subtitle = ctyname,
          caption = captionSrc("SDO",""))+

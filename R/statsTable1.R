@@ -234,15 +234,15 @@ statsTable1 <- function(listID,sYr,eYr,ACS,oType){
   
   if(oType == "latex") {
     #Revising Rows and Footnotes
-    outTab[1,1] <- paste0("Population (",eYr,")*")
-    outTab[2,1] <- paste0("Population Change (",sYr," to ",eYr, ")*")
-    outTab[3,1] <- paste0("Total Employment (",eYr,")*")
+    outTab[1,1] <- paste0("Population (",eYr,")")
+    outTab[2,1] <- paste0("Population Change (",sYr," to ",eYr, ")")
+    outTab[3,1] <- paste0("Total Employment (",eYr,")")
     outTab[4,1] <- paste0("Median Household Income+")
     outTab[5,1] <- paste0("Median House Value+")
     outTab[6,1] <- paste0("Percentage of Population with Incomes lower than the Poverty Line+")
     outTab[7,1] <- paste0("Percentage of Population Born in Colorado+")
     add_mat <- matrix(nrow=2,ncol=nCol)
-    add_mat[1,1] <- "*Source: State Demography Office"
+    add_mat[1,1] <- "Source: State Demography Office"
     add_mat[2,1] <- paste0("+",captionSrc("ACS",ACS))
     outTab <- rbind(outTab,add_mat)
     

@@ -12,7 +12,7 @@
 
 dashboardMAP <- function(listID,placelist){
   # Collecting place ids from  idList, setting default values
-  
+
   ctyfips <- listID$ctyNum
   ctyname <- listID$ctyName
   placefips <- listID$plNum
@@ -21,8 +21,8 @@ dashboardMAP <- function(listID,placelist){
     placefips <- ""
     placename <- ""
   }
-  
-  ctyfips <- ctyfips[order(ctyfips)]
+ 
+ 
   
   if(nchar(placefips) != 0){
     # create a connection

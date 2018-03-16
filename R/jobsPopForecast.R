@@ -9,7 +9,7 @@
 #' @return ggplot2 graphic, a html or latex table and a dataset
 #' @export
 
-jobsPopForecast <- function(listID, base=10){
+jobsPopForecast <- function(listID, curyr, base=10){
   
   ctyfips <- listID$ctyNum
   ctyname <- listID$ctyName
@@ -68,27 +68,31 @@ jobsPopForecast <- function(listID, base=10){
   f.totalPop$type <- "Population"
 
 
-  x <- as.data.frame(f.totalJobs[,c(3,5,4)])
-  names(x) <- c("year","type","people")
+  x <- as.data.frame(f.totalJobs[,c(3,4)])
+  names(x) <- c("year","Jobs")
 
-  y <- as.data.frame(f.totalPop[,c(1,4,3)])
-  names(y) <- c("year","type","people")
-
-  f.plotdata <- rbind(x,y)
-  f.plotdata <- f.plotdata[which(f.plotdata$year >= 2000 & f.plotdata$year <= 2040),]
-  f.plotdata$type <- factor(f.plotdata$type, c("Jobs","Population"))
+  y <- as.data.frame(f.totalPop[,c(1,3)])
+  names(y) <- c("year","Population")
+  f.plotdata <- merge(x,y,by="year")
+ 
+  f.plotdata$datatype <-  ifelse(f.plotdata$year > curyr,"Forecast","Estimate")
+  
+  
+ 
+  f.plotdata <- f.plotdata[which(f.plotdata$year >= 2010 & f.plotdata$year <= 2040),]
+  
 
   pltTitle <- paste0("Forecast Change in Jobs and Population\n",as.character(min(f.plotdata$year))," to ",as.character(max(f.plotdata$year)))
 
-  axs <- setAxis(f.plotdata$people)
+  axsP <- setAxis(f.plotdata$Population)
+  axsJ <- setAxis(f.plotdata$Jobs)
 
-
-  Plot <- f.plotdata %>%
-    ggplot(aes(x=year, y=people, color=type))+
-    geom_line(size= 1.5)+
-    scale_colour_manual("Estimate", values=c("#6EC4E8", "#00953A")) +
-    scale_y_continuous(limits=c(axs$minBrk,axs$maxBrk), breaks=axs$yBrk, label=comma)+
-    scale_x_continuous(breaks=seq(2000,2040,5),expand = c(0, 0)) +
+  Plot <-  ggplot(data=f.plotdata)+
+    geom_line(aes(x=year, y=Jobs, colour= "Jobs",linetype=datatype), size=1.50) +
+    geom_line(aes(x=year, y=Population,color="Population",linetype=datatype), size=1.50) +
+    scale_colour_manual(" ", values=c("Jobs" = "#6EC4E8", "Population" = "#00953A")) +
+    scale_y_continuous(limits=c(axsJ$minBrk,axsP$maxBrk), label=comma)+
+    scale_x_continuous(breaks=seq(2010,2040, 5)) +
     theme_codemog(base_size=base)+
     labs(title = pltTitle,
          subtitle = ctyname,
@@ -103,16 +107,15 @@ jobsPopForecast <- function(listID, base=10){
 
 
   # producing the table...
-  f.forecastdata <- merge(x,y,by="year")
-  f.forecastdata$geoname <- ctyname
-  f.forecastdata <- f.forecastdata[,c(1,6,3,5)]
-  f.forecastdata <- f.forecastdata[which(f.forecastdata$year >= 2000 & f.forecastdata$year <= 2040),]
-  names(f.forecastdata) <- c("Year","Place","Jobs","Population")
-  f.forecastdata$Jobs <- format(f.forecastdata$Jobs,big.mark=",")
-  f.forecastdata$Population <- format(f.forecastdata$Population,big.mark=",")
+ 
+  f.plotdata$geoname <- ctyname
+  f.plotdata <- f.plotdata[,c(5,1,4,2,3)]
+  names(f.plotdata) <- c("Year","Place","Type", "Jobs","Population")
+  f.plotdata$Jobs <- format(round(f.plotdata$Jobs,digits=0),big.mark=",")
+  f.plotdata$Population <- format(round(f.plotdata$Population,digits=0),big.mark=",")
 
 
-  outList <- list("plot" = Plot, "data" = f.forecastdata)
+  outList <- list("plot" = Plot, "data" = f.plotdata)
 
 
   return(outList)
