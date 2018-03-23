@@ -75,7 +75,7 @@ jobsPopForecast <- function(listID, curyr, base=10){
   names(y) <- c("year","Population")
   f.plotdata <- merge(x,y,by="year")
  
-  f.plotdata$datatype <-  ifelse(f.plotdata$year > curyr,"Forecast","Estimate")
+  f.plotdata$Series <-  ifelse(f.plotdata$year > curyr,"Forecast","Estimate")
   
   
  
@@ -88,8 +88,8 @@ jobsPopForecast <- function(listID, curyr, base=10){
   axsJ <- setAxis(f.plotdata$Jobs)
 
   Plot <-  ggplot(data=f.plotdata)+
-    geom_line(aes(x=year, y=Jobs, colour= "Jobs",linetype=datatype), size=1.50) +
-    geom_line(aes(x=year, y=Population,color="Population",linetype=datatype), size=1.50) +
+    geom_line(aes(x=year, y=Jobs, colour= "Jobs", linetype=Series),  size=1.50) +
+    geom_line(aes(x=year, y=Population,color="Population", linetype=Series), size=1.50) +
     scale_colour_manual(" ", values=c("Jobs" = "#6EC4E8", "Population" = "#00953A")) +
     scale_y_continuous(limits=c(axsJ$minBrk,axsP$maxBrk), label=comma)+
     scale_x_continuous(breaks=seq(2010,2040, 5)) +
@@ -114,8 +114,13 @@ jobsPopForecast <- function(listID, curyr, base=10){
   f.plotdata$Jobs <- format(round(f.plotdata$Jobs,digits=0),big.mark=",")
   f.plotdata$Population <- format(round(f.plotdata$Population,digits=0),big.mark=",")
 
-
-  outList <- list("plot" = Plot, "data" = f.plotdata)
+#Text
+  OutText <- paste0("The total jobs forecast and population forecast are shown here.")
+  OutText <- paste0(OutText,"  The two lines diverge over time due to the aging of our population and continued growth in our under 18 population – two segments of the population that are less likely to be employed.")
+  OutText <- paste0(OutText," Growth in the 65 plus population in the labor force through 2040 compared to the universe population of those over the age of 16 since labor force participation declines with age,")
+  OutText <- paste0(OutText," especially among those eligible for pensions or social security.")
+  
+  outList <- list("plot" = Plot, "data" = f.plotdata,"text" = OutText)
 
 
   return(outList)

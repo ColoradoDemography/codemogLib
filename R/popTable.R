@@ -10,7 +10,7 @@
 popTable <- function(listID,sYr,eYr,oType) {
   
   # Collecting place ids from  idList, setting default values
-
+  
   ctyfips <- listID$ctyNum
   ctyname <- listID$ctyName
   placefips <- listID$plNum
@@ -20,7 +20,7 @@ popTable <- function(listID,sYr,eYr,oType) {
     placename <- ""
   }
   #outputs the Population Growth Rate table in the population section..
-
+  
   state <- "Colorado"
   ctynum <- as.numeric(ctyfips)
   placenum <- as.numeric(placefips)
@@ -38,17 +38,17 @@ popTable <- function(listID,sYr,eYr,oType) {
   
   #County Population and Growth Rate  *** need to account for multip county communities...
   mCty <- county_profile(ctynum, sYr:eYr, "totalpopulation")%>%
-     filter(year %in% yrs)%>%
-     arrange(county,year)%>%
-     mutate(name=county,
-            year=as.numeric(year),
-            totalpopulation=as.numeric(totalpopulation),
-            growthRate=percent(signif((((totalpopulation/lag(totalpopulation))^(1/(year-lag(year)))) -1)*100),digits=2),
-            Population=comma(totalpopulation))
-
+    filter(year %in% yrs)%>%
+    arrange(county,year)%>%
+    mutate(name=county,
+           year=as.numeric(year),
+           totalpopulation=as.numeric(totalpopulation),
+           growthRate=percent(signif((((totalpopulation/lag(totalpopulation))^(1/(year-lag(year)))) -1)*100),digits=2),
+           Population=comma(totalpopulation))
   
   
-
+  
+  
   
   if(nchar(placename) != 0) { #if a placename is present
     sqlStrPop1 <- paste0("SELECT countyfips, placefips, municipalityname, year, totalpopulation FROM estimates.county_muni_timeseries WHERE placefips = ",placenum,";")
@@ -73,65 +73,65 @@ popTable <- function(listID,sYr,eYr,oType) {
     dbUnloadDriver(drv)
     rm(con)
     rm(drv)
- 
-     f.popPlace <- f.popPlace[which(f.popPlace$countyfips != 999), ]  # removing "Total" for multi-county cities
-     PP <-  f.popPlace %>% group_by(placefips, municipalityname, year)  %>% summarize(totalpopulation = sum(as.numeric(totalpopulation)))
-     
-     placX <- PP %>% 
+    
+    f.popPlace <- f.popPlace[which(f.popPlace$countyfips != 999), ]  # removing "Total" for multi-county cities
+    PP <-  f.popPlace %>% group_by(placefips, municipalityname, year)  %>% summarize(totalpopulation = sum(as.numeric(totalpopulation)))
+    
+    placX <- PP %>% 
       filter(year %in% yrs)%>%
       arrange(year)
-     
-     placX$Population <- format(placX$totalpopulation,big.mark=",")
-     placX$growthRate  <- percent((((placX$totalpopulation/lag(placX$totalpopulation))^(1/(placX$year-lag(placX$year)))) -1)*100,digits=2)
-     mPlace <- as.matrix(placX[,c(3,2,5,6)])
+    
+    placX$Population <- format(placX$totalpopulation,big.mark=",")
+    placX$growthRate  <- percent((((placX$totalpopulation/lag(placX$totalpopulation))^(1/(placX$year-lag(placX$year)))) -1)*100,digits=2)
+    mPlace <- as.matrix(placX[,c(3,2,5,6)])
   }
- 
-
+  
+  
   if(nchar(placename) != 0) { #if a placename is present
     m.OutTab <- cbind(mPlace,mCty,mCO)
-      m.OutTab <- m.OutTab[,c(1,3,4,11,10,14,15)]
-    }  else {
+    m.OutTab <- m.OutTab[,c(1,3,4,11,10,14,15)]
+  }  else {
     m.OutTab <- cbind(mCty,mCO)
     m.OutTab <- m.OutTab[,c(3,7,6,10,11)] 
-    } 
+  } 
   m.OutTab <- as.matrix(m.OutTab)
   m.OutTab <- gsub("NA%","",m.OutTab)
-
+  
   if(nchar(placename) != 0) {
-        names_spaced <- c("Year","Population","Annual Growth Rate","Population","Annual Growth Rate","Population","Annual Growth Rate") 
-        tblHead <- c(" " = 1, placename = 2, ctyname = 2, state = 2)
-        names(tblHead) <- c(" ", placename, ctyname,state)
-   } else {
-    names_spaced <- c("Year","Population","Annual Growth Rate","Population","Annual Growth Rate")
+    names_spaced <- c("Year","Population","Growth Rate","Population","Growth Rate","Population","Growth Rate") 
+    tblHead <- c(" " = 1, placename = 2, ctyname = 2, state = 2)
+    names(tblHead) <- c(" ", placename, ctyname,state)
+  } else {
+    names_spaced <- c("Year","Population","Growth Rate","Population","Growth Rate")
     tblHead <- c(" " = 1, ctyname = 2, state = 2)
     names(tblHead) <- c(" ", ctyname,state)
   }
   
   
-
-
- 
-
+  
+  
+  
+  
   if(oType == "html") {
     # Creating Final Table (kable)
     if(nchar(placename) != 0) {
-            OutTab  <- m.OutTab %>%
-              kable(format='html', table.attr='class="myTable"',
-                    caption = "Population Growth Rate",
-                    row.names=FALSE,
-                    align='lrrrrrr',
-                    col.names = names_spaced,
-                    escape = FALSE) %>%
-              kable_styling(bootstrap_options = "condensed") %>%
-              column_spec(1, width = "0.4in") %>%
-              column_spec(2, width = "0.5in") %>%
-              column_spec(3, width ="0.5in") %>%
-              column_spec(4, width = "0.5in") %>%
-              column_spec(5, width = "0.5in") %>%
-              column_spec(6, width = "0.5in") %>%
-              column_spec(7, width = "0.5in") %>%
-              add_header_above(header=tblHead)  %>%
-              add_footnote(captionSrc("SDO",""))
+      OutTab  <- m.OutTab %>%
+        kable(format='html', table.attr='class="myTable"',
+              caption = "Population Growth Rate",
+              row.names=FALSE,
+              align='lrrrrrr',
+              col.names = names_spaced,
+              escape = FALSE) %>%
+        kable_styling(bootstrap_options = "condensed") %>%
+        column_spec(1, width = "0.4in") %>%
+        column_spec(2, width = "0.5in") %>%
+        column_spec(3, width ="0.5in") %>%
+        column_spec(4, width = "0.5in") %>%
+        column_spec(5, width = "0.5in") %>%
+        column_spec(6, width = "0.5in") %>%
+        column_spec(7, width = "0.5in") %>%
+        add_header_above(header=tblHead)  %>%
+        add_footnote(captionSrc("SDO",""))
     }  else { 
       OutTab  <- m.OutTab %>%
         kable(format='html', table.attr='class="myTable"',
@@ -168,51 +168,88 @@ popTable <- function(listID,sYr,eYr,oType) {
                          "Population: Colorado","Growth Rate: Colorado")
     }
     
-
+    
     # bind list
     outList <- list("table" = OutTab,"data" = f.Out2)
-
+    
     return(outList)
   }
-
-
+  
   if(oType == "latex") {
     if(nchar(placename) != 0) {
       OutTab <- m.OutTab %>%
-        kable(caption="Population Growth Rate",
+        kable(digits=1,
+              row.names=FALSE,
               align="lrrrrrr",
               col.names = names_spaced,
+              caption="Population Growth Rate",
               format ="latex", booktabs=TRUE) %>%
-        kable_styling(latex_options="HOLD_position") %>%
+        kable_styling(latex_options="HOLD_position",font_size=9) %>%
         row_spec(0, align="c") %>%
-          column_spec(1, width = "0.4in") %>%
-          column_spec(2, width = "0.4in") %>%
-          column_spec(3, width = "0.4in") %>%
-          column_spec(4, width = "0.4in") %>%
-          column_spec(5, width = "0.4in") %>%
-          column_spec(6, width = "0.4in") %>%
-          column_spec(7, width = "0.4in") %>%
-          add_header_above(header=tblHead)  %>%
-          add_footnote(captionSrc("SDO",""))
-     }  else { 
-       OutTab <- m.OutTab %>%
-         kable(caption="Population Growth Rates",
-               align="lrrrr",
-               col.names = names_spaced,
-               format ="latex", booktabs=TRUE) %>%
-         kable_styling(latex_options="HOLD_position") %>%
-         row_spec(0, align="c") %>%
-        column_spec(1, width = "0.4in") %>%
-        column_spec(2, width = "0.4in") %>%
-        column_spec(3, width = "0.4in") %>%
-        column_spec(4, width = "0.4in") %>%
-        column_spec(5, width = "0.4in") %>%
+        column_spec(column=1:7, width="0.5in") %>%
+        add_header_above(header=tblHead)  %>%
+        add_footnote(captionSrc("SDO",""))
+    }  else { 
+      OutTab <- m.OutTab %>%
+        kable(digits=1,
+              row.names=FALSE,
+              align="lrrrr",
+              col.names = names_spaced,
+              caption="Population Growth Rate",
+              format ="latex", booktabs=TRUE) %>%
+        kable_styling(latex_options="HOLD_position",font_size=9) %>%
+        row_spec(0, align="c") %>%
+        column_spec(column=1:5, width="0.5in") %>%
         add_header_above(header=tblHead)  %>%
         add_footnote(captionSrc("SDO",""))
     }
-
-  outList <- list("table" = OutTab)
-  return(outList)
+    
+    # Building text
+    RowN <- nrow(m.OutTab)
+    prevYr <- m.OutTab[RowN-1,1]
+    if(nchar(placename) != 0) {#Municipalities/Places
+      OutTxt_pl <- paste0("At the end of ",eYr, " the estimated population of ",placename, " was ", m.OutTab[RowN,2],", ")
+      PopChgVal_pl <- as.numeric(gsub(",","",m.OutTab[RowN,2])) - as.numeric(gsub(",","",m.OutTab[RowN-1,2]))
+      PopChgFmt_pl <- format(PopChgVal_pl,big.mark=",")
+      PopChgTxt_pl <-  ifelse(PopChgVal_pl > 0, paste0("an increase of ",PopChgFmt_pl," over the population in ",prevYr,"."),
+                              ifelse(PopChgVal_pl < 0, paste0("a decrease of ",PopChgFmt_pl," over the population in ",prevYr,"."),paste0("did not change between ",prevYr, " and ",eYr,".")
+                              ))
+      
+      OutTxt_cty <- paste0("  During this same period, the population of ",ctyname)
+      PopChgVal_cty <- as.numeric(gsub(",","",m.OutTab[RowN,4])) - as.numeric(gsub(",","",m.OutTab[RowN-1,4]))
+      PopChgFmt_cty <- format(PopChgVal_cty,big.mark=",")
+      PopChgTxt_cty <-  ifelse(PopChgVal_cty > 0, paste0(" increased by ",PopChgFmt_cty,"."),
+                               ifelse(PopChgVal_cty < 0, paste0("decreased by ",PopChgFmt_cty,"."),"remained the same, while "))
+      
+      OutTxt_st <- paste0(" and  the population of Colorado")
+      PopChgVal_st <- as.numeric(gsub(",","",m.OutTab[RowN,6])) - as.numeric(gsub(",","",m.OutTab[RowN-1,6]))
+      PopChgFmt_st <- format(PopChgVal_st,big.mark=",")
+      PopChgTxt_st <-  ifelse(PopChgVal_st > 0, paste0(" increased by ",PopChgFmt_st,"."),
+                              ifelse(PopChgVal_st < 0, paste0("decreased by ",PopChgFmt_st,"."),paste0("remained the same.")
+                              ))
+      
+      
+      outText <- paste0(OutTxt_pl, PopChgTxt_pl,OutTxt_cty,PopChgTxt_cty,OutTxt_st,PopChgTxt_st)
+    } else {
+      OutTxt_cty <- paste0("At the end of ",eYr, " the estimated population of ",ctyname, " was ", m.OutTab[RowN,2],",")
+      PopChgVal_cty <- as.numeric(gsub(",","",m.OutTab[RowN,2])) - as.numeric(gsub(",","",m.OutTab[RowN-1,2]))
+      PopChgFmt_cty <- format(PopChgVal_cty,big.mark=",")
+      PopChgTxt_cty <-  ifelse(PopChgVal_cty > 0, paste0("an increase of ",PopChgFmt_cty," over the population in ",prevYr,"."),
+                               ifelse(PopChgVal_cty < 0, paste0("a decrease of ",PopChgFmt_cty," over the population in ",prevYr,"."),paste0("did not change between ",prevYr, " and ",eYr,".")
+                               ))
+      
+      OutTxt_st <- paste0(" the population of Colorado")
+      PopChgVal_st <- as.numeric(gsub(",","",m.OutTab[RowN,4])) - as.numeric(gsub(",","",m.OutTab[RowN-1,4]))
+      PopChgFmt_st <- format(PopChgVal_st,big.mark=",")
+      PopChgTxt_st <-  ifelse(PopChgVal_st > 0, paste0(" increased by ",PopChgFmt_st,"."),
+                              ifelse(PopChgVal_st < 0, paste0("decreased by ",PopChgFmt_st,"."),paste0("remained the same.")
+                              ))
+      
+      
+      outText <- paste0(OutTxt_cty,PopChgTxt_cty,OutTxt_st,PopChgTxt_st)    }
+    
+    outlist <- list("table" = OutTab, "text" = outText)
+    return(outlist)
   }
-
+  
 }

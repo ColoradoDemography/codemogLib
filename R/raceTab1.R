@@ -285,18 +285,25 @@ if(nchar(placefips) == 0) { # output county table
      tabOut <- kable(m.race, col.names = names_spaced,
                     caption="Race Trend", row.names=FALSE, align=c("l",rep("r",3)),
                     format="latex", booktabs=TRUE)  %>%
-       kable_styling(latex_options="HOLD_position") %>%
+       kable_styling(latex_options="scale_down",font_size = 10) %>%
       row_spec(0, align = "c") %>%
-      column_spec(1, width="4in") %>%
-      column_spec(2, width="0.5in") %>%
-      column_spec(3, width="0.5in") %>%
-      column_spec(4, width="0.5in") %>%
       add_indent(c(3:9)) %>%
       add_header_above(header=tblHead) %>%
       add_footnote(c("Source; 2000 Census",
                      "Source: 2010 Census",
                      captionSrc("ACS",ACS)),
                    notation = "symbol")
-     return(tabOut)
+     
+     #Preparing Text
+     if(nchar(placefips) == 0) {
+       OutText <- paste0("The Race Trend table shows the changing racial and ethnic composition of ",ctyname," beginning in 2000 and continuing to the present.")
+     } else {
+       OutText <- paste0("The Race Trend table shows the changing racial and ethnic composition of ",placename," beginning in 2000 and continuing to the present.")
+     }
+     OutText <- paste0(OutText, " For Colorado as a whole, a growing Hispanic population is increasing the racial and ethnic diversity in the state.")
+     
+     outList <- list("table" = tabOut,"text" = OutText)
+     return(outList)
   }
 }
+

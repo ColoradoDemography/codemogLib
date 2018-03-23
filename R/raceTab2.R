@@ -236,7 +236,7 @@ if(nchar(placefips) == 0){
 
   #Column Names
 
-  names_spaced <- c("Race","Percentage","Margin of Error","Percentage","Margin of Error","Sig. Diff.?")
+  names_spaced <- c("Race","Percentage","MOE","Percentage","MOE","Sig. Diff.?")
 
 
 
@@ -267,16 +267,16 @@ if(nchar(placefips) == 0){
   if(nchar(placefips) == 0) {
   names(race_data)[1] <- "Race Category"
   names(race_data)[2] <- paste0("Percentage: ",ctyname)
-  names(race_data)[3] <- paste0("Margin of Error: ",ctyname)
+  names(race_data)[3] <- paste0("MOE: ",ctyname)
   names(race_data)[4] <- "Percentage: Colorado"
-  names(race_data)[5] <- "Margin of Error: Colorado"
+  names(race_data)[5] <- "MOE: Colorado"
   names(race_data)[6] <- "Signficant Difference?"
   } else {
     names(race_data)[1] <- "Race Category"
     names(race_data)[2] <- paste0("Percentage: ",placename)
-    names(race_data)[3] <- paste0("Margin of Error: ",placename)
+    names(race_data)[3] <- paste0("MOE: ",placename)
     names(race_data)[4] <- paste0("Percentage: ",ctyname)
-    names(race_data)[5] <- paste0("Margin of Error: ",ctyname)
+    names(race_data)[5] <- paste0("MOE: ",ctyname)
     names(race_data)[6] <- "Signficant Difference?"  
   }
 
@@ -289,21 +289,23 @@ if(nchar(placefips) == 0){
   if(oType == "latex") {
     tabOut <- m.race %>% kable(
                     col.names = names_spaced,
-                    align=c("l",rep("r",5)),
+                    align="lrrrrr",
                     caption="Race Comparison", row.names=FALSE,
                     format="latex", booktabs=TRUE)  %>%
-      kable_styling(latex_options="HOLD_position") %>%
+      kable_styling(latex_options="scale_down",font_size=10) %>%
       row_spec(0, align = "c") %>%
-      column_spec(1, width = "2.5in") %>%
-      column_spec(2, width = "0.4in") %>%
-      column_spec(3, width ="0.4in") %>%
-      column_spec(4, width ="0.4in") %>%
-      column_spec(5, width ="0.4in") %>%
-      column_spec(6, width ="0.4in") %>%
       add_indent(c(3:9)) %>%
       add_header_above(header=tblHead) %>%
       add_footnote(captionSrc("ACS",ACS))
 
-    return(tabOut)
+    #Preparing Text
+    if(nchar(placefips) == 0) {
+      OutText <- paste0("The Race Compaison table compares the distriburion of ethnic/racial groups in ",ctyname," to the state.")
+    } else {
+      OutText <- paste0("The Race Compaison table compares the distriburion of ethnic/racial groups in ",placename," to ",ctyname, ".")
+    }
+
+    outList <- list("table" = tabOut,"text" = OutText)
+    return(outList)
   }
 }

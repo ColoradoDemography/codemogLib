@@ -146,8 +146,15 @@ jobsByIndustry <- function(listID, curyr, base=10){
   f.jobsFin <- f.jobsFin[order(f.jobsFin$sector_id),]
   f.jobsFin <- f.jobsFin[,c(2,4,5)]
   names(f.jobsFin) <- c("Job Sector", paste0("Number of Jobs: ",ctyname), paste0("Percentage of Jobs: ",ctyname))
-
-  outList <- list("plot" = p.jobs,"data"= f.jobsFin)
+  
+  #Building Text
+  OutText <- paste0("This plot shows the jobs by industry profile for ",ctyname,".")
+  OutText <- paste0(OutText,"  The relative rank of high-paying sectors, such as mining, information and finacial and insurance services")
+  OutText <- paste0(OutText," versus mid-range jobs (e.g., contsruction, health casre and government)")
+  OutText <- paste0(OutText,"  and lower-paying industrices such as retail trade and accomodation and food services,")
+  OutText <- paste0(OutText,"  will have an impact on a counties' overall economic health.") 
+  
+  outList <- list("plot" = p.jobs,"data"= f.jobsFin,"text" = OutText)
   return(outList)
 
 }

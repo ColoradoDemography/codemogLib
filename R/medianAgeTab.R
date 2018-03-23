@@ -101,9 +101,9 @@ medianAgeTab <- function(listID, ACS, oType, state="08"){
 
   #Column Names
   if(nchar(placename) == 0)  {
-    names_spaced <- c("Gender","Median Age","Margin of Error","Median Age","Margin of Error","Signficant Difference?","Difference from State")
+    names_spaced <- c("Gender","Median Age","MOE","Median Age","MOE","Signficant Difference?","Difference from State")
   } else {
-    names_spaced <- c("Gender","Median Age","Margin of Error","Median Age","Margin of Error","Signficant Difference?","Difference from County")
+    names_spaced <- c("Gender","Median Age","MOE","Median Age","MOE","Signficant Difference?","Difference from County")
   }
   #Span Header
   if(nchar(placefips) == 0) {
@@ -128,7 +128,7 @@ medianAgeTab <- function(listID, ACS, oType, state="08"){
           caption="Median Age by Gender  Comparison",
           col.names = names_spaced,
           escape = FALSE)  %>%
-    kable_styling(bootstrap_options = "condensed",full_width = F,font_size = 12) %>%
+    kable_styling(bootstrap_options = "condensed",full_width = F,font_size = 10) %>%
     row_spec(0, align = "c") %>%
     column_spec(1, width = "0.5in") %>%
     column_spec(2, width = "0.75in") %>%
@@ -144,11 +144,11 @@ medianAgeTab <- function(listID, ACS, oType, state="08"){
   f.ageTab2 <- f.ageTab[,c(1:5,7,8)]
   
 if(nchar(placename) == 0)  {
-  names(f.ageTab2) <- c("Gender", paste0("Median Age: ",ctyname), paste0("Margin of Error: ",ctyname),
-                        "Median Age: Colorado", "Margin of Error: Colorado", "Sig. Difference","Difference from State")
+  names(f.ageTab2) <- c("Gender", paste0("Median Age: ",ctyname), paste0("MOE: ",ctyname),
+                        "Median Age: Colorado", "MOE: Colorado", "Sig. Difference","Difference from State")
 } else {
-  names(f.ageTab2) <- c("Gender", paste0("Median Age: ",placename), paste0("Margin of Error: ",placename),
-                        paste0("Median Age: ",ctyname), paste0("Margin of Error: ",ctyname), "Sig. Difference","Difference from County")
+  names(f.ageTab2) <- c("Gender", paste0("Median Age: ",placename), paste0("MOE: ",placename),
+                        paste0("Median Age: ",ctyname), paste0("MOE: ",ctyname), "Sig. Difference","Difference from County")
 }
   
 
@@ -160,17 +160,12 @@ if(nchar(placename) == 0)  {
 
   tabOut <- m.ageTab %>% kable(digits=1,
                   row.names=FALSE,
+                  col.names = names_spaced,
                   align='lrrrrrr',
-                  caption="Median Age by Gender Comparison",  format="latex", booktabs=TRUE,
-                  col.names = names_spaced)  %>%
-    kable_styling(latex_options="HOLD_position") %>%
-    column_spec(1, width = "0.5in") %>%
-    column_spec(2, width = "0.75in") %>%
-    column_spec(3, width = "0.75in") %>%
-    column_spec(4, width = "0.75in") %>%
-    column_spec(5, width = "0.75in") %>%
-    column_spec(6, width = "1in") %>%
-    column_spec(7, width = "0.75in") %>%
+                  caption="Median Age by Gender Comparison",  
+                  format="latex", booktabs=TRUE)  %>%
+    kable_styling(latex_options="HOLD_position",font_size=10)  %>%
+    row_spec(0, align="c") %>%
     add_header_above(header=tblHead) %>%
     add_footnote(captionSrc("ACS",ACS))
 
@@ -206,22 +201,22 @@ if(nchar(placename) == 0)  {
   }
   } else {
     if(sDiffa == "Yes" & sDiffm == "Yes" && sDifff == "Yes") {
-      medText <- paste0("The median age of ",ctyname," is ",round(dval,digits=1)," years ",diffDira," than the county.")
-      medText <- paste0(medText, " Women in ",ctyname," are significantly ",diffDirf, " than women in the county and men in ",ctyname," are significantly ",diffDirm," than men in the county.")
+      medText <- paste0("The median age of ",placename," is ",round(dval,digits=1)," years ",diffDira," than ", ctyname,".")
+      medText <- paste0(medText, " Women in ",placename," are significantly ",diffDirf, " than women in ",ctyname," and men in ",placename," are significantly ",diffDirm," than men in ",ctyname,".")
     }
     
     if(sDiffa == "Yes" & sDiffm == "No" && sDifff == "Yes") {
-      medText <- paste0("The median age of ",ctyname," is ",round(dval,digits=1)," years ",diffDira," than the county.")
-      medText <- paste0(medText, " Women in ",ctyname," are significantly ", diffDirf," than women in the county but men are not sigificnatly older or younger than men in the county.")
+      medText <- paste0("The median age of ",placename," is ",round(dval,digits=1)," years ",diffDira," than ", ctyname,".")
+      medText <- paste0(medText, " Women in ",placename," are significantly ", diffDirf," than women in ", ctyname," but men are not sigificnatly older or younger than men in the county.")
     }
     
     if(sDiffa == "Yes" & sDiffm == "Yes" && sDifff == "No") {
-      medText <- paste0("The median age of ",ctyname," is ",round(dval,digits=1)," years ",diffDira," than the county.")
-      medText <- paste0(medText, " Women are not significantly older or younger than women in the county but men in ",ctyname," are significantly ",diffDirm," than men in the county.")
+      medText <- paste0("The median age of ",placename," is ",round(dval,digits=1)," years ",diffDira," than the county.")
+      medText <- paste0(medText, " Women are not significantly older or younger than women in ", ctyname," but men in ",placename," are significantly ",diffDirm," than men in the county.")
     }
     
     if(sDiffa == "No" & sDiffm == "No" && sDifff == "No") {
-      medText <- paste0("The median age of ",ctyname," is not significantly different than population of the county.")
+      medText <- paste0(" The median age of ",placename," is not significantly different than population of ",ctyname,".")
     }
    }
   outList <- list("table" = tabOut, "text" = medText)

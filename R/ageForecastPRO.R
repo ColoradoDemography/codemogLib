@@ -81,9 +81,16 @@ ageForecastPRO=function(listID, sYr, mYr, eYr, base=12, agegroup="ten"){
   dWide[6] <- round(dWide[6], digits = 0)
 
   dWide$county <- paste0(dWide$county," County")
+  
+  
+  # Generating text
+    OutText <- paste0("The changing age distribution of the population of ",ctyname," for the period from 2010 through 2025 is shoen here.")
+
+  OutText <- paste0(OutText,"  The changes in proporion of different groups can highligh the need for future planning and service provision.")
+  
 
   #binding List
-  outList <- list("plot"= p, "data" = dWide)
+  outList <- list("plot"= p, "data" = dWide, "text" = OutText)
 
   return(outList)
 }

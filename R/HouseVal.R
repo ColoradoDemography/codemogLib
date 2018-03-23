@@ -1,4 +1,4 @@
-#' HouseVal Table Showing the Median House value for Owner-occupied housing,
+#' HouseVal Table Showing the Median House value for Owner-Occupied housing,
 #'     the Median Gross Rent, and Median Costs as a Percentage of Income for
 #'     Owners and Renters for a place and the State of Colorado
 #'
@@ -381,9 +381,9 @@ m.rental[1,1] <- "Median Gross Rent of Rental Housholds (Current Dollars)"
 m.rental[2,1] <- "Percentage of Rental Households paying 30-49% of income on housing"
 m.rental[3,1] <- "Percentage of Rental Households paying 50% or more of income on housing"
 
-m.oocc[1.1] <- "Median Value of owner-Occupied Households (Current Dollars)"
-m.oocc[2,1] <- "Percentage of owner-occupied households paying 30-49% of income on housing"
-m.oocc[3,1] <- "Percentage of owner-occupied households paying 50% or more of income on rent"
+m.oocc[1.1] <- "Median Value of Owner-Occupied Households (Current Dollars)"
+m.oocc[2,1] <- "Percentage of Owner-Occupied Households paying 30-49% of income on housing"
+m.oocc[3,1] <- "Percentage of Owner-Occupied Households paying 50% or more of income on housing"
 
 #formatting values
 m.rental[1,2:5] <- paste0("$",formatC(as.numeric(m.rental[1,2:5]),format="f",digits=0,big.mark=","))
@@ -395,18 +395,18 @@ f.HouseVal_Fin <- as.data.frame(m.FinTab)
 
 
 if(nchar(placefips) == 0) {
-  names(f.HouseVal_Fin) <- c("Variable",paste0("Value: ",ctyname), paste0("Margin of Error: ",ctyname),
-                             paste0("Value: Colorado"), paste0("Margin of Error: Colorado"), "Siginficant Difference?")
+  names(f.HouseVal_Fin) <- c("Variable",paste0("Value: ",ctyname), paste0("MOE: ",ctyname),
+                             paste0("Value: Colorado"), paste0("MOE: Colorado"), "Siginficant Difference?")
 } else {
-  names(f.HouseVal_Fin) <- c("Variable",paste0("Value: ",placename), paste0("Margin of Error: ",placename),
-                             paste0("Value: ",ctyname), paste0("Margin of Error: ",ctyname), "Siginficant Difference?")
+  names(f.HouseVal_Fin) <- c("Variable",paste0("Value: ",placename), paste0("MOE: ",placename),
+                             paste0("Value: ",ctyname), paste0("MOE: ",ctyname), "Siginficant Difference?")
   
 }
 
   # Setting up table
 
   #Column Names
-  names_spaced <- c("Variable","Value","Margin of Error","Value","Margin of Error","Sig. Diff.?")
+  names_spaced <- c("Variable","Value","MOE","Value","MOE","Sig. Diff.?")
   #Span Header
 
   # create vector with colspan
@@ -427,36 +427,28 @@ if(nchar(placefips) == 0) {
     Housing_tab1 <- m.oocc %>%
       kable(format='html', table.attr='class="cleanTable"',
             row.names=FALSE,
-            align='lrrrrrr',
+            align='lrrrrr',
             caption="Comparative Owner-Occupied Housing Values",
             col.names = names_spaced,
             escape = FALSE)  %>%
       kable_styling(bootstrap_options = "condensed",full_width = F,font_size=11) %>%
       row_spec(0, align = "c") %>%
       column_spec(1, width = "3in") %>%
-      column_spec(2, width = "0.4in") %>%
-      column_spec(3, width ="0.4in") %>%
-      column_spec(4, width ="0.4in") %>%
-      column_spec(5, width ="0.4in") %>%
-      column_spec(6, width ="0.4in") %>%
+      column_spec(column=2:6, width = "0.33in") %>%
       add_header_above(header=tblHead1) %>%
       add_footnote(captionSrc("ACS",ACS))
 
     Housing_tab2 <- m.rental %>%
       kable(format='html', table.attr='class="cleanTable"',
             row.names=FALSE,
-            align='lrrrrrr',
+            align='lrrrrr',
             caption="Comparative Rental Housing Values",
             col.names = names_spaced,
             escape = FALSE)  %>%
       kable_styling(bootstrap_options = "condensed",full_width = F,font_size=11) %>%
       row_spec(0, align = "c") %>%
       column_spec(1, width = "3in") %>%
-      column_spec(2, width = "0.4in") %>%
-      column_spec(3, width ="0.4in") %>%
-      column_spec(4, width ="0.4in") %>%
-      column_spec(5, width ="0.4in") %>%
-      column_spec(6, width ="0.4in") %>%
+      column_spec(2:6, width = "0.33in") %>%
       add_header_above(header=tblHead1) %>%
       add_footnote(captionSrc("ACS",ACS))
 
@@ -468,32 +460,22 @@ if(nchar(placefips) == 0) {
     Housing_tab1 <-  kable(m.oocc,
                      col.names = names_spaced,
                      align=c("lrrrrr"),
-                     caption="Comparison of Housing Values", row.names=FALSE,
+                     caption="Comparison of Owner-Occupied Housing Values", row.names=FALSE,
                      format="latex", booktabs=TRUE)  %>%
-      kable_styling(latex_options="HOLD_position") %>%
+      kable_styling(latex_options=c("scale_down","HOLD_position"),font_size=10)  %>%
       row_spec(0, align = "c") %>%
-      column_spec(1, width = "3in") %>%
-      column_spec(2, width = "0.4in") %>%
-      column_spec(3, width ="0.4in") %>%
-      column_spec(4, width ="0.4in") %>%
-      column_spec(5, width ="0.4in") %>%
-      column_spec(6, width ="0.4in") %>%
-      add_header_above(header=tblHead1) %>%
+      column_spec(1,width="3in") %>%
+     add_header_above(header=tblHead1) %>%
       add_footnote(captionSrc("ACS",ACS))
     
     Housing_tab2 <-  kable(m.rental,
                     col.names = names_spaced,
                     align=c("lrrrrr"),
-                    caption="Comparison of Housing Values", row.names=FALSE,
+                    caption="Comparison of Rental Housing Values", row.names=FALSE,
                     format="latex", booktabs=TRUE)  %>%
-      kable_styling(latex_options="HOLD_position") %>%
+      kable_styling(latex_options=c("scale_down","HOLD_position"),font_size=10) %>%
       row_spec(0, align = "c") %>%
-      column_spec(1, width = "3in") %>%
-      column_spec(2, width = "0.4in") %>%
-      column_spec(3, width ="0.4in") %>%
-      column_spec(4, width ="0.4in") %>%
-      column_spec(5, width ="0.4in") %>%
-      column_spec(6, width ="0.4in") %>%
+      column_spec(1,width="3in") %>%
       add_header_above(header=tblHead1) %>%
       add_footnote(captionSrc("ACS",ACS))
 

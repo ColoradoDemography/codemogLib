@@ -122,7 +122,16 @@ jobMigration <- function(listID, maxyr, base=10){
   #Final dataset
   names(f.pltdata) <- c("5-Year Period", paste0("5-Year Average Jobs: ",ctyname),paste0("5-Year Average Net Migration: ",ctyname))
 
-  outList <- list("plot" = migrPlot, "data" = f.pltdata)
+  
+  # Creating text
+  OutText <- paste0("The Estimated Jobs is a series created by the SDO to give a comprehensive look at the number of jobs located within ",ctyname,".")  
+  OutText <- paste0(OutText," It is broad in scope, capturing both wage & salary workers as well as most proprietors and agricultural workers.")
+  OutText <- paste0(OutText,"  A more diverse economy is typically more resilient too; when looking at the employment trends recently ")
+  OutText <- paste0(OutText," and after a recession (shaded in gray) it is also important to look at the current share of employment by industry.")
+  OutText <- paste0(OutText," Areas dependent on a single industry such as agriculture, mining or tourism can suffer from prolonged downturns due to drought,")
+  OutText <- paste0(OutText," shifting demand for commodities, and the health of the national economy. ")
+  
+  outList <- list("plot" = migrPlot, "data" = f.pltdata, "text" = OutText)
   return(outList)
 
 }

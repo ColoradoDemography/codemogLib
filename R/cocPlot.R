@@ -7,7 +7,7 @@
 #' @export
 
 cocPlot <- function(listID,fyr=2000,lyr,base=12) {
-
+  
   # Collecting place ids from  idList, setting default values
   
   ctyfips <- listID$ctyNum
@@ -19,26 +19,26 @@ cocPlot <- function(listID,fyr=2000,lyr,base=12) {
     placename <- ""
   }  
   
-
+  
   f.coccty <- county_profile(as.numeric(ctyfips), fyr:lyr, vars="totalpopulation,births,deaths,netmigration")%>%
     mutate( totalpopulation = as.numeric(totalpopulation),
             births=as.numeric(births),
             deaths=as.numeric(deaths),
             netmigration=as.numeric(netmigration),
             naturalIncrease=births-deaths)
-
-
+  
+  
   f.cocLong <- gather(f.coccty, TypeChange, Pop, c(births,deaths,netmigration))
   f.cocLong$TypeChange <- ifelse(f.cocLong$TypeChange =="netmigration","Net Migration",
                                  ifelse(f.cocLong$TypeChange =="births", "Births","Deaths"))
-
+  
   f.cocLong$TypeChange <- factor(f.cocLong$TypeChange,
                                  levels=c("Births","Deaths", "Net Migration"))
-
+  
   pltTitle <- "Components of Change:\nBirths, Deaths, and Net Migration"
   subTitle <- ctyname
   axs <- setAxis(f.cocLong$Pop)
-
+  
   cocPlt <-  ggplot(data=f.cocLong,aes(x=year, y=Pop, colour=TypeChange)) +
     geom_line() +
     geom_point(aes(x=year, y=Pop, colour=TypeChange, shape=TypeChange),size=2) +
@@ -58,13 +58,34 @@ cocPlot <- function(listID,fyr=2000,lyr,base=12) {
           panel.grid.major = element_line(colour = "gray80"),
           axis.text = element_text(size=12),
           legend.position= "bottom")
-
-
+  
+  
   f.coccty <- f.coccty[,2:8]
   names(f.coccty)  <- c("Place","Year","Total Population","Births","Deaths", "Net Migration","Natural Increase")
-
-
-  outList <- list("plot" = cocPlt, "data" = f.coccty)
-
+  f.coccty$Place <- ctyname
+  
+  #Creating text 
+  f.coccty5 <- tail(f.coccty,5)
+  names(f.coccty5)  <- c("Place","Year","Total Population","Births","Deaths", "NetMigration","NaturalIncrease")
+  fyr <- as.numeric(f.coccty5[1,2])
+  lyr <- as.numeric(f.coccty5[5,2])
+  
+  totChng <- as.numeric(f.coccty5[5,3] -  f.coccty5[1,3])
+  
+  f.sum <- f.coccty5 %>%
+    summarise(sumNat = sum(NaturalIncrease),
+              sumMig = sum(NetMigration))
+  
+  chgDir <- ifelse(totChng > 0,"increased",
+                   ifelse(totChng < 0,"decreased", "stayed the same"))
+  
+  
+  
+  OutText <- paste0("Between ", fyr," and  ", lyr," the population of ", ctyname," has ",chgDir," by ",format(totChng,big.mark=",")," people.")
+  OutText <- paste0(OutText," The total natural increase (births - deaths) over this period was ",format(f.sum$sumNat,big.mark=",")," and the total net migration (new residents who moved in minus those who moved out) was ",format(f.sum$sumMig,big.mark=","),".")                 
+  OutText <- paste0(OutText,"  Note: Components of Change data are only available for Colorado counties.")
+  
+  outList <- list("plot" = cocPlt, "data" = f.coccty,"text" = OutText)
+  
   return(outList)
 }

@@ -176,7 +176,7 @@ incomeSrc <- function(level, listID, ACS, oType) {
   tblHead2 <- c(" " = 1,"Total Households" = 2,"Mean Income" = 2)
   names(tblHead2) <- c(" ","Total Households","Mean Income")
   
-  names_spaced <- c("Income Source","Estimate","Margin of Error", "Estimate","Margin of Error")
+  names_spaced <- c("Income Source","Estimate","MOE", "Estimate","MOE")
 
 if(oType == "html") {
     inc_tab <- m.IncFin %>%
@@ -225,6 +225,15 @@ if(oType == "html") {
       add_header_above(header=tblHead2) %>%
       add_header_above(header=tblHead1) %>%
       add_footnote(captionSrc("ACS",ACS))
-     return(inc_tab)
+    
+    # Text
+    
+    OutText <- paste0("The Houselold Income Source(s) Table shows household income sources and amounts for housholds in ", fipsname,".")
+    OutText <- paste0(OutText,"  Households will have multiple sources of income, so this table is not mutually exclusive.")
+    OutText <- paste0(OutText,"  Mean income values reflect values from the cited source.")
+    
+    
+    outList <- list("table" = inc_tab, "text" = OutText)
+     return(outList)
   }
 }

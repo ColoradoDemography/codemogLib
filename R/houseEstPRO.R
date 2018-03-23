@@ -78,6 +78,11 @@ houseEstPRO <- function(listID,curYr, base=10) {
 
   f.hhPlace$place <- ctyname
   f.hhPlaceFin <- f.hhPlace[,c(10,9,8)]
-  outList <- list("plot" = p,"data" = f.hhPlaceFin)
+  
+  
+  #Text
+  OutText <- paste0("The Household Estimates plot shows the forecast number of households in ", ctyname, "between 2010 and 2050.")
+  Outtext <- paste0(OutText, " Note: Households estimates are only avialable for Colorado Counties.")
+  outList <- list("plot" = p,"data" = f.hhPlaceFin,"text"= OutText)
   return(outList)
 }

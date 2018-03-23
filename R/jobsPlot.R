@@ -46,6 +46,14 @@ jobsPlot=function(listID, maxyr,base=10){
           axis.text.x = element_text(angle=45,size=12),
           axis.text.y = element_text(size=12))
 
-  outList <- list("plot" = jobs_plot, "data" = jobs_data)
+  # Generating text
+  OutText <- paste0("The total estimated jobs are subdivided into 3 categories:")
+  OutText <- paste0(OutText," \\begin{itemize} ")
+  OutText <- paste0(OutText,"\\item \\textif{Direct Basic:} jobs that bring outside dollars into the community by selling goods or services outside the county, such as manufacturing or engineering services,")
+  OutText <- paste0(OutText,"\\item \\textit{Indirect Basic:} jobs that are created as the result of goods and services purchased by direct basic such as accounting services or raw material inputs, and ")
+  OutText <- paste0(OutText,"\\item \\textit{Local (Resident) Services:}  jobs that are supported when income earned from the base industries is spent locally at retailers or are supported by local tax dollars to provide services like education and public safety.")
+  OutText <- paste0(OutText,"\\end{itemize} ")
+  
+  outList <- list("plot" = jobs_plot, "data" = jobs_data, "text" = OutText)
   return(outList)
 }

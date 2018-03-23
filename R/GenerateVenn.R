@@ -223,11 +223,8 @@ if(nchar(placefips) != 0) {
                  align='lrr',
                  caption=capstr1,
                  format="latex", booktabs=TRUE) %>%
-    kable_styling(latex_options="HOLD_position") %>%
+    kable_styling(font_size=10)  %>%
     row_spec(0, align = "c") %>%
-    column_spec(1, width = "2in") %>%
-    column_spec(2, width = "0.5in") %>%
-    column_spec(3, width = "0.5in") %>%
     add_footnote(captionSrc("LODES",""))
 
 
@@ -237,11 +234,8 @@ if(nchar(placefips) != 0) {
                   align='lrr',
                   caption=capstr2,
                   format="latex", booktabs=TRUE) %>%
-    kable_styling(latex_options="HOLD_position") %>%
+    kable_styling(font_size=10)  %>%
     row_spec(0, align = "c") %>%
-    column_spec(1, width = "2in") %>%
-    column_spec(2, width = "0.5in") %>%
-    column_spec(3, width = "0.5in") %>%
     add_footnote(captionSrc("LODES",""))
 
   outList <- list("plot" = outVenn, "workTab" = workTab,"liveTab" = liveTab)

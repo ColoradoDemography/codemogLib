@@ -108,7 +108,17 @@ weeklyWages <- function(listID, base=10){
   f.wages <- f.wages[,c(1,5,9)]
   names(f.wages) <- c("Year",paste0(" Average Weekly Wage: ",ctyname), "Average Weekly Wage: Colorado")
 
-  outList <- list("plot" = Plot, "data" = f.wages)
+  
+  # Text
+  OutText <- paste0("The inflation adjusted (real) average weekly wages for the county and Colorado are shown here.")
+  OutText <- paste0(OutText," In 2016 dollars, wages in Colorado have been essentially unchanged since 2010.")
+  OutText <- paste0(OutText," The gain or loss of a major employer such as a mine or a hospital can have a significant impact on a county’s average weekly wage.")
+  OutText <- paste0(OutText," These wages are shown only for jobs located within that county and do not include most proprietors.")
+  OutText <- paste0(OutText," Household income can be influenced by the average weekly wage, but in areas that have")
+  OutText <- paste0(OutText," considerable amounts commuting or unearned income this relationship is not particularly strong.")
+  
+  
+  outList <- list("plot" = Plot, "data" = f.wages, "text" = OutText)
 
 
   return(outList)

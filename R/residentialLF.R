@@ -57,7 +57,7 @@ residentialLF <- function(listID, curyr, base=10){
     summarize(LForce = sum(laborforce),
               Pop16P = sum(cni_pop_16pl))
   
-  f.LFPlaceSum$datatype <-  ifelse(f.LFPlaceSum$population_year > curyr,"Forecast","Estimate")
+  f.LFPlaceSum$Series <-  ifelse(f.LFPlaceSum$population_year > curyr,"Forecast","Estimate")
  
 
 
@@ -91,8 +91,8 @@ residentialLF <- function(listID, curyr, base=10){
    yBrk <- pretty(minval:maxval, n=5)
 
   LFLine <-  ggplot(data=f.LFPlaceSum) +
-    geom_line(aes(x=population_year, y=Pop16P, colour= "Population 16 +",linetype=datatype), size=1.50) +
-    geom_line(aes(x=population_year, y=LForce,color="Labor Force",linetype=datatype), size=1.50) +
+    geom_line(aes(x=population_year, y=Pop16P, colour= "Population 16 +",linetype=Series), size=1.50) +
+    geom_line(aes(x=population_year, y=LForce,color="Labor Force",linetype=Series), size=1.50) +
     scale_colour_manual(" ", values=c("Labor Force" = "#6EC4E8", "Population 16 +" = "#00953A")) +
     scale_x_continuous(breaks=seq(2010,2040, 5)) +
     scale_y_continuous(limits=c(minval,maxval), breaks=yBrk, label=comma)+
@@ -113,7 +113,6 @@ residentialLF <- function(listID, curyr, base=10){
 
   # preparing datasets
 
-
   #line data
 
   f.LFPlaceSum$geoname <- ctyname
@@ -123,9 +122,10 @@ residentialLF <- function(listID, curyr, base=10){
 
 
   names(f.LFPlaceSum) <- c("Place","Year", "Persons in Labor Force", "Persons  Age 16 +")
+#Text
+  OutText <- paste0("This plot compares the forecast residential labor force to the forecast population of person age 16 and older for ",ctyname,".")
 
-
-  outList <- list("plot1" = LFLine, "data1" = f.LFPlaceSum)
+  outList <- list("plot1" = LFLine, "data1" = f.LFPlaceSum, "text" = OutText)
 
   return(outList)
 }

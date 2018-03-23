@@ -168,7 +168,14 @@ agePlotPRO  <- function(listID, ACS, state=0, yrs, base=10, agegroup="ten") {
           panel.grid.major = element_line(colour = "gray80"),
           legend.position= "bottom")
 
+  # Generating text
+  if(nchar(placefips) != 0) {
+    OutText <- paste0("The age distribution of the population of ",placename," and ",ctyname," are shown here.")
+  } else {
+    OutText <- paste0("The age distribution of the population of ",ctyname," and Colorado are shown here.")
+  }
+    OutText <- paste0(OutText,"  Many areas have a larger share of older adults, indicating the need to evaluate housing, transportation and other needs of the senior population.")
 
-  outList <- list("plot" = AgePlot, "data" = f.AgePlot2)
+  outList <- list("plot" = AgePlot, "data" = f.AgePlot2, "text" = OutText)
   return(outList)
 }
