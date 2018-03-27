@@ -148,13 +148,13 @@ statsTable1 <- function(listID,sYr,eYr,ACS,oType){
 
   outTab <- matrix(" ",nrow=7,ncol=mcol)
   nCol <- 1
-  outTab[1,nCol] <- paste0("Population (",eYr,")",footnote_marker_alphabet(1))
-  outTab[2,nCol] <- paste0("Population Change (",sYr," to ",eYr, ")",footnote_marker_alphabet(1))
-  outTab[3,nCol] <- paste0("Total Employment (",eYr,")",footnote_marker_alphabet(1))
-  outTab[4,nCol] <- paste0("Median Household Income",footnote_marker_alphabet(2))
-  outTab[5,nCol] <- paste0("Median House Value",footnote_marker_alphabet(2))
-  outTab[6,nCol] <- paste0("Percentage of Population with Incomes lower than the Poverty Line",footnote_marker_alphabet(2))
-  outTab[7,nCol] <- paste0("Percentage of Population Born in Colorado",footnote_marker_alphabet(2))
+  outTab[1,nCol] <- paste0("Population (",eYr,")",footnote_marker_symbol(1))
+  outTab[2,nCol] <- paste0("Population Change (",sYr," to ",eYr, ")",footnote_marker_symbol(1))
+  outTab[3,nCol] <- paste0("Total Employment (",eYr,")",footnote_marker_symbol(1))
+  outTab[4,nCol] <- paste0("Median Household Income",footnote_marker_symbol(2))
+  outTab[5,nCol] <- paste0("Median House Value",footnote_marker_symbol(2))
+  outTab[6,nCol] <- paste0("Percentage of Population with Incomes lower than the Poverty Line",footnote_marker_symbol(2))
+  outTab[7,nCol] <- paste0("Percentage of Population Born in Colorado",footnote_marker_symbol(2))
   nCol <- nCol + 1 
   
   if(nchar(placefips) != 0){
@@ -216,7 +216,7 @@ statsTable1 <- function(listID,sYr,eYr,ACS,oType){
         column_spec(1, width = "4in") %>%
         column_spec(2, width = "0.4in") %>%
         column_spec(3, width = "0.4in") %>%
-        footnote(alphabet=c("Source: State Demography Office",captionSrc("ACS",ACS)))
+        footnote(symbol=c("Source: State Demography Office",captionSrc("ACS",ACS)))
     } else {
       outKable <-  kable(outTab, format='html', table.attr='class="cleanTab"',
                          digits=1,
@@ -225,30 +225,30 @@ statsTable1 <- function(listID,sYr,eYr,ACS,oType){
                          col.names = names_spaced,
                          caption="Community Quick Facts",
                          escape = FALSE)   %>%
-        kable_styling(latex_options="scale_down") %>%
+        kable_styling() %>%
         column_spec(1, width = "4in") %>%
         column_spec(2, width = "0.4in") %>%
         column_spec(3, width = "0.4in") %>%
         column_spec(4, width = "0.4in") %>%
-        footnote(alphabet=c("Source: State Demography Office",captionSrc("ACS",ACS)))
+        footnote(symbol=c("Source: State Demography Office",captionSrc("ACS",ACS)))
     } 
   }
   
   if(oType == "latex") {
-
-    #Revising Rows and Footnotes
-    outTab[1,1] <- paste0("Population (",eYr,")*")
-    outTab[2,1] <- paste0("Population Change (",sYr," to ",eYr, ")*")
-    outTab[3,1] <- paste0("Total Employment (",eYr,")*")
-    outTab[4,1] <- paste0("Median Household Income+")
-    outTab[5,1] <- paste0("Median House Value+")
-    outTab[6,1] <- paste0("Percentage of Population with Incomes lower than the Poverty Line+")
-    outTab[7,1] <- paste0("Percentage of Population Born in Colorado+")
-    add_mat <- matrix("",nrow=2,ncol=nCol)
-    add_mat[1,1] <- "*Source: State Demography Office"
-    add_mat[2,1] <- paste0("+",captionSrc("ACS",ACS))
-    outTab <- rbind(outTab,add_mat)
+    #redefining rows for latex footnotes
+    outTab[1,1] <- paste0("Population (",eYr,")","+")
+    outTab[2,1] <- paste0("Population Change (",sYr," to ",eYr, ")","+")
+    outTab[3,1] <- paste0("Total Employment (",eYr,")","+")
+    outTab[4,1] <- paste0("Median Household Income","^")
+    outTab[5,1] <- paste0("Median House Value","^")
+    outTab[6,1] <- paste0("Percentage of Population with Incomes lower than the Poverty Line","^")
+    outTab[7,1] <- paste0("Percentage of Population Born in Colorado","^")
     
+    add_mat <- matrix(nrow=2,ncol=nCol)
+    add_mat[1,1] <- "+Source: State Demography Office"
+    add_mat[2,1] <- paste0("^",captionSrc("ACS",ACS))
+    
+    outTab <- rbind(outTab,add_mat)
 
     if(nchar(placename) == 0) {
       outKable <- outTab %>%
@@ -257,7 +257,7 @@ statsTable1 <- function(listID,sYr,eYr,ACS,oType){
               align="lrr",
               col.names = names_spaced,
               caption="Community Quick Facts",
-              format ="latex", booktabs=TRUE) %>%
+              format ="latex", booktabs=TRUE,escape=TRUE) %>%
         kable_styling(latex_options=c("scale_down","HOLD_position"),font_size=10) %>%
         row_spec(0, align="c") %>%
         column_spec(1, width = "5in") 
@@ -268,7 +268,7 @@ statsTable1 <- function(listID,sYr,eYr,ACS,oType){
             align="lrrr",
             col.names = names_spaced,
             caption="Community Quick Facts",
-            format ="latex", booktabs=TRUE) %>%
+            format ="latex", booktabs=TRUE, escape=TRUE) %>%
         kable_styling(latex_options=c("scale_down","HOLD_position"),font_size=10) %>%
         row_spec(0, align="c") %>%
         column_spec(1, width = "5in") 
