@@ -2,7 +2,7 @@
 #'   Modified from cp_countymap  AB 2/2018
 #'
 #' This function creates a map to be used in the profile process,
-#'    If a planning region is selected, the plannign region is colored in
+#'    If a planning region is selected, the planning region is colored in
 #'    If a county is selected, the county is colored in and the planning region is outlined
 #'    if a place is selected, the county is outlined and a dagger is posted at the center of the place.
 #'
