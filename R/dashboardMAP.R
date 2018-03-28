@@ -2,7 +2,7 @@
 #'   Modified from cp_countymap  AB 2/2018
 #'
 #' This function creates a map to be used in the profile process,
-#'    If a planning region is selected, the planning region is colored in
+#'    If a planning region is selected, the plannign region is colored in
 #'    If a county is selected, the county is colored in and the planning region is outlined
 #'    if a place is selected, the county is outlined and a dagger is posted at the center of the place.
 #'
@@ -58,6 +58,10 @@ dashboardMAP <- function(listID,placelist){
  
   
   #Pulls the COunty Outlines
+  #Supress warnings duringthe map processing
+  oldw <- getOption("warn")
+  options(warn = -1)
+  
   j=getURL("https://gis.dola.colorado.gov/capi/geojson?table=p1&sumlev=50&db=c2010&state=8&zoom=9")
   gj=readOGR(j, "OGRGeoJSON", verbose=FALSE)
   gj=fortify(gj)
@@ -72,6 +76,7 @@ dashboardMAP <- function(listID,placelist){
   gj1 <- rbind(gj1,x)
   }
 
+  options(warn = oldw)
   
   m=ggplot()+
     geom_map(data=gj, map=gj,
