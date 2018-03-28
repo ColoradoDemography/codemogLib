@@ -249,8 +249,10 @@ statsTable1 <- function(listID,sYr,eYr,ACS,oType){
     add_mat[2,1] <- paste0("^",captionSrc("ACS",ACS))
     
     outTab <- rbind(outTab,add_mat)
+    outTab <- gsub("NA","",outTab)
 
-    if(nchar(placename) == 0) {
+    
+        if(nchar(placename) == 0) {
       outKable <- outTab %>%
         kable(digits=1,
               row.names=FALSE,
