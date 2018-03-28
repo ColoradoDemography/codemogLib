@@ -207,7 +207,7 @@ popTable <- function(listID,sYr,eYr,oType) {
     # Building text
     RowN <- nrow(m.OutTab)
     prevYr <- m.OutTab[RowN-1,1]
-    if(nchar(placename) != 0) {#Municipalities/Places
+    if(nchar(placename) != 0) {#Municipalities
       OutTxt_pl <- paste0("At the end of ",eYr, " the estimated population of ",placename, " was ", m.OutTab[RowN,2],", ")
       PopChgVal_pl <- as.numeric(gsub(",","",m.OutTab[RowN,2])) - as.numeric(gsub(",","",m.OutTab[RowN-1,2]))
       PopChgFmt_pl <- format(PopChgVal_pl,big.mark=",")

@@ -1,7 +1,7 @@
 #'  popPlace : Populates the input$unit field using information from the PostGres estimates database.
 #'  return a data frame with the placefips, countyfips, placename and totalPopulation
 #'
-#' @param level identifies the level to be used (State, Planning Regions, Counties, Municipalities/Places)
+#' @param level identifies the level to be used (State, Planning Regions, Counties, Municipalities)
 #'    taken from the input$level parameter from the dashboard
 #'
 #' @export
@@ -54,7 +54,7 @@ popPlace <- function(level) {
     return(f.cLookup)
    }
   
-  if(level == "Municipalities/Places") {
+  if(level == "Municipalities") {
     f.pLookup$municipalityname <- sub(' \\(Part\\)','',f.pLookup$municipalityname)
   
     #merging f.pLookup and f.mLookup and updating totalpopulation value

@@ -12,7 +12,7 @@ chkID <- function(lvl,fipslist,plName,ctyList,plList) {
   multiCty <- "F"
   PlFilter <- "T"
   
-  if(lvl == "Municipalities/Places") { #the id is the place
+  if(lvl == "Municipalities") { #the id is the place
     if(length(fipslist) > 1) {  #setting ctyNum to largest portion for a multi-county city
       plNum  <- substr(unique(fipslist),3,7)
       plName <-  unique(plList[which(plList$placefips == as.numeric(plNum)),3])

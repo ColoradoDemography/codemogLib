@@ -11,7 +11,7 @@ incomeSrc <- function(level, listID, ACS, oType) {
   # Collecting place ids from  idList, setting default values
   # Currently Output Counties
  
-  if(level == "Municipalities/Places") {
+  if(level == "Municipalities") {
     if(listID$PlFilter == "F") {
       fipslist <- listID$plNum
       fipsname <- listID$plName

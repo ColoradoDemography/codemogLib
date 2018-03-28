@@ -1,7 +1,7 @@
 #'  listTofips : Produces a vector of FIPS codes from an inpout list of Census County and Plance Name Codes.
 #'
 #' @param  df The census place look up file, produced by popPlace.
-#' @param level identifies the level to be used (State, Plannign Regions, Counties, Municipalities/Places)
+#' @param level identifies the level to be used (State, Plannign Regions, Counties, Municipalities)
 #'    taken from the input$level parameter from the dashboard
 #' @param inList1 The list of place names,  Comes from input$unit or input$comp2.
 #' @return the fipscode(s) for a selected data level
@@ -41,7 +41,7 @@ listTofips <- function(df, level, inList1){
              }
            } #if
          }, #County
-         "Municipalities/Places" = {
+         "Municipalities" = {
            if(length(inList1) == 1) {  #only one entry
              fipsl <- paste0("08",formatC(df[which(df$municipalityname == inList1),2],digits=0, width=5, format="f",flag= "0"))
            } else {
@@ -50,7 +50,7 @@ listTofips <- function(df, level, inList1){
                fipsl <- rbind(fipsl, paste0("08",formatC(df[which(df$municipalityname == inList1),2],digits=0, width=5, format="f",flag= "0")))
              }
            } #if
-         } #Municipalities/Places
+         } #Municipalities
 
   ) #switch
 
