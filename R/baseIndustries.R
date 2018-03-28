@@ -215,12 +215,12 @@ baseIndustries <- function(listID, curyr, oType,base=10){
   # Text
     OutText <- paste0("Similar to the industry employment, areas with large amounts of diversity in their base industries")
     OutText <- paste0(OutText," tend to suffer less during downturns and recover more quickly.")
-    OutText <- paste0(OutText," Regional Services is a diverse base industry that encompasses all services and goods that a region")
+    OutText <- paste0(OutText," \\textit{Regional Services} is a diverse base industry that encompasses all services and goods that a region")
     OutText <- paste0(OutText," sells to those in surrounding areas; examples include specialized health care, construction, air")
     OutText <- paste0(OutText," or rail transportation, and large item retail purchases like autos or appliances.")
-    OutText <- paste0(OutText," Retirees are considered basic since they spend money from social security or other pensions, Medicare and savings.")
-    OutText <- paste0(OutText," Government typically only includes employment in Federal Government and State government.")
-    OutText <- paste0(OutText," Tourism not only includes traditional tourist services like accommodation and food, but also includes 2nd homes,")
+    OutText <- paste0(OutText," \\textit{Retirees} are considered basic since they spend money from social security or other pensions, Medicare and savings.")
+    OutText <- paste0(OutText," \\textit{Government} typically only includes employment in Federal Government and State Government.")
+    OutText <- paste0(OutText," \\textit{Tourism} not only includes traditional tourist services like accommodation and food, but also includes 2nd homes,")
     OutText <- paste0(OutText," property management and transportation of tourists by airlines, car rental, car sharing and shuttles.")
 
   outList <- list("plot" = BaseBars,"table" = jobsTab, "data1"=f.jobsBaseFin, "data2" = f.jobsBaseTab, "text" = OutText)
