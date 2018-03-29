@@ -161,12 +161,7 @@ popTable <- function(listID,sYr,eYr,oType) {
                          paste0("Population: ",ctyname),paste0("Growth Rate: ",ctyname),
                          "Population: Colorado","Growth Rate: Colorado")
     }
-    if(ncol(f.Out2) == 9) {
-      names(f.Out2) <- c("Year",paste0("Population: ",placename),paste0("Growth Rate: ",placename),
-                         paste0("Population: ",ctyname[1]),paste0("Growth Rate: ",ctyname[1]),
-                         paste0("Population: ",ctyname[2]),paste0("Growth Rate: ",ctyname[2]),
-                         "Population: Colorado","Growth Rate: Colorado")
-    }
+ 
     
     
     # bind list

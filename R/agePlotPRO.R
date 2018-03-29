@@ -63,7 +63,7 @@ agePlotPRO  <- function(listID, ACS, state=0, yrs, base=10, agegroup="ten") {
     f.AgePlot2$totalpopulation.x <- format(round(f.AgePlot2$totalpopulation.x,digits=0),big.mark=",")
     f.AgePlot2$totalpopulation.y <- format(round(f.AgePlot2$totalpopulation.y,digits=0),big.mark=",")
     names(f.AgePlot2) <- c("Age Category",  paste0("Population: ",ctyname), paste0("Population Percentage: ",ctyname),
-                           "Population: Colorado", "Population percentage: Colorado")
+                           "Population: Colorado", "Population Percentage: Colorado")
   }
 
   if(nchar(placefips) != 0) { # this is municipal Call from the ACS
@@ -137,7 +137,7 @@ agePlotPRO  <- function(listID, ACS, state=0, yrs, base=10, agegroup="ten") {
     
     
     names(f.AgePlot2) <- c("Age Category",  paste0("Population: ",placename), paste0("Population Percentage: ",placename),
-                           paste0("Population: ",ctyname), paste0("Population percentage: ",ctyname))
+                           paste0("Population: ",ctyname), paste0("Population Percentage: ",ctyname))
     
     
   }

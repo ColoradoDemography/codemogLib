@@ -40,6 +40,7 @@ chkID <- function(lvl,fipslist,plName,ctyList,plList) {
     ctyNum <- substr(fipslist,3,5)
     plNum <- ""
     plName <- ""
+    PlFilter= "F"
   }
   outList <- list("ctyNum" = ctyNum, "ctyName" = ctyName, "plNum" = plNum, "plName" = plName, "multiCty" = multiCty,"PlFilter" = PlFilter)
   return(outList)

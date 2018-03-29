@@ -12,7 +12,7 @@
 
 dashboardMAP <- function(listID,placelist){
   # Collecting place ids from  idList, setting default values
-
+  
   ctyfips <- listID$ctyNum
   ctyname <- listID$ctyName
   placefips <- listID$plNum
@@ -21,8 +21,8 @@ dashboardMAP <- function(listID,placelist){
     placefips <- ""
     placename <- ""
   }
- 
- 
+  
+  
   
   if(nchar(placefips) != 0){
     # create a connection
@@ -54,8 +54,8 @@ dashboardMAP <- function(listID,placelist){
     ctyfips <- str_pad(as.character(ctyx$countyfips),width=3,pad="0")
   }
   
-
- 
+  
+  
   
   #Pulls the COunty Outlines
   #Supress warnings duringthe map processing
@@ -69,13 +69,13 @@ dashboardMAP <- function(listID,placelist){
   gj1 <- data.frame()
   
   for(i in 1:length(ctyfips)) {
-  #Pulls the County to Highlight
-  j1 <- getURL(paste0("https://gis.dola.colorado.gov/capi/geojson?table=p1&sumlev=50&db=c2010&state=8&zoom=9&county=", as.numeric(ctyfips[i])))
-  x <- readOGR(j1, "OGRGeoJSON", verbose=FALSE)
-  x <- fortify(x)
-  gj1 <- rbind(gj1,x)
+    #Pulls the County to Highlight
+    j1 <- getURL(paste0("https://gis.dola.colorado.gov/capi/geojson?table=p1&sumlev=50&db=c2010&state=8&zoom=9&county=", as.numeric(ctyfips[i])))
+    x <- readOGR(j1, "OGRGeoJSON", verbose=FALSE)
+    x <- fortify(x)
+    gj1 <- rbind(gj1,x)
   }
-
+  
   options(warn = oldw)
   
   m=ggplot()+
