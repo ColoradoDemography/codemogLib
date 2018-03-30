@@ -1,5 +1,6 @@
 #' dashboardMAP Creates a simple map that highlights a Colorado County or place
 #'   Modified from cp_countymap  AB 2/2018
+#'   Revised 3/2018 to account for standalone JSON dataset
 #'
 #' This function creates a map to be used in the profile process,
 #'    If a planning region is selected, the plannign region is colored in
@@ -10,9 +11,9 @@
 #' @param listID the list containing place id and Place names
 #' @export
 
-dashboardMAP <- function(listID,placelist){
+dashboardMAP <- function(listID){
   # Collecting place ids from  idList, setting default values
-  
+  ctyList <- listID$ctyList
   ctyfips <- listID$ctyNum
   ctyname <- listID$ctyName
   placefips <- listID$plNum
@@ -21,7 +22,6 @@ dashboardMAP <- function(listID,placelist){
     placefips <- ""
     placename <- ""
   }
-  
   
   
   if(nchar(placefips) != 0){
@@ -50,48 +50,44 @@ dashboardMAP <- function(listID,placelist){
     
     f.muni$lat <- as.numeric(f.muni$y)
     f.muni$long <- as.numeric(f.muni$x)
-    ctyx <- placelist[which(as.numeric(placefips) == placelist$placefips),]
-    ctyfips <- str_pad(as.character(ctyx$countyfips),width=3,pad="0")
   }
-  
-  
   
   
   #Pulls the COunty Outlines
-  #Supress warnings duringthe map processing
-  oldw <- getOption("warn")
-  options(warn = -1)
   
-  j=getURL("https://gis.dola.colorado.gov/capi/geojson?table=p1&sumlev=50&db=c2010&state=8&zoom=9")
-  gj=readOGR(j, "OGRGeoJSON", verbose=FALSE)
-  gj=fortify(gj)
+  #Accessing JSON file, with Counties 
+  data_file <- "www/County_GEN_2014.geojson"
+  data_json <- geojson_read(data_file, what = "sp")
+  
+  
+  
+  #gj=readOGR(data_json, "OGRGeoJSON", verbose=FALSE)
+  gj=fortify(data_json)
   
   gj1 <- data.frame()
   
-  for(i in 1:length(ctyfips)) {
+  for(i in 1:length(ctyList)) {
     #Pulls the County to Highlight
-    j1 <- getURL(paste0("https://gis.dola.colorado.gov/capi/geojson?table=p1&sumlev=50&db=c2010&state=8&zoom=9&county=", as.numeric(ctyfips[i])))
-    x <- readOGR(j1, "OGRGeoJSON", verbose=FALSE)
-    x <- fortify(x)
-    gj1 <- rbind(gj1,x)
+    cty1 <- data_json[which(data_json@data[["COUNTYFP"]] == ctyList[i]),]
+    cty2 <- fortify(cty1)
+    gj1 <- rbind(gj1,cty2)
   }
   
-  options(warn = oldw)
   
-  m=ggplot()+
+  m <- ggplot()+
     geom_map(data=gj, map=gj,
-             aes(x=long, y=lat, map_id=id),
-             fill=rgb(239,239,239, max=255), color=rgb(92,102,112, max=255), size=.25)+
+             aes(x=long, y=lat, map_id=id), 
+             fill=rgb(239,239,239, max=255), color=rgb(92,102,112, max=255), size=.25) +
     geom_map(data=gj1, map=gj1,
              aes(x=long, y=lat, map_id=id),
              fill=rgb(0,149,58, max=255), color=rgb(92,102,112, max=255), size=.25)+
-    coord_map(project="albers", lat0=40, lat1=39)+
+    coord_map(project="albers", lat0=40, lat1=39) +
     theme_map()+
     theme(panel.background=element_rect(fill=rgb(239,239,239, max=255), color=rgb(239,239,239, max=255)),
           plot.background=element_rect(fill=rgb(239,239,239, max=255), color=rgb(239,239,239, max=255)))
   
   if(nchar(placefips) != 0){  # Adding point for center of municipality
-    m <- m + geom_point(data=f.muni, aes(x=x, y=y,shape="16", color="#655003c"),size=2) + 
+    m <- m + geom_point(data=f.muni, aes(x=long, y=lat,shape="16", color="#655003c"),size=2) + 
       theme(legend.position="none")
   }
   
