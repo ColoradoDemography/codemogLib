@@ -226,7 +226,7 @@ popTable <- function(listID,sYr,eYr,oType) {
       
       outText <- paste0(OutTxt_pl, PopChgTxt_pl,OutTxt_cty,PopChgTxt_cty,OutTxt_st,PopChgTxt_st)
     } else {
-      OutTxt_cty <- paste0("At the end of ",eYr, " the estimated population of ",ctyname, " was ", m.OutTab[RowN,2],",")
+      OutTxt_cty <- paste0("At the end of ",eYr, " the estimated population of ",ctyname, " was ", m.OutTab[RowN,2],", ")
       PopChgVal_cty <- as.numeric(gsub(",","",m.OutTab[RowN,2])) - as.numeric(gsub(",","",m.OutTab[RowN-1,2]))
       PopChgFmt_cty <- format(PopChgVal_cty,big.mark=",")
       PopChgTxt_cty <-  ifelse(PopChgVal_cty > 0, paste0("an increase of ",PopChgFmt_cty," over the population in ",prevYr,"."),
