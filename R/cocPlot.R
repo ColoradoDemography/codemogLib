@@ -81,7 +81,7 @@ cocPlot <- function(listID,fyr=2000,lyr,base=12) {
   
   
   
-  OutText <- paste0("Between ", fyr," and  ", lyr," the population of ", ctyname," has ",chgDir," by ",format(totChng,big.mark=",")," people.")
+  OutText <- paste0("Over the past five years, between ", fyr," and  ", lyr,", the population of ", ctyname," has ",chgDir," by ",format(totChng,big.mark=",")," people.")
   OutText <- paste0(OutText," The total natural increase (births - deaths) over this period was ",format(f.sum$sumNat,big.mark=",")," and the total net migration (new residents who moved in minus those who moved out) was ",format(f.sum$sumMig,big.mark=","),".")                 
   OutText <- paste0(OutText,"  Note: Components of Change data are only available for Colorado counties.")
   

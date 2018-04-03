@@ -115,10 +115,13 @@ jobsPopForecast <- function(listID, curyr, base=10){
   f.plotdata$Population <- format(round(f.plotdata$Population,digits=0),big.mark=",")
 
 #Text
-  OutText <- paste0("The total jobs forecast and population forecast are shown here.")
+  OutText <- paste0("The total jobs forecast and population forecast are for ",ctyname," shown here.")
   OutText <- paste0(OutText,"  The two lines diverge over time due to the aging of our population and continued growth in our under 18 population – two segments of the population that are less likely to be employed.")
   OutText <- paste0(OutText," Growth in the 65 plus population in the labor force through 2040 compared to the universe population of those over the age of 16 since labor force participation declines with age,")
   OutText <- paste0(OutText," especially among those eligible for pensions or social security.")
+  if(ctyname == "Denver-Boulder MSA"){
+    OutText <- paste0(OutText," Note: Statistics for the counties in the Denver Metropolitan Statistical Area (Adams, Arapahoe, Boulder, Broomfield, Denver, Douglas and Jefferson) are combined in this section.") 
+  }
   
   outList <- list("plot" = Plot, "data" = f.plotdata,"text" = OutText)
 

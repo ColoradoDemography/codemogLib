@@ -123,13 +123,10 @@ jobMigration <- function(listID, maxyr, base=10){
   names(f.pltdata) <- c("5-Year Period", paste0("5-Year Average Jobs: ",ctyname),paste0("5-Year Average Net Migration: ",ctyname))
 
   
-  # Creating text
-  OutText <- paste0("The Estimated Jobs is a series created by the SDO to give a comprehensive look at the number of jobs located within ",ctyname,".")  
-  OutText <- paste0(OutText," It is broad in scope, capturing both wage and salary workers as well as most proprietors and agricultural workers.")
-  OutText <- paste0(OutText,"  A more diverse economy is typically more resilient too; when looking at the employment trends recently ")
-  OutText <- paste0(OutText," and after a recession (shaded in gray) it is also important to look at the current share of employment by industry.")
-  OutText <- paste0(OutText," Areas dependent on a single industry such as agriculture, mining or tourism can suffer from prolonged downturns due to drought,")
-  OutText <- paste0(OutText," shifting demand for commodities, and the health of the national economy. ")
+  #Building text
+  OutText <- paste0("The Job Growth and Net Migration plot shows the relationship between job gowth and migration in ",ctyname,".")  
+  OutText <- paste0(OutText," Generally, migration patterns follow changes in job growth demand.")
+  
   
   outList <- list("plot" = migrPlot, "data" = f.pltdata, "text" = OutText)
   return(outList)

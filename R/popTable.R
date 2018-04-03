@@ -32,7 +32,7 @@ popTable <- function(listID,sYr,eYr,oType) {
     mutate(name="Colorado",
            totalpopulation=as.numeric(totalpopulation),
            year=as.numeric(year),
-           growthRate=percent(signif((((totalpopulation/lag(totalpopulation))^(1/(year-lag(year)))) -1)*100),digits=2),
+           growthRate=percent(signif((((totalpopulation/lag(totalpopulation))^(1/(year-lag(year)))) -1)*100),digits=1),
            Population=comma(totalpopulation))
   mCO <- popCO[,c(1,5,7,6)]
   
@@ -43,7 +43,7 @@ popTable <- function(listID,sYr,eYr,oType) {
     mutate(name=county,
            year=as.numeric(year),
            totalpopulation=as.numeric(totalpopulation),
-           growthRate=percent(signif((((totalpopulation/lag(totalpopulation))^(1/(year-lag(year)))) -1)*100),digits=2),
+           growthRate=percent(signif((((totalpopulation/lag(totalpopulation))^(1/(year-lag(year)))) -1)*100),digits=1),
            Population=comma(totalpopulation))
   
   
@@ -82,7 +82,7 @@ popTable <- function(listID,sYr,eYr,oType) {
       arrange(year)
     
     placX$Population <- format(placX$totalpopulation,big.mark=",")
-    placX$growthRate  <- percent((((placX$totalpopulation/lag(placX$totalpopulation))^(1/(placX$year-lag(placX$year)))) -1)*100,digits=2)
+    placX$growthRate  <- percent((((placX$totalpopulation/lag(placX$totalpopulation))^(1/(placX$year-lag(placX$year)))) -1)*100,digits=1)
     mPlace <- as.matrix(placX[,c(3,2,5,6)])
   }
   
@@ -202,6 +202,18 @@ popTable <- function(listID,sYr,eYr,oType) {
     # Building text
     RowN <- nrow(m.OutTab)
     prevYr <- m.OutTab[RowN-1,1]
+
+    # Extracting last growth rates
+    if(nchar(placename) != 0) {
+        plGR <- gsub("%","",as.character(m.OutTab[RowN,3]))
+        ctyGR <- gsub("%","",as.character(m.OutTab[RowN,5]))
+        stGR <- gsub("%","",as.character(m.OutTab[RowN,7]))
+    } else {
+      # Extracting last growth rates
+      ctyGR <- gsub("%","",as.character(m.OutTab[RowN,3]))
+      stGR <- gsub("%","",as.character(m.OutTab[RowN,5]))
+    }
+    
     if(nchar(placename) != 0) {#Municipalities
       OutTxt_pl <- paste0("At the end of ",eYr, " the estimated population of ",placename, " was ", m.OutTab[RowN,2],", ")
       PopChgVal_pl <- as.numeric(gsub(",","",m.OutTab[RowN,2])) - as.numeric(gsub(",","",m.OutTab[RowN-1,2]))
@@ -209,22 +221,10 @@ popTable <- function(listID,sYr,eYr,oType) {
       PopChgTxt_pl <-  ifelse(PopChgVal_pl > 0, paste0("an increase of ",PopChgFmt_pl," over the population in ",prevYr,"."),
                               ifelse(PopChgVal_pl < 0, paste0("a decrease of ",PopChgFmt_pl," over the population in ",prevYr,"."),paste0("did not change between ",prevYr, " and ",eYr,".")
                               ))
-      
-      OutTxt_cty <- paste0("  During this same period, the population of ",ctyname)
-      PopChgVal_cty <- as.numeric(gsub(",","",m.OutTab[RowN,4])) - as.numeric(gsub(",","",m.OutTab[RowN-1,4]))
-      PopChgFmt_cty <- format(PopChgVal_cty,big.mark=",")
-      PopChgTxt_cty <-  ifelse(PopChgVal_cty > 0, paste0(" increased by ",PopChgFmt_cty,"."),
-                               ifelse(PopChgVal_cty < 0, paste0("decreased by ",PopChgFmt_cty,"."),"remained the same, while "))
-      
-      OutTxt_st <- paste0(" and  the population of Colorado")
-      PopChgVal_st <- as.numeric(gsub(",","",m.OutTab[RowN,6])) - as.numeric(gsub(",","",m.OutTab[RowN-1,6]))
-      PopChgFmt_st <- format(PopChgVal_st,big.mark=",")
-      PopChgTxt_st <-  ifelse(PopChgVal_st > 0, paste0(" increased by ",PopChgFmt_st,"."),
-                              ifelse(PopChgVal_st < 0, paste0("decreased by ",PopChgFmt_st,"."),paste0("remained the same.")
-                              ))
-      
-      
-      outText <- paste0(OutTxt_pl, PopChgTxt_pl,OutTxt_cty,PopChgTxt_cty,OutTxt_st,PopChgTxt_st)
+      grTxtpl <- paste0("  The growth rate for ",placename," between ",prevYr," and ",eYr, " was ",plGR," percent")
+      grTxtpl <- paste0(grTxtpl, " compared to ",ctyGR," percent for ",ctyname," and ",stGR," percent for the State of Colorado.")
+
+      outText <- paste0(OutTxt_pl, PopChgTxt_pl,grTxtpl)
     } else {
       OutTxt_cty <- paste0("At the end of ",eYr, " the estimated population of ",ctyname, " was ", m.OutTab[RowN,2],", ")
       PopChgVal_cty <- as.numeric(gsub(",","",m.OutTab[RowN,2])) - as.numeric(gsub(",","",m.OutTab[RowN-1,2]))
@@ -232,16 +232,11 @@ popTable <- function(listID,sYr,eYr,oType) {
       PopChgTxt_cty <-  ifelse(PopChgVal_cty > 0, paste0("an increase of ",PopChgFmt_cty," over the population in ",prevYr,"."),
                                ifelse(PopChgVal_cty < 0, paste0("a decrease of ",PopChgFmt_cty," over the population in ",prevYr,"."),paste0("did not change between ",prevYr, " and ",eYr,".")
                                ))
+      grTxtcty <- paste0("  The growth rate for ",ctyname," between ",prevYr," and ",eYr, " was ",ctyGR," percent")
+      grTxtcty <- paste0(grTxtcty, " compared to ",stGR," percent for the State of Colorado.")
       
-      OutTxt_st <- paste0(" the population of Colorado")
-      PopChgVal_st <- as.numeric(gsub(",","",m.OutTab[RowN,4])) - as.numeric(gsub(",","",m.OutTab[RowN-1,4]))
-      PopChgFmt_st <- format(PopChgVal_st,big.mark=",")
-      PopChgTxt_st <-  ifelse(PopChgVal_st > 0, paste0(" increased by ",PopChgFmt_st,"."),
-                              ifelse(PopChgVal_st < 0, paste0("decreased by ",PopChgFmt_st,"."),paste0("remained the same.")
-                              ))
-      
-      
-      outText <- paste0(OutTxt_cty,PopChgTxt_cty,OutTxt_st,PopChgTxt_st)    }
+      outText <- paste0(OutTxt_cty,PopChgTxt_cty,grTxtcty)  
+      }
     
     outlist <- list("table" = OutTab, "text" = outText)
     return(outlist)

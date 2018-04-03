@@ -232,6 +232,7 @@ statsTable1 <- function(listID,sYr,eYr,ACS,oType){
         column_spec(4, width = "0.4in") %>%
         footnote(symbol=c("Source: State Demography Office",captionSrc("ACS",ACS)))
     } 
+    return(outKable)
   }
   
   if(oType == "latex") {
@@ -244,12 +245,12 @@ statsTable1 <- function(listID,sYr,eYr,ACS,oType){
     outTab[6,1] <- paste0("Percentage of Population with Incomes lower than the Poverty Line","^")
     outTab[7,1] <- paste0("Percentage of Population Born in Colorado","^")
     
-    add_mat <- matrix(nrow=2,ncol=nCol)
+    add_mat <- matrix(" ",nrow=2,ncol=nCol)
     add_mat[1,1] <- "+Source: State Demography Office"
     add_mat[2,1] <- paste0("^",captionSrc("ACS",ACS))
     
     outTab <- rbind(outTab,add_mat)
-    outTab <- gsub("NA","",outTab)
+    
 
     
         if(nchar(placename) == 0) {
@@ -275,6 +276,13 @@ statsTable1 <- function(listID,sYr,eYr,ACS,oType){
         row_spec(0, align="c") %>%
         column_spec(1, width = "5in") 
     }
+    OutTxt <- " "
+    if(listID$multiCty == "T") {
+      OutTxt <- "Note: For municipalities in multiple counties, comparison data from the largest county is displayed."
+    }
+    outList <- list("table" = outKable, "text" = OutTxt)
+    return(outList)
   }
-  return(outKable)
+  
+ 
 }

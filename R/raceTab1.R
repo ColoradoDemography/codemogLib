@@ -300,7 +300,7 @@ if(nchar(placefips) == 0) { # output county table
      } else {
        OutText <- paste0("The Race Trend table shows the changing racial and ethnic composition of ",placename," beginning in 2000 and continuing to the present.")
      }
-     OutText <- paste0(OutText, " For Colorado as a whole, a growing Hispanic population is increasing the racial and ethnic diversity in the state.")
+     
      
      outList <- list("table" = tabOut,"text" = OutText)
      return(outList)

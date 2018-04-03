@@ -300,9 +300,9 @@ if(nchar(placefips) == 0){
 
     #Preparing Text
     if(nchar(placefips) == 0) {
-      OutText <- paste0("The Race Comparison table compares the distriburion of ethnic/racial groups in ",ctyname," to the state.")
+      OutText <- paste0("The Race Comparison table compares the distriburion of ethnic and racial groups in ",ctyname," to the state.")
     } else {
-      OutText <- paste0("The Race Compaison table compares the distriburion of ethnic/racial groups in ",placename," to ",ctyname, ".")
+      OutText <- paste0("The Race Compaison table compares the distriburion of ethnic and racial groups in ",placename," to ",ctyname, ".")
     }
 
     outList <- list("table" = tabOut,"text" = OutText)

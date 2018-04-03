@@ -45,14 +45,15 @@ jobsPlot=function(listID, maxyr,base=10){
     theme(plot.title = element_text(hjust = 0.5, size=18),
           axis.text.x = element_text(angle=45,size=12),
           axis.text.y = element_text(size=12))
-
-  # Generating text
-  OutText <- paste0("The total estimated jobs are subdivided into 3 categories:")
-  OutText <- paste0(OutText," \\begin{itemize} ")
-  OutText <- paste0(OutText,"\\item \\textit{Direct Basic:} jobs that bring outside dollars into the community by selling goods or services outside the county, such as manufacturing or engineering services,")
-  OutText <- paste0(OutText,"\\item \\textit{Indirect Basic:} jobs that are created as the result of goods and services purchased by direct basic such as accounting services or raw material inputs, and ")
-  OutText <- paste0(OutText,"\\item \\textit{Local (Resident) Services:}  jobs that are supported when income earned from the base industries is spent locally at retailers or are supported by local tax dollars to provide services like education and public safety.")
-  OutText <- paste0(OutText,"\\end{itemize} ")
+  
+  # Creating text
+  OutText <- paste0("The Estimated Jobs is a series created by the SDO to give a comprehensive look at the number of jobs located within ",ctyname,".")  
+  OutText <- paste0(OutText," It is broad in scope, capturing both wage and salary workers as well as most proprietors and agricultural workers.")
+  OutText <- paste0(OutText,"  A more diverse economy is typically more resilient too; when looking at the employment trends recently ")
+  OutText <- paste0(OutText," and after a recession (shaded in gray) it is also important to look at the current share of employment by industry.")
+  OutText <- paste0(OutText," Areas dependent on a single industry such as agriculture, mining or tourism can suffer from prolonged downturns due to drought,")
+  OutText <- paste0(OutText," shifting demand for commodities, and the health of the national economy. ")
+ 
   
   outList <- list("plot" = jobs_plot, "data" = jobs_data, "text" = OutText)
   return(outList)

@@ -297,7 +297,24 @@ incomePRO=function(listID, ACS){
                                                               "$30,000 to $39,999", "$40,000 to $49,999", "$50,000 to $59,999",
                                                               "$60,000 to $74,999","$75,000 to $99,999","$100,000 to $124,999",
                                                               "$125,000 to $149,999","$150,000 to $199,999","$200,000 or more"))
+  
+  
+  if(nchar(placefips) != 0)  {
+      OutText <- paste0("The household income distribution plot compares ",placename," to household incomes for ",ctyname,".")  
+      OutText <- paste0(OutText,"  Household income comes primarily from earnings at work, but government transfer payments")
+      OutText <- paste0(OutText,"  such as Social Security and TANF and unearned income from dividends, interest and rent")
+      OutText <- paste0(OutText,"  are also included. Income and education levels are highly correlated; areas that have lower")
+      OutText <- paste0(OutText,"  educational attainment than the state will typically have lower household incomes.") 
+    } else {
+      OutText <- paste0("The household income distribution plot compares ",ctyname," to the statewide household incomes.")  
+      OutText <- paste0(OutText,"  Household income comes primarily from earnings at work, but government transfer payments")
+      OutText <- paste0(OutText,"  such as Social Security and TANF and unearned income from dividends, interest and rent")
+      OutText <- paste0(OutText,"  are also included. Income and education levels are highly correlated; areas that have lower")
+      OutText <- paste0(OutText,"  educational attainment than the state will typically have lower household incomes.") 
+    }
+    
+
   #bind list
-  outList <- list("plot"= p, "data" =  f.dwideo)
+  outList <- list("plot"= p, "data" =  f.dwideo,"text" = OutText)
   return(outList)
 }

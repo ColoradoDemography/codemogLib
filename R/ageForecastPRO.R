@@ -84,10 +84,10 @@ ageForecastPRO=function(listID, sYr, mYr, eYr, base=12, agegroup="ten"){
   
   
   # Generating text
-    OutText <- paste0("The changing age distribution of the population of ",ctyname," for the period from 2010 through 2025 is shoen here.")
+    OutText <- paste0("The changing age distribution of the population of ",ctyname," for the period from 2010 through 2025 is shown here.")
 
   OutText <- paste0(OutText,"  The changes in proporion of different groups can highligh the need for future planning and service provision.")
-  
+  OutText <- paste0(OutText," Many areas have a larger share of older adults, indicating the need to evaluate housing, transportation and other needs of the senior population.")
 
   #binding List
   outList <- list("plot"= p, "data" = dWide, "text" = OutText)

@@ -55,8 +55,7 @@ migbyagePRO <- function(listID, base=10) {
   f.migplot <- rbind(f.migPlace, f.migState)
   names(f.migplot)[2] <- "geoname"
 
-
-
+  f.migplot <- f.migplot[which(f.migplot$agegroup < 75),]
   f.migplot$geoname <- factor(f.migplot$geoname, levels=c(ctyname, "Colorado"))
   pltTitle <- "Net Migration Rate by Age: 2000-2010"
   subTitle <- ctyname
@@ -88,8 +87,10 @@ migbyagePRO <- function(listID, base=10) {
   names(f.migData) <- c("5-Year Age Group",paste0("2000-2010 Migration Rate: ",ctyname), "2000-2010 Migration Rate: Colorado")
 
   #Geneerating Text
-  OutText <-paste0("This table allows a comparison of net migration by age between ",ctyname," and Colorado.")  
-   OutText <-paste0(OutText," Colorado typically draws many young adults as net migrants; however, areas with colleges draw a number of 18 to 24 year olds while many other parts of the state attract mostly 25 to 35 year olds.")  
+   OutText <-paste0("This plot allows a comparison of net migration by age between ",ctyname," and Colorado.")  
+   OutText <-paste0(OutText," Colorado typically draws many young adults as net migrants. Areas with colleges and resorts draw a number of 18 to 24 year olds.")
+   OutText <-paste0(OutText," Areas with a growing economy tend to account mostly 25 to 35 year olds and areas attractive to retirees")
+   OutText <-paste0(OutText," tend to draw both workers and older adults.")
   
   outList <-list("plot"=p,"data"= f.migData,"text" = OutText)
   return(outList)
