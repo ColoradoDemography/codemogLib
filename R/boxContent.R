@@ -87,7 +87,7 @@ boxContent <- function(title,description, source, MSA, stats, muni, multiCty, Pl
   
   #Table block
   if(table == "T") {
-    ui09 <- tags$p("To download the redered table, click on the 'Submit PDF' button and copy the table from the output PDF report.")
+    ui09 <- tags$p("To download the redered table, click on the 'Download PDF Report' button and copy the table from the output PDF report.")
     outList[[i]] <- ui09
     i <- i + 1
   }
