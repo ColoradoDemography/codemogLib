@@ -148,19 +148,20 @@ jobsByIndustry <- function(listID, curyr, base=10){
   names(f.jobsFin) <- c("Job Sector", paste0("Number of Jobs: ",ctyname), paste0("Percentage of Jobs: ",ctyname))
   
   # Generating text
-  OutText <- paste0("The total estimated jobs are subdivided into 3 categories:")
-  OutText <- paste0(OutText," \\begin{itemize} ")
-  OutText <- paste0(OutText,"\\item \\textit{Direct Basic:} jobs that bring outside dollars into the community by selling goods or services outside the county, such as manufacturing or engineering services,")
-  OutText <- paste0(OutText,"\\item \\textit{Indirect Basic:} jobs that are created as the result of goods and services purchased by direct basic such as accounting services or raw material inputs, and ")
-  OutText <- paste0(OutText,"\\item \\textit{Local (Resident) Services:}  jobs that are supported when income earned from the base industries is spent locally at retailers or are supported by local tax dollars to provide services like education and public safety.")
-  OutText <- paste0(OutText,"\\end{itemize}")
-  OutText <- paste0(OutText, " This plot shows the jobs by industry profile for ",ctyname,".")
-  OutText <- paste0(OutText,"  The relative rank of high-paying sectors, such as mining, information and finacial and insurance services")
-  OutText <- paste0(OutText," versus mid-range jobs (e.g., contsruction, health casre and government)")
-  OutText <- paste0(OutText,"  and lower-paying industrices such as retail trade and accomodation and food services,")
-  OutText <- paste0(OutText,"  will have an impact on a counties' overall economic health.") 
+  OutText1 <- paste0(" The total estimated jobs are subdivided into 3 categories:")
+  OutText1 <- paste0(OutText1," \\begin{itemize} ")
+  OutText1 <- paste0(OutText1,"\\item \\textit{Direct Basic:} jobs that bring outside dollars into the community by selling goods or services outside the county, such as manufacturing or engineering services,")
+  OutText1 <- paste0(OutText1,"\\item \\textit{Indirect Basic:} jobs that are created as the result of goods and services purchased by direct basic such as accounting services or raw material inputs, and ")
+  OutText1 <- paste0(OutText1,"\\item \\textit{Local (Resident) Services:}  jobs that are supported when income earned from the base industries is spent locally at retailers or are supported by local tax dollars to provide services like education and public safety.")
+  OutText1 <- paste0(OutText1,"\\end{itemize}")
   
-  outList <- list("plot" = p.jobs,"data"= f.jobsFin,"text" = OutText)
+  OutText2 <- paste0("This plot shows the jobs by industry profile for ",ctyname,".")
+  OutText2 <- paste0(OutText2,"  The relative rank of high-paying sectors, such as mining, information and finacial and insurance services")
+  OutText2 <- paste0(OutText2," versus mid-range jobs (e.g., contsruction, health casre and government)")
+  OutText2 <- paste0(OutText2,"  and lower-paying industrices such as retail trade and accomodation and food services,")
+  OutText2 <- paste0(OutText2,"  will have an impact on a counties' overall economic health.") 
+  
+  outList <- list("plot"=p.jobs,"data"=f.jobsFin,"text1"=OutText1,"text2"=OutText2)
   return(outList)
 
 }
