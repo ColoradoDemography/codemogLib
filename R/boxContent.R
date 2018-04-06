@@ -80,7 +80,7 @@ boxContent <- function(title,description, source, MSA, stats, muni, multiCty, Pl
 
   # PlFilter block
   if(PlFilter == "T") {
-    ui08 <- tags$p("Municipal estimates are not avaialble for places with fewer than 200 residents.  Please contact the SDO office for additional information.")
+    ui08 <- tags$p("Municipal estimates are not avaialble for unincorporated places and for places with fewer than 200 residents.  Please contact the SDO office for additional information.")
     outList[[i]] <- ui08
     i <- i + 1
   }
