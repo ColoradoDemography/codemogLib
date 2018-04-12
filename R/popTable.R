@@ -10,7 +10,7 @@
 popTable <- function(listID,sYr,eYr,oType) {
   
   # Collecting place ids from  idList, setting default values
-  
+
   ctyfips <- listID$ctyNum
   ctyname <- listID$ctyName
   placefips <- listID$plNum
@@ -75,6 +75,7 @@ popTable <- function(listID,sYr,eYr,oType) {
     rm(drv)
     
     f.popPlace <- f.popPlace[which(f.popPlace$countyfips != 999), ]  # removing "Total" for multi-county cities
+    f.popPlace <- f.popPlace[which(f.popPlace$countyfips == ctynum),]  #Selecting Largest County
     PP <-  f.popPlace %>% group_by(placefips, municipalityname, year)  %>% summarize(totalpopulation = sum(as.numeric(totalpopulation)))
     
     placX <- PP %>% 
