@@ -7,7 +7,6 @@
 #'
 GenerateVenn <- function(listID, oType){
 
-  
   # Collecting place ids from  idList, setting default values
   
   ctyfips <- listID$ctyNum
@@ -60,9 +59,9 @@ if(nchar(placefips) != 0) {
     location <- paste0(ctyname,"\n","All Jobs, ",as.character(f.summary$year))
   }
   
-
-  lout_win <- as.numeric(f.summary$workin_liveout)
-  lin_wout <- as.numeric(f.summary$livein_workout)
+# FIX THIS IN THE FUTURE
+  lin_wout <- as.numeric(f.summary$workin_liveout)
+  lout_win <- as.numeric(f.summary$livein_workout)
   lin_win <-  as.numeric(f.summary$livein_workin)
 
   region1 <- lout_win + lin_win #Live outside, work in
@@ -106,13 +105,24 @@ if(nchar(placefips) != 0) {
 
 
   #Building Legend
+  
+  if(nchar(placefips) != 0) {
+    legstr1 <- paste0("Employees in ",placename," living elsewhere")
+    legstr2 <- paste0("Residents of ",placename," working elsewhere")
+    legstr3 <- paste0("Employed and Live in ",placename)
+  } else {
+    legstr1 <- paste0("Employees in ",ctyname," living elsewhere")
+    legstr2 <- paste0("Residents of ",ctyname," working elsewhere")
+    legstr3 <- paste0("Employed and Live in ",ctyname)
+  }
+  
   cols <- c("chartreuse4", "aquamarine2","aquamarine3")
-  lg <- legendGrob(labels=c("Employed in Selected Area, Live Outside ",
-                            "Live in Selected Area, Employed Outside",
-                            "Employed and Live in Selected Area"),
-                   pch=rep(19,length(c("Employed in Selected Area, Live Outside ",
-                                       "Live in Selected Area, Employed Outside",
-                                       "Employed and Live in Selected Area"))),
+  lg <- legendGrob(labels=c(legstr1,
+                            legstr2,
+                            legstr3),
+                   pch=rep(19,length(c(legstr1,
+                                       legstr2,
+                                       legstr3))),
 
                    gp=gpar(col=cols, fill="gray", fontsize=12),
                    byrow=TRUE)
@@ -184,7 +194,7 @@ if(nchar(placefips) != 0) {
     kable(format='html', table.attr='class="cleanTable"',
           row.names=FALSE,
           align='lrr',
-          caption=capstr1,
+          caption=capstr2,
           col.names = names_spaced,
           escape = FALSE)  %>%
     kable_styling(bootstrap_options = "condensed",full_width = T) %>%
@@ -199,7 +209,7 @@ if(nchar(placefips) != 0) {
     kable(format='html', table.attr='class="cleanTable"',
           row.names=FALSE,
           align='lrr',
-          caption=capstr2,
+          caption=capstr1,
           col.names = names_spaced,
           escape = FALSE)  %>%
     kable_styling(bootstrap_options = "condensed",full_width = T) %>%
@@ -211,8 +221,8 @@ if(nchar(placefips) != 0) {
 
 
   # Binding List for Output
-  outList <- list("plot" = outVenn, "tab1" = work_tab, "data1" = f.work_fin,
-                  "tab2" = live_tab, "data2" = f.live_fin)
+  outList <- list("plot" = outVenn, "tab1" = live_tab, "data1" = f.live_fin,
+                  "tab2" = work_tab, "data2" = f.work_fin)
     }
 
   if(oType == "latex") {
