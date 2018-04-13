@@ -231,7 +231,7 @@ if(nchar(placefips) != 0) {
                   col.names = names_spaced,
                  row.names=FALSE,
                  align='lrr',
-                 caption=capstr1,
+                 caption=capstr2,
                  format="latex", booktabs=TRUE) %>%
     kable_styling(font_size=10)  %>%
     row_spec(0, align = "c") %>%
@@ -242,7 +242,7 @@ if(nchar(placefips) != 0) {
                   col.names = names_spaced,
                   row.names=FALSE,
                   align='lrr',
-                  caption=capstr2,
+                  caption=capstr1,
                   format="latex", booktabs=TRUE) %>%
     kable_styling(font_size=10)  %>%
     row_spec(0, align = "c") %>%
