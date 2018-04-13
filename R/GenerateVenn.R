@@ -146,7 +146,7 @@ if(nchar(placefips) != 0) {
   
   f.work_fin$Count <- format(f.work_fin$Count,big.mark=",")
   f.work_fin$Percent <- percent(f.work_fin$Percent)
-  
+  f.work_fin$Location <- gsub("City City","City",f.work_fin$Location)
 
 
   f.live_fin <- f.place[which(f.place$type == 2),c(5:7)]
@@ -160,7 +160,7 @@ if(nchar(placefips) != 0) {
   
   f.live_fin$Count <- format(f.live_fin$Count,big.mark=",")
   f.live_fin$Percent <- percent(f.live_fin$Percent)
-
+  f.live_fin$Location <- gsub("City City","City",f.live_fin$Location)
 
 
 

@@ -10,7 +10,7 @@
 #'
 statsTable1 <- function(listID,sYr,eYr,ACS,oType){
   #outputs the top table in the dashboard
- 
+browser()
   # Collecting place ids from  idList, setting default values
   
   ctyfips <- listID$ctyNum
@@ -23,7 +23,7 @@ statsTable1 <- function(listID,sYr,eYr,ACS,oType){
   }
   
   state <- "08"
-
+  jobsChk <- 0
   
  
   
@@ -31,7 +31,7 @@ statsTable1 <- function(listID,sYr,eYr,ACS,oType){
     
     sqlStrPop1 <- paste0("SELECT placefips, municipalityname, year, totalpopulation FROM estimates.county_muni_timeseries WHERE placefips = ",as.numeric(placefips)," and year = ", sYr,";")
     sqlStrPop2 <- paste0("SELECT placefips, municipalityname, year, totalpopulation FROM estimates.county_muni_timeseries WHERE placefips = ",as.numeric(placefips)," and year = ", eYr,";")
-    sqlStrJobs <- paste0("SELECT placefips, year, jobs FROM estimates.muni_jobs_long WHERE placefips = ",as.numeric(placefips)," and year = ", eYr,";")
+    sqlStrJobs <- paste0("SELECT placefips, year, jobs FROM estimates.muni_jobs_long WHERE placefips = ",as.numeric(placefips),";")
     # Postgres Call to gather municipal jobs numbers
     pw <- {
       "demography"
@@ -56,7 +56,10 @@ statsTable1 <- function(listID,sYr,eYr,ACS,oType){
     rm(con)
     rm(drv)
     
-
+    #Fixing NA Values
+    f.tPopyr1p$totalpopulation <- ifelse(is.na(f.tPopyr1p$totalpopulation),0,f.tPopyr1p$totalpopulation)
+    f.tPopyr2p$totalpopulation <- ifelse(is.na(f.tPopyr2p$totalpopulation),0,f.tPopyr2p$totalpopulation)
+    
     f.tpop1ps <- f.tPopyr1p %>% group_by(municipalityname,year) %>% summarize(tpop1 = sum(totalpopulation))
     f.tpop2ps <- f.tPopyr2p %>% group_by(municipalityname,year) %>% summarize(tpop2 = sum(totalpopulation))
     
@@ -72,6 +75,19 @@ statsTable1 <- function(listID,sYr,eYr,ACS,oType){
     
     Nativep <- codemog_api(data="b05002",db=ACS, geonum=paste("1", state, placefips, sep=""), meta="no")
     Nativep$pctNativep <- percent(as.numeric(Nativep$b05002003)/as.numeric(Nativep$b05002001)*100)
+    
+    #Correcting Missing Jobs Numbers.
+    jobsChk <- as.numeric(f.muniJobsp[which(f.muniJobsp$year == eYr),3])
+    if(jobsChk == -9) {
+      jobsMis <- f.muniJobsp[order(-f.muniJobsp$year),]
+      for(x in 1:nrow(jobsMis)) {
+        if(jobsMis[x,3] != -9) {
+          jobsPl <- jobsMis[x,]  # This is the place jobs value
+          break
+        }
+      }
+      #retrieving state and 
+    } #jobsChk == -9
   }
   
   #Counties
@@ -86,9 +102,14 @@ statsTable1 <- function(listID,sYr,eYr,ACS,oType){
   f.tpopc$county.x <- paste0(f.tpopc$county.x," County")
   
   #Jobs
-  tJobsc <-  county_jobs(fips=as.numeric(ctyfips), year = eYr) #County
+  if(jobsChk == -9){
+    tJobsc <-  county_jobs(fips=as.numeric(ctyfips), year = jobsPl$year) #County
+  } else {
+    tJobsc <-  county_jobs(fips=as.numeric(ctyfips), year = eYr) #County
+  } 
+
   
-  #Prepping for mupliple countins
+  #Prepping for multiple countins
   hhincc  <- data.frame()
   MedHHValuec <- data.frame()
   Povertyc <- data.frame()
@@ -116,7 +137,13 @@ statsTable1 <- function(listID,sYr,eYr,ACS,oType){
   f.tpopST$popchgST <- as.numeric(f.tpopST$tpop2) - as.numeric(f.tpopST$tpop1)
   
   plNameST <- "Colorado"
-  tJobsST <-  county_jobs(fips=300, year = eYr)
+  
+  #Jobs
+  if(jobsChk == -9){
+    tJobsST <-  county_jobs(fips=300, year = jobsPl$year)
+  } else {
+    tJobsST <-  county_jobs(fips=300, year = eYr)
+  } 
   f.tJobsST <- tJobsST %>%  summarize(totalJobs = sum(as.numeric(totalJobs)))
   
   hhincST <- codemog_api(data="b19013",db=ACS, geonum=paste("1", state,  sep=""), meta="no")
@@ -150,7 +177,13 @@ statsTable1 <- function(listID,sYr,eYr,ACS,oType){
   nCol <- 1
   outTab[1,nCol] <- paste0("Population (",eYr,")",footnote_marker_symbol(1))
   outTab[2,nCol] <- paste0("Population Change (",sYr," to ",eYr, ")",footnote_marker_symbol(1))
-  outTab[3,nCol] <- paste0("Total Employment (",eYr,")",footnote_marker_symbol(1))
+  
+  if(jobsChk == -9) {
+    outTab[3,nCol] <- paste0("Total Employment (",jobsPl$year,")",footnote_marker_symbol(1))
+  } else {
+    outTab[3,nCol] <- paste0("Total Employment (",eYr,")",footnote_marker_symbol(1))
+  }
+  
   outTab[4,nCol] <- paste0("Median Household Income",footnote_marker_symbol(2))
   outTab[5,nCol] <- paste0("Median House Value",footnote_marker_symbol(2))
   outTab[6,nCol] <- paste0("Percentage of Population with Incomes lower than the Poverty Line",footnote_marker_symbol(2))
@@ -162,7 +195,12 @@ statsTable1 <- function(listID,sYr,eYr,ACS,oType){
     f.tpopp <- f.tpopp[1,]
     outTab[1,nCol] <- format(as.numeric(f.tpopp$tpop2),nsmall=0, big.mark=",")
     outTab[2,nCol] <- format(as.numeric(f.tpopp$popchnp),nsmall=0, big.mark=",")
-    outTab[3,nCol] <- format(round(as.numeric(f.muniJobsp$jobs),digits=0),nsmall=0, big.mark=",")
+    if(jobsChk == -9){
+      outTab[3,nCol] <- format(round(as.numeric(jobsPl$jobs),digits=0),nsmall=0, big.mark=",")
+    } else {
+      outTab[3,nCol] <- format(round(as.numeric(f.muniJobsp$jobs),digits=0),nsmall=0, big.mark=",")
+    }
+    
     outTab[4,nCol] <- paste0("$",format(as.numeric(hhincp$b19013001),nsmall=0, big.mark=","))
     outTab[5,nCol] <- paste0("$",format(as.numeric(MedHHValuep$b25077001),nsmall=0, big.mark=","))
     outTab[6,nCol] <- Povertyp$pctPovertyp

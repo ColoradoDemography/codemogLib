@@ -29,8 +29,7 @@ popPlace <- function(level) {
                             FROM estimates.county_muni_timeseries WHERE year=2016 and placefips = 0;")
     
     f.pLookup <- dbGetQuery(con, "SELECT countyfips, placefips, municipalityname, year, totalpopulation
-                            FROM estimates.county_muni_timeseries WHERE year=2016 and placefips != 0
-                            and placefips != 99990 and countyfips != 999;")
+                            FROM estimates.county_muni_timeseries WHERE year=2016;" )
     
     #f.mLookup is the multi county cities
     f.mLookup <- dbGetQuery(con, "SELECT countyfips, placefips,  year, totalpopulation
@@ -55,7 +54,13 @@ popPlace <- function(level) {
    }
   
   if(level == "Municipalities") {
-    f.pLookup$municipalityname <- sub(' \\(Part\\)','',f.pLookup$municipalityname)
+    #removing errant records...
+    f.pLookup <- f.pLookup[which(f.pLookup$placefips != 0),] #remove State Records
+    f.pLookup <- f.pLookup[which(f.pLookup$countyfips != 999),] # County total records for multiple places
+    f.pLookup <- f.pLookup[which(f.pLookup$placefips != 99990),] #Remove Unincoprpoated Areas
+    f.pLookup <- f.pLookup[which(!is.na(f.pLookup$placefips)),] #Remove Disbanded Areas
+    
+    f.pLookup$municipalityname <- gsub(' \\(Part\\)','',f.pLookup$municipalityname)
   
     #merging f.pLookup and f.mLookup and updating totalpopulation value
     f.mLookup <- f.mLookup[,c(2,4)]
