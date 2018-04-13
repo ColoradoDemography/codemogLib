@@ -19,7 +19,7 @@ chkID <- function(lvl,fipslist,plName,ctyList,plList) {
       plName <-  unique(plList[which(plList$placefips == as.numeric(plNum)),3])
       pCty   <- plList[which(plList$placefips == as.numeric(plNum)),]  # this is the list of counties
       pCtyf   <- str_pad(as.numeric(pCty$countyfips),3,pad="0")
-      pCty <- pCty[which(!is.na(pCty$cty_Pop)),]
+      pCty$cty_Pop <- ifelse(is.na(pCty$cty_Pop),0,pCty$cty_Pop) #Fixing NA values
       ctyNum <- pCty[which(pCty$cty_Pop == max(pCty$cty_Pop)),1]  # The county with the most population
       ctyNum <- str_pad(ctyNum,3,pad="0")
       ctyName <- ctyList[which(ctyList$countyfips == as.numeric(ctyNum)),3]

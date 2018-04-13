@@ -18,7 +18,7 @@
 
 
 pop_timeseries=function(listID, beginyear=2000,endyear, base=10){
-  
+
   # Collecting place ids from  idList, setting default values
 
   ctyfips <- listID$ctyNum
@@ -58,9 +58,10 @@ pop_timeseries=function(listID, beginyear=2000,endyear, base=10){
     rm(drv)
 
     d1 <- d1[which(d1$countyfips != 999), ]  # removing "Total" for multi-county cities
-    d1 <- d1[which(d1$countyfips == ctynum),]
+    d1$totalpopulation <- ifelse(is.na(d1$totalpopulation),0,d1$totalpopulation)  #Fixing NA values
+    d1$municipalityname <-gsub(' \\([P,p]art\\)','',d1$municipalityname)
     d <- d1 %>% group_by(placefips, municipalityname, year) %>% summarize(totalPopulation = sum(totalpopulation))
-    d$placename <-sub(' \\([P,p]art\\)','',d$municipalityname)
+    d$placename <- d$municipalityname
     
    } else { #fips is a county code
         
