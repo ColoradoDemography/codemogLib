@@ -10,7 +10,7 @@
 #'
 statsTable1 <- function(listID,sYr,eYr,ACS,oType){
   #outputs the top table in the dashboard
-browser()
+
   # Collecting place ids from  idList, setting default values
   
   ctyfips <- listID$ctyNum
@@ -86,8 +86,9 @@ browser()
           break
         }
       }
-      #retrieving state and 
-    } #jobsChk == -9
+    } else {
+      f.muniJobsp <- f.muniJobsp[which(f.muniJobsp$year == eYr),]
+      } #jobsChk == -9
   }
   
   #Counties
