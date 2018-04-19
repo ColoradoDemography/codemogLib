@@ -4,6 +4,6 @@
 #'
 submitReport <- function() {
 
-  outstr <-paste0("<script>dataLayer.push({'report': true})</script>")
+  outstr <-paste0("<script>dataLayer.push({'report': true, 'event': 'downloadReport'})</script>")
   return(outstr)
 }
