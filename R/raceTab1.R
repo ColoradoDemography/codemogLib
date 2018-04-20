@@ -29,6 +29,7 @@ raceTab1 <- function(listID, ACS,oType) {
 
   #output race tab using pull from API
 if(nchar(placefips) == 0) { # output county table
+  Cens20K <- 1
   #call to ACS Race variables
 
   ACSRace=codemog_api(data="b03002", db=ACS, geonum=paste("1", "08", ctyfips, sep=""),meta="no")
