@@ -14,7 +14,7 @@
 #'
 raceTab1 <- function(listID, ACS,oType) {
   # Collecting place ids from  idList, setting default values
-  
+
   ctyfips <- listID$ctyNum
   ctyname <- listID$ctyName
   placefips <- listID$plNum
@@ -186,9 +186,12 @@ if(nchar(placefips) == 0) { # output county table
                         race = "TotalP",
                         Census.2010 = "100.00%")
   p9_10 <- rbind(p9_10,CensRow)
-  
+
   #Call to Census 2000 API
   p4_00=codemog_api(data="p4", db="c2000",geonum=paste("1", state, placefips, sep=""),meta="no")
+  # Correction for communities founded after 2000
+  if(nrow(p4_00) == 1) {
+  Cens20K <- 1
   p4_00[,7:ncol(p4_00)]=as.numeric(as.character(p4_00[,7:ncol(p4_00)]))
   p4_00=p4_00%>%
     select(geoname:p4011)%>%
@@ -211,9 +214,18 @@ if(nchar(placefips) == 0) { # output county table
   
   names(CensRow)[3] <- "Census.2000"
   p4_00 <- rbind(p4_00,CensRow)
+  } else {
+   Cens20K <- 0
+  }
+  
   
   # Producing Joined File
-  raceTmp <- inner_join(p4_00, p9_10)
+  if(Cens20K == 1) {
+    raceTmp <- inner_join(p4_00, p9_10)
+  } else {
+    raceTmp <-  p9_10
+  }
+ 
   
   f.raceFin <- inner_join(raceTmp, f.ACSRace)
   }
@@ -229,12 +241,23 @@ if(nchar(placefips) == 0) { # output county table
                                                                      ifelse(f.raceFin$race == "NHNHOPIP","Non-Hispanic Native Hawaiian/Pacific Islander",
                                                                             ifelse(f.raceFin$race == "NHOtherP","Non-Hispanic Other","Non-Hispanic, Two Races")))))))))
 
-  m.race <- as.matrix(f.raceFin[c(1:4,6,5,7:10), c(6,3,4,5)]) #This is the matrix table
+  if(Cens20K == 1){
+    m.race <- as.matrix(f.raceFin[c(1:4,6,5,7:10), c(6,3,4,5)]) #This is the matrix table
+  } else {
+    m.race <- as.matrix(f.raceFin[c(1:4,6,5,7:10), c(5,3,4)]) #This is the matrix table
+  }
+  
 
 
   #Column Names
   ACSName <- paste0("20",substr(ACS,6,7),"[note]")
-  names_spaced <- c("Race","2000[note]","2010[note]",ACSName)
+  
+  if(Cens20K == 1){
+    names_spaced <- c("Race","2000[note]","2010[note]",ACSName)
+  } else {
+    names_spaced <- c("Race","2010[note]",ACSName)
+  }
+  
 
   #Span Header
 
@@ -252,6 +275,7 @@ if(nchar(placefips) == 0) { # output county table
   
   
  if(oType == "html") {
+  if(Cens20K == 1) { 
   race_tab <- m.race %>%
     kable(format='html', table.attr='class="cleanTable"',
           digits=1,
@@ -273,35 +297,89 @@ if(nchar(placefips) == 0) { # output county table
                  notation = "symbol")
 
   race_data <- data.frame(m.race)
-  race_data$geoname <- ctyname
+  if(nchar(placefips) == 0) {
+    race_data$geoname <- ctyname
+  } else {
+    race_data$geoname <- placename
+  }
   race_data <- race_data[,c(5,1:4)]
   names(race_data) <- c("Geography","Race Category","Census 2000", "Census 2010",toupper(ACS))
+  } else {
+    race_tab <- m.race %>%
+      kable(format='html', table.attr='class="cleanTable"',
+            digits=1,
+            row.names=FALSE,
+            align='lrrr',
+            caption="Race Trend",
+            col.names = names_spaced,
+            escape = FALSE)  %>%
+      kable_styling(bootstrap_options = "condensed",full_width = F,font_size = 12) %>%
+      column_spec(1, width="4in") %>%
+      column_spec(2, width="0.5in") %>%
+      column_spec(3, width="0.5in") %>%
+      add_indent(c(3:9)) %>%
+      add_header_above(header=tblHead) %>%
+      add_footnote(c("Source: 2010 Census",
+                     captionSrc("ACS",ACS)),
+                   notation = "symbol")
+ 
+    race_data <- data.frame(m.race)
+    if(nchar(placefips) == 0) {
+      race_data$geoname <- ctyname
+    } else {
+      race_data$geoname <- placename
+    }
+    race_data <- race_data[,c(4,1:3)]
+    names(race_data) <- c("Geography","Race Category", "Census 2010",toupper(ACS))
+  }
 
   outList <- list("table" = race_tab, "data" = race_data)
   return(outList)
  }
+  
+  
   if(oType == "latex") {
-    # set vector names
-     tabOut <- kable(m.race, col.names = names_spaced,
-                    caption="Race Trend", row.names=FALSE, align=c("l",rep("r",3)),
-                    format="latex", booktabs=TRUE)  %>%
-       kable_styling(latex_options="scale_down",font_size = 10) %>%
-      row_spec(0, align = "c") %>%
-      add_indent(c(3:9)) %>%
-      add_header_above(header=tblHead) %>%
-      add_footnote(c("Source; 2000 Census",
-                     "Source: 2010 Census",
-                     captionSrc("ACS",ACS)),
-                   notation = "symbol")
-     
-     #Preparing Text
-     if(nchar(placefips) == 0) {
-       OutText <- paste0("The Race Trend table shows the changing racial and ethnic composition of ",ctyname," beginning in 2000 and continuing to the present.")
-     } else {
-       OutText <- paste0("The Race Trend table shows the changing racial and ethnic composition of ",placename," beginning in 2000 and continuing to the present.")
-     }
-     
-     
+    if(Cens20K == 1) {
+      # set vector names
+      tabOut <- kable(m.race, col.names = names_spaced,
+                      caption="Race Trend", row.names=FALSE, align=c("l",rep("r",3)),
+                      format="latex", booktabs=TRUE)  %>%
+        kable_styling(latex_options="scale_down",font_size = 10) %>%
+        row_spec(0, align = "c") %>%
+        add_indent(c(3:9)) %>%
+        add_header_above(header=tblHead) %>%
+        add_footnote(c("Source; 2000 Census",
+                       "Source: 2010 Census",
+                       captionSrc("ACS",ACS)),
+                     notation = "symbol")
+      
+      #Preparing Text
+      if(nchar(placefips) == 0) {
+        OutText <- paste0("The Race Trend table shows the changing racial and ethnic composition of ",ctyname," beginning in 2000 and continuing to the present.")
+      } else {
+        OutText <- paste0("The Race Trend table shows the changing racial and ethnic composition of ",placename," beginning in 2000 and continuing to the present.")
+      } 
+      } else {
+        # set vector names
+        tabOut <- kable(m.race, col.names = names_spaced,
+                        caption="Race Trend", row.names=FALSE, align=c("l",rep("r",3)),
+                        format="latex", booktabs=TRUE)  %>%
+          kable_styling(latex_options="scale_down",font_size = 10) %>%
+          row_spec(0, align = "c") %>%
+          add_indent(c(3:9)) %>%
+          add_header_above(header=tblHead) %>%
+          add_footnote(c("Source: 2010 Census",
+                         captionSrc("ACS",ACS)),
+                       notation = "symbol")
+        
+        #Preparing Text
+        if(nchar(placefips) == 0) {
+          OutText <- paste0("The Race Trend table shows the changing racial and ethnic composition of ",ctyname," beginning in 2010 and continuing to the present.")
+        } else {
+          OutText <- paste0("The Race Trend table shows the changing racial and ethnic composition of ",placename," beginning in 2010 and continuing to the present.")
+        }
+      }
+
      outList <- list("table" = tabOut,"text" = OutText)
      return(outList)
   }
