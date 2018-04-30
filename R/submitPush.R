@@ -6,7 +6,7 @@
 #' @export
 #'
 submitPush <- function(lvl,unit,topics) {
-browser()
+
   lvlStr <- paste0("'DataLevel' : '",lvl,"'")
   unitStr <-paste0("'Location' : '",unit,"'")
   
