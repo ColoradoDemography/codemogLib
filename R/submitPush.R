@@ -52,7 +52,7 @@ submitPush <- function(lvl,unit,topics) {
   }  
     
   #assembling script
-  outstr <-paste0("dataLayer.push({",lvlStr,",",unitStr,",",statsStr,",",popfStr,",",
+  outstr <-paste0("window.dataLayer.push({",lvlStr,",",unitStr,",",statsStr,",",popfStr,",",
                   popStr,",",popcStr,",",housingStr,",",commStr,",",emplindStr,",",emplyStr,", 'event':'viewProfile'});")
   
   return(outstr)
