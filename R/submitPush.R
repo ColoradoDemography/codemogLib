@@ -7,28 +7,28 @@
 #'
 submitPush <- function(lvl,unit,topics) {
 
-  lvlStr <- paste0("'Level' : '",lvl,"'")
-  unitStr <-paste0("'Unit' : '",unit,"'")
+  lvlStr <- paste0("'DataLevel' : '",lvl,"'")
+  unitStr <-paste0("'Location' : '",unit,"'")
   
   if("stats" %in% topics) {
-    statsStr <- "'Basic_Stats' : 'yes'"
+    statsStr <- "'BasicStatistics' : 'yes'"
   }else {
-    statsStr <- "'Basic_Stats' : 'no'"
+    statsStr <- "'BasicStatistics' : 'no'"
   }  
   if("popf" %in% topics) {
-    popfStr <- "'Pop_Forecast' : 'yes'"
+    popfStr <- "'PopulationForecast' : 'yes'"
   }else {
-    popfStr <- "'Pop_Forecast' : 'no'"
+    popfStr <- "'PopulationForecast' : 'no'"
   }  
   if("pop" %in% topics) {
-    popStr <- "'Pop_Age' : 'yes'"
+    popStr <- "'AgeCharacteristics' : 'yes'"
   }else {
-    popStr <- "'Pop_Age' : 'no'"
+    popStr <- "'AgeCharacteristics' : 'no'"
   }
   if("popc" %in% topics) {
-    popcStr <- "'Pop_Other' : 'yes'"
+    popcStr <- "'PopulationCharacteristics' : 'yes'"
   }else {
-    popcStr <- "'Pop_Other' : 'no'"
+    popcStr <- "'Populationcharacteristics' : 'no'"
   }
   if("housing" %in% topics) {
     housingStr <- "'Housing' : 'yes'"
@@ -41,14 +41,14 @@ submitPush <- function(lvl,unit,topics) {
     commStr <- "'Commuting' : 'no'"
   }  
   if("emplind" %in% topics) {
-    emplindStr <- "'Employ_Ind' : 'yes'"
+    emplindStr <- "'EmploymentIndustry' : 'yes'"
   }else {
-    emplindStr <- "'Employ_Ind' : 'no'"
+    emplindStr <- "'EmploymentIndustry' : 'no'"
   } 
   if("emply" %in% topics) {
-    emplyStr <- "'Employ_Wage' : 'yes'"
+    emplyStr <- "'EmploymentCharacteristics' : 'yes'"
   }else {
-    emplyStr <- "'Employ_Wage' : 'no'"
+    emplyStr <- "'EmploymentCharacteristics' : 'no'"
   }  
     
   #assembling script
