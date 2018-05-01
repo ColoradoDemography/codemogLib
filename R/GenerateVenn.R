@@ -75,13 +75,13 @@ if(nchar(placefips) != 0) {
   if(lin_wout >= lout_win){
     diag <- draw.pairwise.venn(region1, region2, crossRegion, inverted = TRUE,
                                lty = rep("solid", 2), cat.col = rep("black", 2),
-                               cex = 1, cat.cex = 1,
+                               cex = 1, cat.cex = 1, cat.default.pos= "text", ext.text = FALSE,
                                fill = c("chartreuse4", "aquamarine2"), alpha = rep(0.5, 2),
                                euler.d=TRUE,scaled=TRUE, ind = FALSE, print.mode="raw")
   } else{
     diag <- draw.pairwise.venn(region1, region2, crossRegion, inverted = FALSE,
                                lty = rep("solid", 2), cat.col = rep("black", 2),
-                               cex = 1, cat.cex = 1,
+                               cex = 1, cat.cex = 1,  cat.default.pos= "text", ext.text  = FALSE,
                                fill = c("chartreuse4", "aquamarine2"), alpha = rep(0.5, 2),
                                euler.d=TRUE,scaled=TRUE, ind = FALSE, print.mode="raw")
   }
