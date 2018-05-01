@@ -76,7 +76,7 @@ HouseVal <- function(listID, ACS, oType, state="08"){
   names(f.ACSCTYL)[1] <- "CTY_VAL"
   f.ACSCTYL <- rownames_to_column( f.ACSCTYL,"value")
 
- 
+  
   # Raw County data Owners MOE
   f.b25077_moe <- codemog_api(data="b25077_moe", db=ACS, geonum=paste0("1", state, ctyfips),meta="no") # Median Value
   f.b25095_moe <- codemog_api(data="b25095_moe", db=ACS, geonum=paste0("1", state, ctyfips),meta="no") # costs as % of Income
@@ -108,7 +108,7 @@ HouseVal <- function(listID, ACS, oType, state="08"){
     PCT_OO_3049 = percent(PROP_OO_3049*100),
     PROP_OO_50 = OO_50/tot_OO,
     PCT_OO_50 = percent(PROP_OO_50*100),
-    Med_Rent = b25074_moe001,
+    Med_Rent = b25064_moe001,
     RT_3049 = sqrt(b25074_moe006^2 + b25074_moe007^2 + b25074_moe008^2 + 
       b25074_moe015^2 + b25074_moe016^2 + b25074_moe017^2 + 
       b25074_moe024^2 + b25074_moe025^2 + b25074_moe026^2 + 
@@ -218,7 +218,7 @@ HouseVal <- function(listID, ACS, oType, state="08"){
     PCT_OO_3049 = percent(PROP_OO_3049*100),
     PROP_OO_50 = OO_50/tot_OO,
     PCT_OO_50 = percent(PROP_OO_50*100),
-    Med_Rent = b25074_moe001,
+    Med_Rent = b25064_moe001,
     RT_3049 = sqrt(b25074_moe006^2 + b25074_moe007^2 + b25074_moe008^2 + 
                      b25074_moe015^2 + b25074_moe016^2 + b25074_moe017^2 + 
                      b25074_moe024^2 + b25074_moe025^2 + b25074_moe026^2 + 
@@ -328,7 +328,7 @@ HouseVal <- function(listID, ACS, oType, state="08"){
     PCT_OO_3049 = percent(PROP_OO_3049*100),
     PROP_OO_50 = OO_50/tot_OO,
     PCT_OO_50 = percent(PROP_OO_50*100),
-    Med_Rent = b25074_moe001,
+    Med_Rent = b25064_moe001,
     RT_3049 = sqrt(b25074_moe006^2 + b25074_moe007^2 + b25074_moe008^2 + 
                      b25074_moe015^2 + b25074_moe016^2 + b25074_moe017^2 + 
                      b25074_moe024^2 + b25074_moe025^2 + b25074_moe026^2 + 
