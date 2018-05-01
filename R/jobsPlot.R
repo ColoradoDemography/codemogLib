@@ -27,6 +27,9 @@ jobsPlot=function(listID, maxyr,base=10){
            jobs=round(as.numeric(jobs),0),
            year=as.numeric(as.character(year)))
 
+  jobs_data <- jobs_data[which(!is.na(jobs_data$jobs)),]
+  
+  
   axs <- setAxis(as.numeric(jobs_data$jobs))
 
   jobs_plot <- jobs_data %>%
