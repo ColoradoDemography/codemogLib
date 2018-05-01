@@ -71,7 +71,8 @@ pop_timeseries=function(listID, beginyear=2000,endyear, base=10){
    }
         
   d$totalPopulation <- as.numeric(d$totalPopulation)
-
+  d <- d[which(d$totalPopulation != 0),]
+  
   yaxs <- setAxis(d$totalPopulation)
   xaxs <- setAxis(d$year)
   if(xaxs$maxBrk != endyear) {

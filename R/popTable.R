@@ -45,7 +45,7 @@ popTable <- function(listID,sYr,eYr,oType) {
            totalpopulation=as.numeric(totalpopulation),
            growthRate=percent(signif((((totalpopulation/lag(totalpopulation))^(1/(year-lag(year)))) -1)*100),digits=1),
            Population=comma(totalpopulation))
-  
+  mCty$Population  <- ifelse(mCty$totalpopulation == 0, " ",mCty$Population)
   
   
   
@@ -104,6 +104,7 @@ popTable <- function(listID,sYr,eYr,oType) {
     placX <- PP %>% 
       filter(year %in% yrs)%>%
       arrange(year)
+    placX <- placX[which(placX$totalpopulation != 0),]
     
     placX$Population <- format(placX$totalpopulation,big.mark=",")
     placX$growthRate  <- percent((((placX$totalpopulation/lag(placX$totalpopulation))^(1/(placX$year-lag(placX$year)))) -1)*100,digits=1)
