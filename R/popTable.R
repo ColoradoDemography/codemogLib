@@ -74,9 +74,31 @@ popTable <- function(listID,sYr,eYr,oType) {
     rm(con)
     rm(drv)
     
+
     f.popPlace <- f.popPlace[which(f.popPlace$countyfips != 999), ]  # removing "Total" for multi-county cities
     f.popPlace$totalpopulation <- ifelse(is.na(f.popPlace$totalpopulation),0,f.popPlace$totalpopulation) #Fixing NA values
     f.popPlace$municipalityname <-gsub(' \\([P,p]art\\)','',f.popPlace$municipalityname)
+    
+    # Adding records for Municipalities incorpropated after the beginning date in the series
+    if(min(f.popPlace$year) > sYr) {
+      minYr <- min(f.popPlace$year) 
+      newRows <- minYr - sYr
+      newYr <- matrix(nrow=newRows, ncol=5)
+      for(x in 1:newRows) {
+        newYr[x,1] <- ctyfips
+        newYr[x,2] <- placefips
+        newYr[x,3] <- placename
+        newYr[x,4] <- as.numeric(sYr + (x - 1))
+        newYr[x,5] <- 0
+      }
+
+      f.newRec <- as.data.frame(newYr,stringsAsFactors=FALSE)  
+      names(f.newRec) <- c("countyfips", "placefips", "municipalityname", "year", "totalpopulation")
+      f.newRec$year <- as.numeric(f.newRec$year)
+      f.newRec$totalpopulation <- as.numeric(f.newRec$totalpopulation)
+      f.popPlace <- rbind(f.newRec,f.popPlace)
+      }
+
     PP <-  f.popPlace %>% group_by(placefips, municipalityname, year)  %>% summarize(totalpopulation = sum(as.numeric(totalpopulation)))
     
     placX <- PP %>% 
@@ -85,10 +107,11 @@ popTable <- function(listID,sYr,eYr,oType) {
     
     placX$Population <- format(placX$totalpopulation,big.mark=",")
     placX$growthRate  <- percent((((placX$totalpopulation/lag(placX$totalpopulation))^(1/(placX$year-lag(placX$year)))) -1)*100,digits=1)
-    mPlace <- as.matrix(placX[,c(3,2,5,6)])
+    placX$Population  <- ifelse(placX$totalpopulation == 0, " ",placX$Population)
+     mPlace <- as.matrix(placX[,c(3,2,5,6)])
   }
   
-  
+
   if(nchar(placename) != 0) { #if a placename is present
     m.OutTab <- cbind(mPlace,mCty,mCO)
     m.OutTab <- m.OutTab[,c(1,3,4,11,10,14,15)]
@@ -96,8 +119,15 @@ popTable <- function(listID,sYr,eYr,oType) {
     m.OutTab <- cbind(mCty,mCO)
     m.OutTab <- m.OutTab[,c(3,7,6,10,11)] 
   } 
+  
+  
   m.OutTab <- as.matrix(m.OutTab)
   m.OutTab <- gsub("NA%","",m.OutTab)
+  #Additional Suppressions
+  m.OutTab <- gsub("NaN%","",m.OutTab)
+  m.OutTab <- gsub("Inf%","",m.OutTab)
+  
+  
   
   if(nchar(placename) != 0) {
     names_spaced <- c("Year","Population","Growth Rate","Population","Growth Rate","Population","Growth Rate") 
