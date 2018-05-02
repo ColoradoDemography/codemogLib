@@ -66,7 +66,7 @@ migbyagePRO <- function(listID, base=10) {
 
 
   p <- f.migplot %>%ggplot(aes(x=agegroup, y=netmig0010))+
-    geom_bar(stat="identity", position="dodge", fill="#6EC4E8") +
+    geom_bar(stat="identity", position="dodge", fill="#6EC4E8", color="black") +
     theme_codemog(base_size=base)+
     scale_y_continuous(labels = comma) +
     geom_hline(yintercept=0, size=1.05) +
