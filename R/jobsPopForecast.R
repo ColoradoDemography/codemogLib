@@ -86,12 +86,20 @@ jobsPopForecast <- function(listID, curyr, base=10){
 
   axsP <- setAxis(f.plotdata$Population)
   axsJ <- setAxis(f.plotdata$Jobs)
+  #Selecting the Axis boundaries
+  if(axsP$maxBrk > axsJ$maxBrk) {
+    minAxis <- axsJ$minBrk
+    maxAxis <- axsP$maxBrk
+  } else {
+    minAxis <- axsP$minBrk
+    maxAxis <- axsJ$maxBrk
+  }
 
   Plot <-  ggplot(data=f.plotdata)+
     geom_line(aes(x=year, y=Jobs, colour= "Jobs", linetype=Series),  size=1.50) +
     geom_line(aes(x=year, y=Population,color="Population", linetype=Series), size=1.50) +
     scale_colour_manual(" ", values=c("Jobs" = "#6EC4E8", "Population" = "#00953A")) +
-    scale_y_continuous(limits=c(axsJ$minBrk,axsP$maxBrk), label=comma)+
+    scale_y_continuous(limits=c(minAxis,maxAxis), label=comma)+
     scale_x_continuous(breaks=seq(2010,2040, 5)) +
     theme_codemog(base_size=base)+
     labs(title = pltTitle,

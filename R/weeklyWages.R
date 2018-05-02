@@ -52,8 +52,10 @@ weeklyWages <- function(listID, base=10){
   f.wagePL_L <- gather(f.wagePL,year,wages, wkwage_2001:wkwage_2016)
   f.wagePL_L$year <- as.numeric(gsub("wkwage_","",f.wagePL_L$year))
   f.wagePL_L$wages <- as.numeric(f.wagePL_L$wages)
+  
   f.wagePL_L$fmt_wages <- paste0("$", formatC(as.numeric(f.wagePL_L$wages), format="f", digits=0, big.mark=","))
   f.wagePL_L <- f.wagePL_L[which(f.wagePL_L$year >= 2001),]
+  f.wagePL_L <- f.wagePL_L[which(f.wagePL_L$wages != 0),]
   f.wagePL_L$geoname <- ctyname
 
   # Creating long data set for State data
