@@ -24,7 +24,6 @@ raceTab1 <- function(listID, ACS,oType) {
     placename <- ""
   }
   
-  
   state="08"
 
   #output race tab using pull from API
@@ -96,6 +95,7 @@ if(nchar(placefips) == 0) { # output county table
 
   #Call to Census 2000 API
   p4_00=codemog_api(data="p4", db="c2000",geonum=paste("1", state, ctyfips, sep=""),meta="no")
+  if(nrow(p4_00) != 0) {
   p4_00[,7:ncol(p4_00)]=as.numeric(as.character(p4_00[,7:ncol(p4_00)]))
   p4_00=p4_00%>%
     select(geoname:p4011)%>%
@@ -118,11 +118,12 @@ if(nchar(placefips) == 0) { # output county table
 
   names(CensRow)[3] <- "Census.2000"
   p4_00 <- rbind(p4_00,CensRow)
-
-  # Producing Joined File
   raceTmp <- inner_join(p4_00, p9_10)
-
+  }  else {
+  raceTmp <-  p9_10
+  }
   f.raceFin <- inner_join(raceTmp, f.ACSRace)
+  
 } else{ #output municipality table
   #call to ACS Race variables
   
@@ -226,8 +227,6 @@ if(nchar(placefips) == 0) { # output county table
   } else {
     raceTmp <-  p9_10
   }
- 
-  
   f.raceFin <- inner_join(raceTmp, f.ACSRace)
   }
 
@@ -242,7 +241,7 @@ if(nchar(placefips) == 0) { # output county table
                                                                      ifelse(f.raceFin$race == "NHNHOPIP","Non-Hispanic Native Hawaiian/Pacific Islander",
                                                                             ifelse(f.raceFin$race == "NHOtherP","Non-Hispanic Other","Non-Hispanic, Two Races")))))))))
 
-  if(Cens20K == 1){
+  if(nrow(p4_00) != 0){
     m.race <- as.matrix(f.raceFin[c(1:4,6,5,7:10), c(6,3,4,5)]) #This is the matrix table
   } else {
     m.race <- as.matrix(f.raceFin[c(1:4,6,5,7:10), c(5,3,4)]) #This is the matrix table
@@ -253,7 +252,7 @@ if(nchar(placefips) == 0) { # output county table
   #Column Names
   ACSName <- paste0("20",substr(ACS,6,7),"[note]")
   
-  if(Cens20K == 1){
+  if(nrow(p4_00) != 0){
     names_spaced <- c("Race","2000[note]","2010[note]",ACSName)
   } else {
     names_spaced <- c("Race","2010[note]",ACSName)
@@ -276,7 +275,7 @@ if(nchar(placefips) == 0) { # output county table
   
   
  if(oType == "html") {
-  if(Cens20K == 1) { 
+  if(nrow(p4_00) != 0) { 
   race_tab <- m.race %>%
     kable(format='html', table.attr='class="cleanTable"',
           digits=1,
@@ -340,7 +339,7 @@ if(nchar(placefips) == 0) { # output county table
   
   
   if(oType == "latex") {
-    if(Cens20K == 1) {
+    if(nrow(p4_00) != 0) {
       # set vector names
       tabOut <- kable(m.race, col.names = names_spaced,
                       caption="Race Trend", row.names=FALSE, align=c("l",rep("r",3)),
