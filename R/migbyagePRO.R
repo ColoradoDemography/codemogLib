@@ -18,7 +18,6 @@ migbyagePRO <- function(listID, base=10) {
     placename <- ""
   }
   
-  state= 0
 
   # create a connection
   # save the password that we can "hide" it as best as we can by collapsing it
@@ -68,13 +67,14 @@ migbyagePRO <- function(listID, base=10) {
   p <- f.migplot %>%ggplot(aes(x=agegroup, y=netmig0010))+
     geom_bar(stat="identity", position="dodge", fill="#6EC4E8", color="black") +
     theme_codemog(base_size=base)+
+    scale_x_continuous(breaks=seq(0, 70, 5)) +
     scale_y_continuous(labels = comma) +
     geom_hline(yintercept=0, size=1.05) +
     labs(title = pltTitle,
          subtitle = subTitle,
          caption = captionSrc("SDO",""),
          x = xTitle,
-         y= "Net Migration Rate (per 1,000)") +
+         y= "Net Migration") +
     theme(plot.title = element_text(hjust = 0.5, size=18),
           panel.background = element_rect(fill = "white", colour = "gray50"),
           panel.grid.major = element_line(colour = "gray80"),
