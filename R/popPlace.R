@@ -52,7 +52,7 @@ popPlace <- function(level) {
   if(level == "Counties") {    
     return(f.cLookup)
    }
-  
+
   if(level == "Municipalities") {
     #removing errant records...
     f.pLookup <- f.pLookup[which(f.pLookup$placefips != 0),] #remove State Records
@@ -61,7 +61,9 @@ popPlace <- function(level) {
     f.pLookup <- f.pLookup[which(!is.na(f.pLookup$placefips)),] #Remove Disbanded Areas
     
     f.pLookup$municipalityname <- gsub(' \\(Part\\)','',f.pLookup$municipalityname)
-  
+    f.pLookup$municipalityname <- gsub('Sprgs','Springs',f.pLookup$municipalityname)
+    f.pLookup$municipalityname <- gsub('/G','',f.pLookup$municipalityname)
+    
     #merging f.pLookup and f.mLookup and updating totalpopulation value
     f.mLookup <- f.mLookup[,c(2,4)]
 
