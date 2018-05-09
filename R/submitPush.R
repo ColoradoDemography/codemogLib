@@ -6,7 +6,7 @@
 #' @export
 #'
 submitPush <- function(lvl,unit,topics) {
- browser()
+
   lvlStr <- paste0("ga('set', 'dimension1' : '",lvl,"');")
   unitStr <-paste0("ga('set', 'dimension2' : '",unit,"');")
   
