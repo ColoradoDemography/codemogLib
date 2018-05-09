@@ -6,54 +6,54 @@
 #' @export
 #'
 submitPush <- function(lvl,unit,topics) {
-
-  lvlStr <- paste0("'DataLevel' : '",lvl,"'")
-  unitStr <-paste0("'Location' : '",unit,"'")
+ browser()
+  lvlStr <- paste0("ga('set', 'dimension1' : '",lvl,"');")
+  unitStr <-paste0("ga('set', 'dimension2' : '",unit,"');")
   
   if("stats" %in% topics) {
-    statsStr <- "'BasicStatistics' : 'yes'"
+    statsStr <- "ga('set', 'dimension3' : 'yes');"
   }else {
-    statsStr <- "'BasicStatistics' : 'no'"
+    statsStr <- "ga('set', 'dimension3' : 'no');"
   }  
   if("popf" %in% topics) {
-    popfStr <- "'PopulationForecast' : 'yes'"
+    popfStr <- "ga('set', 'dimension4' : 'yes');"
   }else {
-    popfStr <- "'PopulationForecast' : 'no'"
+    popfStr <- "ga('set', 'dimension4'  : 'no');"
   }  
   if("pop" %in% topics) {
-    popStr <- "'AgeCharacteristics' : 'yes'"
+    popStr <- "ga('set', 'dimension5' : 'yes');"
   }else {
-    popStr <- "'AgeCharacteristics' : 'no'"
+    popStr <- "ga('set', 'dimension5' : 'no');"
   }
   if("popc" %in% topics) {
-    popcStr <- "'PopulationCharacteristics' : 'yes'"
+    popcStr <- "ga('set', 'dimension6' : 'yes');"
   }else {
-    popcStr <- "'Populationcharacteristics' : 'no'"
+    popcStr <- "ga('set', 'dimension6' : 'no');"
   }
   if("housing" %in% topics) {
-    housingStr <- "'Housing' : 'yes'"
+    housingStr <- "ga('set', 'dimension7' : 'yes');"
   }else {
-    housingStr <- "'Housing' : 'no'"
+    housingStr <- "ga('set', 'dimension7' : 'no');"
   }  
   if("comm" %in% topics) {
-    commStr <- "'Commuting' : 'yes'"
+    commStr <- "ga('set', 'dimension8' : 'yes');"
   }else {
-    commStr <- "'Commuting' : 'no'"
+    commStr <- "ga('set', 'dimension8' : 'no');"
   }  
   if("emplind" %in% topics) {
-    emplindStr <- "'EmploymentIndustry' : 'yes'"
+    emplindStr <- "ga('set', 'dimension9' : 'yes');"
   }else {
-    emplindStr <- "'EmploymentIndustry' : 'no'"
+    emplindStr <- "ga('set', 'dimension9' : 'no');"
   } 
   if("emply" %in% topics) {
-    emplyStr <- "'EmploymentCharacteristics' : 'yes'"
+    emplyStr <- "ga('set', 'dimension10'  : 'yes');"
   }else {
-    emplyStr <- "'EmploymentCharacteristics' : 'no'"
+    emplyStr <- "ga('set', 'dimension10' : 'no');"
   }  
     
   #assembling script
-  outstr <-paste0("window.dataLayer.push({",lvlStr,",",unitStr,",",statsStr,",",popfStr,",",
-                  popStr,",",popcStr,",",housingStr,",",commStr,",",emplindStr,",",emplyStr,", 'event':viewProfile});")
+  outstr <-paste0(lvlStr,unitStr,statsStr,popfStr,
+                  popStr,popcStr,housingStr,commStr,emplindStr,emplyStr)
   
   return(outstr)
 }
