@@ -43,9 +43,9 @@ downloadObj <- function(input, output, session, place, oname, dobj) {
                    "poph5" = " Comparative Housing Values",
                    "poph6" = " Comparative Housing Values",
 
-                   "popt1" = " Commutting_Venn",
-                   "popt2" = " Commutting_Live",
-                   "popt3" = " Commutting Work",
+                   "popt1" = " Commuting Venn",
+                   "popt2" = " Commuting Live",
+                   "popt3" = " Commuting Work",
                    "popt4" = " Jobs and Migration",
 
                    "popei1" = " Jobs Forecast",
@@ -60,17 +60,17 @@ downloadObj <- function(input, output, session, place, oname, dobj) {
 
   )
 
-  suffix <- ifelse(dtype == "plot","_Plot.png","_Data.csv")
+  suffix <- ifelse(dtype == "plot"," Plot.png"," Data.csv")
 
   output$download <-  downloadHandler(
     filename = function() {
       paste0(place,prefix,suffix)
     },
     content = function(file) {
-      if(suffix == "_Data.csv") {
+      if(suffix == " Data.csv") {
         write.csv(dobj, file, row.names = FALSE)
       }
-      if(suffix == "_Plot.png") {
+      if(suffix == " Plot.png") {
         ggsave(file, plot = dobj, width =8, height=6, units	="in", device = "png")
       }
     } #content
