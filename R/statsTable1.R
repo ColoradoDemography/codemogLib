@@ -203,7 +203,12 @@ statsTable1 <- function(listID,sYr,eYr,ACS,oType){
     }
     
     outTab[4,nCol] <- paste0("$",format(as.numeric(hhincp$b19013001),nsmall=0, big.mark=","))
-    outTab[5,nCol] <- paste0("$",format(as.numeric(MedHHValuep$b25077001),nsmall=0, big.mark=","))
+    if(MedHHValuep$b25077001 == "NA") {
+      outTab[5,nCol] <- paste0("$",format(as.numeric(MedHHValuep$b25077001),nsmall=0, big.mark=","))
+    } else {
+      outTab[5,nCol] <- " "
+    }
+
     outTab[6,nCol] <- Povertyp$pctPovertyp
     outTab[7,nCol] <- Nativep$pctNativep
     nCol <- nCol + 1
