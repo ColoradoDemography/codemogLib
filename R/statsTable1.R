@@ -201,12 +201,12 @@ statsTable1 <- function(listID,sYr,eYr,ACS,oType){
     } else {
       outTab[3,nCol] <- format(round(as.numeric(f.muniJobsp$jobs),digits=0),nsmall=0, big.mark=",")
     }
-    
+   
     outTab[4,nCol] <- paste0("$",format(as.numeric(hhincp$b19013001),nsmall=0, big.mark=","))
-    if(MedHHValuep$b25077001 == "NA") {
-      outTab[5,nCol] <- paste0("$",format(as.numeric(MedHHValuep$b25077001),nsmall=0, big.mark=","))
-    } else {
+    if(MedHHValuep$b25077001 == "") {
       outTab[5,nCol] <- " "
+    } else {
+      outTab[5,nCol] <- paste0("$",format(as.numeric(MedHHValuep$b25077001),nsmall=0, big.mark=","))
     }
 
     outTab[6,nCol] <- Povertyp$pctPovertyp
