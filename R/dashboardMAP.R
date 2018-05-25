@@ -18,10 +18,10 @@ dashboardMAP <- function(listID){
   ctyname <- listID$ctyName
   placefips <- listID$plNum
   placename <- listID$plName
-  if(listID$PlFilter == "T") {
-    placefips <- ""
-    placename <- ""
-  }
+  #if(listID$PlFilter == "T") {
+  #  placefips <- ""
+  #  placename <- ""
+  #}
   
   
   if(nchar(placefips) != 0){
