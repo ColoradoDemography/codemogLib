@@ -26,10 +26,10 @@ pop_timeseries=function(listID, beginyear=2000,endyear, base=10){
   ctyname <- listID$ctyName
   placefips <- listID$plNum
   placename <- listID$plName
-  if(listID$PlFilter == "T") {
-    placefips <- ""
-    placename <- ""
-  }
+ # if(listID$PlFilter == "T") {
+ #   placefips <- ""
+ #   placename <- ""
+ # }
 
   # Checking length of fips to idenify municipality data series
   if(nchar(placefips) != 0) {

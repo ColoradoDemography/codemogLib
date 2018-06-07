@@ -15,10 +15,10 @@ RTHouse=function(listID, ACS, oType, state="08"){
   ctyname <- listID$ctyName
   placefips <- listID$plNum
   placename <- listID$plName
-  if(listID$PlFilter == "T") {
-    placefips <- ""
-    placename <- ""
-  }
+  #if(listID$PlFilter == "T") {
+  #  placefips <- ""
+  #  placename <- ""
+  #}
   
 if(nchar(placefips) == 0) {
   # Raw Place data

@@ -17,10 +17,10 @@ incomePRO=function(listID, ACS){
    ctyname <- listID$ctyName
    placefips <- listID$plNum
    placename <- listID$plName
-   if(listID$PlFilter == "T") {
-     placefips <- ""
-     placename <- ""
-   }
+  # if(listID$PlFilter == "T") {
+  #   placefips <- ""
+  #   placename <- ""
+  # }
    
   
    state="08"

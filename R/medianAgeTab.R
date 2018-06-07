@@ -16,10 +16,10 @@ medianAgeTab <- function(listID, ACS, oType, state="08"){
   ctyname <- listID$ctyName
   placefips <- listID$plNum
   placename <- listID$plName
-  if(listID$PlFilter == "T") {
-    placefips <- ""
-    placename <- ""
-  }
+ # if(listID$PlFilter == "T") {
+ #   placefips <- ""
+ #   placename <- ""
+ # }
 
   #County  Age
   medAgecty <- codemog_api(data="b01002",db=ACS, geonum=paste("1", state, ctyfips, sep=""), meta="no")

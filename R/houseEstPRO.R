@@ -16,10 +16,10 @@ houseEstPRO <- function(listID,curYr, base=10) {
   ctyname <- listID$ctyName
   placefips <- listID$plNum
   placename <- listID$plName
-  if(listID$PlFilter == "T") {
-    placefips <- ""
-    placename <- ""
-  }
+#  if(listID$PlFilter == "T") {
+#    placefips <- ""
+#    placename <- ""
+#  }
   fipsN <- as.numeric(ctyfips)
   state= 0
 

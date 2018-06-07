@@ -16,10 +16,10 @@ agePlotPRO  <- function(listID, ACS, state=0, yrs, base=10, agegroup="ten") {
   ctyname <- listID$ctyName
   placefips <- listID$plNum
   placename <- listID$plName
-  if(listID$PlFilter == "T") {
-    placefips <- ""
-    placename <- ""
-  }
+ # if(listID$PlFilter == "T") {
+ #   placefips <- ""
+ #   placename <- ""
+ # }
 
   if(nchar(placefips) == 0) { # County data call
     ctyfips <- as.numeric(ctyfips)

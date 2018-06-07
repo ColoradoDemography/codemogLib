@@ -15,10 +15,10 @@ popTable <- function(listID,sYr,eYr,oType) {
   ctyname <- listID$ctyName
   placefips <- listID$plNum
   placename <- listID$plName
-  if(listID$PlFilter == "T") {
-    placefips <- ""
-    placename <- ""
-  }
+  #if(listID$PlFilter == "T") {
+  #  placefips <- ""
+ #   placename <- ""
+ # }
   #outputs the Population Growth Rate table in the population section..
   
   state <- "Colorado"
@@ -104,7 +104,7 @@ popTable <- function(listID,sYr,eYr,oType) {
     placX <- PP %>% 
       filter(year %in% yrs)%>%
       arrange(year)
-    placX <- placX[which(placX$totalpopulation != 0),]
+    
     
     placX$Population <- format(placX$totalpopulation,big.mark=",")
     placX$growthRate  <- percent((((placX$totalpopulation/lag(placX$totalpopulation))^(1/(placX$year-lag(placX$year)))) -1)*100,digits=1)
