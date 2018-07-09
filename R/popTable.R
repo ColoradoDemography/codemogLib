@@ -8,17 +8,17 @@
 #' @export
 #'
 popTable <- function(listID,sYr,eYr,oType) {
-
+  
   # Collecting place ids from  idList, setting default values
-
+  
   ctyfips <- listID$ctyNum
   ctyname <- listID$ctyName
   placefips <- listID$plNum
   placename <- listID$plName
   #if(listID$PlFilter == "T") {
   #  placefips <- ""
- #   placename <- ""
- # }
+  #   placename <- ""
+  # }
   #outputs the Population Growth Rate table in the population section..
   
   state <- "Colorado"
@@ -74,7 +74,7 @@ popTable <- function(listID,sYr,eYr,oType) {
     rm(con)
     rm(drv)
     
-
+    
     f.popPlace <- f.popPlace[which(f.popPlace$countyfips != 999), ]  # removing "Total" for multi-county cities
     f.popPlace$totalpopulation <- ifelse(is.na(f.popPlace$totalpopulation),0,f.popPlace$totalpopulation) #Fixing NA values
     f.popPlace$municipalityname <-gsub(' \\([P,p]art\\)','',f.popPlace$municipalityname)
@@ -91,14 +91,14 @@ popTable <- function(listID,sYr,eYr,oType) {
         newYr[x,4] <- as.numeric(sYr + (x - 1))
         newYr[x,5] <- 0
       }
-
+      
       f.newRec <- as.data.frame(newYr,stringsAsFactors=FALSE)  
       names(f.newRec) <- c("countyfips", "placefips", "municipalityname", "year", "totalpopulation")
       f.newRec$year <- as.numeric(f.newRec$year)
       f.newRec$totalpopulation <- as.numeric(f.newRec$totalpopulation)
       f.popPlace <- rbind(f.newRec,f.popPlace)
-      }
-
+    }
+    
     PP <-  f.popPlace %>% group_by(placefips, municipalityname, year)  %>% summarize(totalpopulation = sum(as.numeric(totalpopulation)))
     
     placX <- PP %>% 
@@ -109,10 +109,10 @@ popTable <- function(listID,sYr,eYr,oType) {
     placX$Population <- format(placX$totalpopulation,big.mark=",")
     placX$growthRate  <- percent((((placX$totalpopulation/lag(placX$totalpopulation))^(1/(placX$year-lag(placX$year)))) -1)*100,digits=1)
     placX$Population  <- ifelse(placX$totalpopulation == 0, " ",placX$Population)
-     mPlace <- as.matrix(placX[,c(3,2,5,6)])
+    mPlace <- as.matrix(placX[,c(3,2,5,6)])
   }
   
-
+  
   if(nchar(placename) != 0) { #if a placename is present
     m.OutTab <- cbind(mPlace,mCty,mCO)
     m.OutTab <- m.OutTab[,c(1,3,4,11,10,14,15)]
@@ -121,12 +121,13 @@ popTable <- function(listID,sYr,eYr,oType) {
     m.OutTab <- m.OutTab[,c(3,7,6,10,11)] 
   } 
   
-  
-  m.OutTab <- as.matrix(m.OutTab)
-  m.OutTab <- gsub("NA%","",m.OutTab)
+ 
+  m.OutTab$year <- as.character(m.OutTab$year)
+  x.OutTab <- as.matrix(m.OutTab)
+  x.OutTab <- gsub("NA%","",x.OutTab)
   #Additional Suppressions
-  m.OutTab <- gsub("NaN%","",m.OutTab)
-  m.OutTab <- gsub("Inf%","",m.OutTab)
+  x.OutTab <- gsub("NaN%","",x.OutTab)
+  x.OutTab <- gsub("Inf%","",x.OutTab)
   
   
   
@@ -148,7 +149,7 @@ popTable <- function(listID,sYr,eYr,oType) {
   if(oType == "html") {
     # Creating Final Table (kable)
     if(nchar(placename) != 0) {
-      OutTab  <- m.OutTab %>%
+      OutTab  <- x.OutTab %>%
         kable(format='html', table.attr='class="myTable"',
               caption = "Population Growth Rate",
               row.names=FALSE,
@@ -164,10 +165,10 @@ popTable <- function(listID,sYr,eYr,oType) {
         column_spec(6, width = "0.5in") %>%
         column_spec(7, width = "0.5in") %>%
         add_header_above(header=tblHead)  %>%
-        add_footnote(captionSrc("SDO",""))
+        footnote(captionSrc("SDO",""))
     }  else { 
-      OutTab  <- m.OutTab %>%
-        kable(format='html', table.attr='class="myTable"',
+      OutTab  <- 
+        kable(x.OutTab,format='html', table.attr='class="myTable"',
               caption = "Population Growth Rate",
               row.names=FALSE,
               align='lrrrr',
@@ -180,32 +181,74 @@ popTable <- function(listID,sYr,eYr,oType) {
         column_spec(4, width = "0.5in") %>%
         column_spec(5, width = "0.5in") %>%
         add_header_above(header=tblHead)  %>%
-        add_footnote(captionSrc("SDO",""))
+        footnote(captionSrc("SDO",""))
     }
     
-    # Creating Final Data Set
-    f.Out2 <- as.data.frame(m.OutTab)
+    # Creating Final Data Set and Flex table
+    f.Out2 <- as.data.frame(x.OutTab)
     if(ncol(f.Out2) == 5) {
       names(f.Out2) <- c("Year",paste0("Population: ",ctyname),paste0("Growth Rate: ",ctyname),
                          "Population: Colorado","Growth Rate: Colorado")
+      
+      # Creating FlexTable
+      FlexOut <- regulartable(as.data.frame(x.OutTab))
+      FlexOut <- set_header_labels(FlexOut, year = "Year", 
+                                   Population = "Population", growthRate = "Growth Rate",
+                                   Population.1 = "Population", growthRate.1 = "Growth Rate")
+      FlexOut <- add_header(FlexOut,year ="",Population=ctyname,growthRate="",
+                            Population.1="Colorado",growthRate.1="",top=TRUE)
+      FlexOut <- add_header(FlexOut,year ="Population Growth Table", top=TRUE)
+      FlexOut <- add_footer(FlexOut,year=captionSrc("SDO",""))
+      FlexOut <- merge_at(FlexOut,i=1,j = 1:5,part="header")
+      FlexOut <- merge_at(FlexOut,i=2,j = 2:3,part="header")
+      FlexOut <- merge_at(FlexOut,i=2,j = 4:5,part="header")
+      FlexOut <- merge_at(FlexOut, j = 1:5, part = "footer")
+      FlexOut <- align(FlexOut,i=1,j = 1, align="left",part="header")
+      FlexOut <- align(FlexOut,i=2:3,j = 1:5, align="center",part="header")     
+      FlexOut <- align(FlexOut,align="left",part="footer")
+      FlexOut <- autofit(FlexOut)
+      FlexOut <- width(FlexOut, j = ~ year, width = 1)
     }
     if(ncol(f.Out2) == 7) {
       names(f.Out2) <- c("Year",paste0("Population: ",placename),paste0("Growth Rate: ",placename),
                          paste0("Population: ",ctyname),paste0("Growth Rate: ",ctyname),
                          "Population: Colorado","Growth Rate: Colorado")
+      
+      # Creating FlexTable
+      FlexOut <- regulartable(as.data.frame(x.OutTab))
+      FlexOut <- set_header_labels(FlexOut, year = "Year", 
+                                   Population = "Population", growthRate = "Growth Rate",
+                                   Population.1 = "Population", growthRate.1 = "Growth Rate",
+                                   Population.2 = "Population", growthRate.2 = "Growth Rate")
+      FlexOut <- add_header(FlexOut,year ="",
+                            Population=placename,growthRate="",
+                            Population.1=ctyname,growthRate.1="",
+                            Population.2="Colorado",growthRate.2="",top=TRUE)
+      FlexOut <- add_header(FlexOut,year ="Population Growth Table", top=TRUE)
+      FlexOut <- add_footer(FlexOut,year=captionSrc("SDO",""))
+      FlexOut <- merge_at(FlexOut,i=1,j = 1:7,part="header")
+      FlexOut <- merge_at(FlexOut,i=2,j = 2:3,part="header")
+      FlexOut <- merge_at(FlexOut,i=2,j = 4:5,part="header")
+      FlexOut <- merge_at(FlexOut,i=2,j = 6:7,part="header")
+      FlexOut <- merge_at(FlexOut, j = 1:7, part = "footer")
+      FlexOut <- align(FlexOut,i=1,j = 1, align="left",part="header")
+      FlexOut <- align(FlexOut,i=2:3,j = 1:7, align="center",part="header")     
+      FlexOut <- align(FlexOut,align="left",part="footer")
+      FlexOut <- autofit(FlexOut)
+      FlexOut <- width(FlexOut, j = ~ year, width = 1)
     }
+    
  
     
-    
     # bind list
-    outList <- list("table" = OutTab,"data" = f.Out2)
+    outList <- list("table" = OutTab,"data" = f.Out2,"FlexTable"=FlexOut)
     
     return(outList)
   }
   
   if(oType == "latex") {
     if(nchar(placename) != 0) {
-      OutTab <- m.OutTab %>%
+      OutTab <- x.OutTab %>%
         kable(digits=1,
               row.names=FALSE,
               align="lrrrrrr",
@@ -216,9 +259,9 @@ popTable <- function(listID,sYr,eYr,oType) {
         row_spec(0, align="c") %>%
         column_spec(column=1:7, width="0.5in") %>%
         add_header_above(header=tblHead)  %>%
-        add_footnote(captionSrc("SDO",""))
+        footnote(captionSrc("SDO",""))
     }  else { 
-      OutTab <- m.OutTab %>%
+      OutTab <- x.OutTab %>%
         kable(digits=1,
               row.names=FALSE,
               align="lrrrr",
@@ -229,38 +272,38 @@ popTable <- function(listID,sYr,eYr,oType) {
         row_spec(0, align="c") %>%
         column_spec(column=1:5, width="0.5in") %>%
         add_header_above(header=tblHead)  %>%
-        add_footnote(captionSrc("SDO",""))
+        footnote(captionSrc("SDO",""))
     }
     
     # Building text
-    RowN <- nrow(m.OutTab)
-    prevYr <- m.OutTab[RowN-1,1]
-
+    RowN <- nrow(x.OutTab)
+    prevYr <- x.OutTab[RowN-1,1]
+    
     # Extracting last growth rates
     if(nchar(placename) != 0) {
-        plGR <- gsub("%","",as.character(m.OutTab[RowN,3]))
-        ctyGR <- gsub("%","",as.character(m.OutTab[RowN,5]))
-        stGR <- gsub("%","",as.character(m.OutTab[RowN,7]))
+      plGR <- gsub("%","",as.character(x.OutTab[RowN,3]))
+      ctyGR <- gsub("%","",as.character(x.OutTab[RowN,5]))
+      stGR <- gsub("%","",as.character(x.OutTab[RowN,7]))
     } else {
       # Extracting last growth rates
-      ctyGR <- gsub("%","",as.character(m.OutTab[RowN,3]))
-      stGR <- gsub("%","",as.character(m.OutTab[RowN,5]))
+      ctyGR <- gsub("%","",as.character(x.OutTab[RowN,3]))
+      stGR <- gsub("%","",as.character(x.OutTab[RowN,5]))
     }
     
     if(nchar(placename) != 0) {#Municipalities
-      OutTxt_pl <- paste0("At the end of ",eYr, " the estimated population of ",placename, " was ", m.OutTab[RowN,2],", ")
-      PopChgVal_pl <- as.numeric(gsub(",","",m.OutTab[RowN,2])) - as.numeric(gsub(",","",m.OutTab[RowN-1,2]))
+      OutTxt_pl <- paste0("At the end of ",eYr, " the estimated population of ",placename, " was ", x.OutTab[RowN,2],", ")
+      PopChgVal_pl <- as.numeric(gsub(",","",x.OutTab[RowN,2])) - as.numeric(gsub(",","",x.OutTab[RowN-1,2]))
       PopChgFmt_pl <- format(PopChgVal_pl,big.mark=",")
       PopChgTxt_pl <-  ifelse(PopChgVal_pl > 0, paste0("an increase of ",PopChgFmt_pl," over the population in ",prevYr,"."),
                               ifelse(PopChgVal_pl < 0, paste0("a decrease of ",PopChgFmt_pl," over the population in ",prevYr,"."),paste0("did not change between ",prevYr, " and ",eYr,".")
                               ))
       grTxtpl <- paste0("  The growth rate for ",placename," between ",prevYr," and ",eYr, " was ",plGR," percent")
       grTxtpl <- paste0(grTxtpl, " compared to ",ctyGR," percent for ",ctyname," and ",stGR," percent for the State of Colorado.")
-
+      
       outText <- paste0(OutTxt_pl, PopChgTxt_pl,grTxtpl)
     } else {
-      OutTxt_cty <- paste0("At the end of ",eYr, " the estimated population of ",ctyname, " was ", m.OutTab[RowN,2],", ")
-      PopChgVal_cty <- as.numeric(gsub(",","",m.OutTab[RowN,2])) - as.numeric(gsub(",","",m.OutTab[RowN-1,2]))
+      OutTxt_cty <- paste0("At the end of ",eYr, " the estimated population of ",ctyname, " was ", x.OutTab[RowN,2],", ")
+      PopChgVal_cty <- as.numeric(gsub(",","",x.OutTab[RowN,2])) - as.numeric(gsub(",","",x.OutTab[RowN-1,2]))
       PopChgFmt_cty <- format(PopChgVal_cty,big.mark=",")
       PopChgTxt_cty <-  ifelse(PopChgVal_cty > 0, paste0("an increase of ",PopChgFmt_cty," over the population in ",prevYr,"."),
                                ifelse(PopChgVal_cty < 0, paste0("a decrease of ",PopChgFmt_cty," over the population in ",prevYr,"."),paste0("did not change between ",prevYr, " and ",eYr,".")
@@ -269,7 +312,7 @@ popTable <- function(listID,sYr,eYr,oType) {
       grTxtcty <- paste0(grTxtcty, " compared to ",stGR," percent for the State of Colorado.")
       
       outText <- paste0(OutTxt_cty,PopChgTxt_cty,grTxtcty)  
-      }
+    }
     
     outlist <- list("table" = OutTab, "text" = outText)
     return(outlist)

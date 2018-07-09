@@ -259,7 +259,7 @@ if(nchar(placefips) == 0){
     column_spec(6, width ="0.5in") %>%
     add_indent(c(3:9)) %>%
     add_header_above(header=tblHead) %>%
-    add_footnote(captionSrc("ACS",ACS))
+    footnote(captionSrc("ACS",ACS))
 
 
   race_data <- data.frame(m.race)
@@ -280,9 +280,36 @@ if(nchar(placefips) == 0){
     names(race_data)[6] <- "Signficant Difference?"  
   }
 
+  #Preparing Flextable
+  f.race_data <- data.frame(m.race)
+  names(f.race_data) <- c("Race","PCT1","MOE1","PCT2","MOE2","Diff")
+  FlexOut <- regulartable(f.race_data)
+  FlexOut <- set_header_labels(FlexOut, Race = "Race Category", 
+                               PCT1="Percent", MOE1="Margin of Error",
+                               PCT2="Percent", MOE2="Margin of Error",
+                               Diff="Significant Difference?")
+  
+  if(nchar(placefips) == 0) {
+    FlexOut <- add_header(FlexOut,PCT1=ctyname,PCT2="Colorado",top=TRUE)
+  } else {
+    FlexOut <- add_header(FlexOut,PCT1=placename,PCT2=ctyname,top=TRUE)
+  }
+  
+  FlexOut <- add_header(FlexOut,Race="Race Comparison",top=TRUE)
+  FlexOut <- add_footer(FlexOut,Race=captionSrc("ACS",ACS))
+  FlexOut <- merge_at(FlexOut,i=1, j = 1:6, part = "header")
+  FlexOut <- merge_at(FlexOut,i=2, j = 2:3, part = "header") 
+  FlexOut <- merge_at(FlexOut,i=2, j = 4:5, part = "header")
+  FlexOut <- merge_at(FlexOut,i=1, j = 1:6, part = "footer")
+  FlexOut <- align(FlexOut,i=1:3, j=1, align="left",part="header")
+  FlexOut <- align(FlexOut,i=2:3, j=2:6, align="center",part="header")
+  FlexOut <- align(FlexOut,i=1, align="left",part="footer")
+  FlexOut <- align(FlexOut, j=1, align="left", part="body")
+  FlexOut <- autofit(FlexOut)
+  FlexOut <- width(FlexOut,j=1, width=3)
+  FlexOut <- width(FlexOut,j=2:6, width=1)
 
-
-  outListR <- list("table" = race_t, "data" = race_data)
+  outListR <- list("table" = race_t, "data" = race_data,"FlexTable"= FlexOut)
 
   return(outListR)
 }
@@ -296,7 +323,7 @@ if(nchar(placefips) == 0){
       row_spec(0, align = "c") %>%
       add_indent(c(3:9)) %>%
       add_header_above(header=tblHead) %>%
-      add_footnote(captionSrc("ACS",ACS))
+      footnote(captionSrc("ACS",ACS))
 
     #Preparing Text
     if(nchar(placefips) == 0) {

@@ -177,8 +177,41 @@ if(nchar(placefips) == 0) {
       add_indent(c(2:6)) %>%
       add_header_above(header=tblHead2) %>%
       add_header_above(header=tblHead1) %>%
-      add_footnote(captionSrc("ACS",ACS))
-    outList <- list("table" = Housing_tab, "data" = f.RTHouse)
+      footnote(captionSrc("ACS",ACS))
+    
+    # preparing FlexTable
+    f.house_data <- data.frame(m.RTHouse)
+    FlexOut <- regulartable(f.house_data)
+    FlexOut <- set_header_labels(FlexOut, X1 = "Variable", 
+                                 X2="Value", X3="Percent",
+                                 X4="Value",X5="Percent"
+    )
+    
+    FlexOut <- add_header(FlexOut,X2="People",X4="Units",top=TRUE)
+    if(nchar(placefips) == 0) {
+      FlexOut <- add_header(FlexOut,X2=ctyname,top=TRUE)
+    } else {
+      FlexOut <- add_header(FlexOut,X2=placename,top=TRUE)
+    }
+    
+    FlexOut <- add_header(FlexOut,X1="Characteristics of Rental Housing",top=TRUE)
+    FlexOut <- add_footer(FlexOut,X1=captionSrc("ACS",ACS))
+    FlexOut <- merge_at(FlexOut,i=1, j = 1:5, part = "header")
+    FlexOut <- merge_at(FlexOut,i=2, j = 2:5, part = "header") 
+    FlexOut <- merge_at(FlexOut,i=3,j=2:3,part="header")
+    FlexOut <- merge_at(FlexOut,i=3,j=4:5,part="header")
+    FlexOut <- merge_at(FlexOut,i=1, j = 1:5, part = "footer")
+    FlexOut <- align(FlexOut,i=1, j=1, align="left",part="header")
+    FlexOut <- align(FlexOut,i=4, j=1, align="left",part="header")
+    FlexOut <- align(FlexOut,i=2:4, j=2:5, align="center",part="header")
+    FlexOut <- align(FlexOut,i=1, align="left",part="footer")
+    FlexOut <- align(FlexOut, j=1, align="left", part="body")
+    FlexOut <- autofit(FlexOut)
+    FlexOut <- width(FlexOut,j=1, width=3)
+    FlexOut <- width(FlexOut,j=2:5, width=1)
+    
+    
+    outList <- list("table" = Housing_tab, "data" = f.RTHouse,"FlexTable" = FlexOut)
     return(outList)
   }
 
@@ -198,7 +231,7 @@ if(nchar(placefips) == 0) {
       add_indent(c(2:6)) %>%
       add_header_above(header=tblHead2) %>%
       add_header_above(header=tblHead1) %>%
-      add_footnote(captionSrc("ACS",ACS))
+      footnote(captionSrc("ACS",ACS))
 
     return(tabOut)
   }

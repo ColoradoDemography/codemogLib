@@ -406,7 +406,7 @@ HouseVal <- function(listID, ACS, oType, state="08"){
       column_spec(1, width = "3in") %>%
       column_spec(column=2:6, width = "0.33in") %>%
       add_header_above(header=tblHead1) %>%
-      add_footnote(captionSrc("ACS",ACS))
+      footnote(captionSrc("ACS",ACS))
     
     Housing_tab2 <- m.rental %>%
       kable(format='html', table.attr='class="cleanTable"',
@@ -420,9 +420,71 @@ HouseVal <- function(listID, ACS, oType, state="08"){
       column_spec(1, width = "3in") %>%
       column_spec(2:6, width = "0.33in") %>%
       add_header_above(header=tblHead1) %>%
-      add_footnote(captionSrc("ACS",ACS))
+      footnote(captionSrc("ACS",ACS))
     
-    outList <- list("OOTab" = Housing_tab1, "RTTab" = Housing_tab2, "data" = f.HouseVal_Fin)
+    #Building FlexTables
+    # Owner-Occupied
+    OO <- data.frame(m.oocc)
+    names(OO) <- c("V1","V2","V3","V4","V5","V6")
+    FTOO <- regulartable(OO)
+    FTOO <- set_header_labels(FTOO, V1 = "Variable", 
+                                 V2="Value", V3="Margin of Error",
+                                 V4="Value",V5="Margin of Error",
+                                 V6= "Significant Difference?"
+    )
+    
+    if(nchar(placefips) == 0) {
+      FTOO <- add_header(FTOO,V2=ctyname,V4="Colorado",top=TRUE)
+    } else {
+      FTOO <- add_header(FTOO,V2=placename,V4=ctyname,top=TRUE)
+    }
+    
+    FTOO <- add_header(FTOO,V1="Comparative Owner-Occupied Housing Values",top=TRUE)
+    FTOO <- add_footer(FTOO,V1=captionSrc("ACS",ACS))
+    FTOO <- merge_at(FTOO,i=1, j = 1:6, part = "header")
+    FTOO <- merge_at(FTOO,i=2,j=2:3,part="header")
+    FTOO <- merge_at(FTOO,i=2,j=4:5,part="header")
+    FTOO <- merge_at(FTOO,i=1, j = 1:6, part = "footer")
+    FTOO <- align(FTOO,i=1, j=1, align="left",part="header")
+    FTOO <- align(FTOO,i=2:3, j=2:6, align="center",part="header")
+    FTOO <- align(FTOO,i=1, align="left",part="footer")
+    FTOO <- align(FTOO, j=1, align="left", part="body")
+    FTOO <- autofit(FTOO)
+    FTOO <- width(FTOO,j=1, width=3)
+    FTOO <- width(FTOO,j=2:6, width=1)
+    
+    # Rental
+    RT <- data.frame(m.rental)
+    names(RT) <- c("V1","V2","V3","V4","V5","V6")
+    FTRT <- regulartable(RT)
+    FTRT <- set_header_labels(FTRT, V1 = "Variable", 
+                              V2="Value", V3="Margin of Error",
+                              V4="Value",V5="Margin of Error",
+                              V6= "Significant Difference?"
+    )
+    
+    if(nchar(placefips) == 0) {
+      FTRT <- add_header(FTRT,V2=ctyname,V4="Colorado",top=TRUE)
+    } else {
+      FTRT <- add_header(FTRT,V2=placename,V4=ctyname,top=TRUE)
+    }
+    
+    FTRT <- add_header(FTRT,V1="Comparative Rental Housing Values",top=TRUE)
+    FTRT <- add_footer(FTRT,V1=captionSrc("ACS",ACS))
+    FTRT <- merge_at(FTRT,i=1, j = 1:6, part = "header")
+    FTRT <- merge_at(FTRT,i=2,j=2:3,part="header")
+    FTRT <- merge_at(FTRT,i=2,j=4:5,part="header")
+    FTRT <- merge_at(FTRT,i=1, j = 1:6, part = "footer")
+    FTRT <- align(FTRT,i=1, j=1, align="left",part="header")
+    FTRT <- align(FTRT,i=2:3, j=2:6, align="center",part="header")
+    FTRT <- align(FTRT,i=1, align="left",part="footer")
+    FTRT <- align(FTRT, j=1, align="left", part="body")
+    FTRT <- autofit(FTRT)
+    FTRT <- width(FTRT,j=1, width=3)
+    FTRT <- width(FTRT,j=2:6, width=1)
+    
+    outList <- list("OOTab" = Housing_tab1, "RTTab" = Housing_tab2, "data" = f.HouseVal_Fin,
+                    "FlexTableOO" = FTOO,"FlexTableRT" = FTRT)
     return(outList)
   }
   
@@ -436,7 +498,7 @@ HouseVal <- function(listID, ACS, oType, state="08"){
       row_spec(0, align = "c") %>%
       column_spec(1,width="3in") %>%
       add_header_above(header=tblHead1) %>%
-      add_footnote(captionSrc("ACS",ACS))
+      footnote(captionSrc("ACS",ACS))
     
     Housing_tab2 <-  kable(m.rental,
                            col.names = names_spaced,
@@ -447,7 +509,7 @@ HouseVal <- function(listID, ACS, oType, state="08"){
       row_spec(0, align = "c") %>%
       column_spec(1,width="3in") %>%
       add_header_above(header=tblHead1) %>%
-      add_footnote(captionSrc("ACS",ACS))
+      footnote(captionSrc("ACS",ACS))
     
     outList <- list("OOTab" = Housing_tab1, "RTTab" = Housing_tab2)
     return(outList)

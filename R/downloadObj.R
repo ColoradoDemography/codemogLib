@@ -21,6 +21,7 @@ downloadObj <- function(input, output, session, place, oname, dobj) {
 
 
   prefix <- switch(dname,
+                   "stats" = " Basic Statistics",
                    "popf1" = " Pop Growth Comparison",
                    "popf2" = " Pop Growth",
                    "popf3" = " Pop Forecast",
@@ -40,8 +41,8 @@ downloadObj <- function(input, output, session, place, oname, dobj) {
                    "poph2" = " Housing Type",
                    "poph3" = " Owner Housing",
                    "poph4" = " Rental Housing",
-                   "poph5" = " Comparative Housing Values",
-                   "poph6" = " Comparative Housing Values",
+                   "poph5" = " Owner-Occupied Housing Values",
+                   "poph6" = " Rental Housing Values",
 
                    "popt1" = " Commuting Venn",
                    "popt2" = " Commuting Live",
@@ -60,7 +61,8 @@ downloadObj <- function(input, output, session, place, oname, dobj) {
 
   )
 
-  suffix <- ifelse(dtype == "plot"," Plot.png"," Data.csv")
+  suffix <- ifelse(dtype == "plot"," Plot.png",
+            ifelse(dtype == "data"," Data.csv"," Table.docx"))
 
   output$download <-  downloadHandler(
     filename = function() {
@@ -72,6 +74,11 @@ downloadObj <- function(input, output, session, place, oname, dobj) {
       }
       if(suffix == " Plot.png") {
         ggsave(file, plot = dobj, width =8, height=6, units	="in", device = "png")
+      }
+      if(suffix == " Table.docx") {
+        doc <- read_docx()
+        doc <- body_add_flextable(doc, value = dobj)
+        print(doc, target = file)
       }
     } #content
   ) #DowhloadHandler

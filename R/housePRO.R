@@ -118,9 +118,35 @@ state <- "08"
     column_spec(3, width ="0.5in") %>%
     add_indent(c(3,4,6,7)) %>%
     add_header_above(header=tblHead1) %>%
-    add_footnote(captionSrc("ACS",ACS))
+    footnote(captionSrc("ACS",ACS))
+  
+  # preparing FlexTable
+  f.house_data <- data.frame(m.House)
+  FlexOut <- regulartable(f.house_data)
+  FlexOut <- set_header_labels(FlexOut, geoname = "Housing Type", 
+                               PL_Value="Count", PL_VAL_PCT="Percent"
+                               )
+  
+  if(nchar(placefips) == 0) {
+    FlexOut <- add_header(FlexOut,PL_Value=ctyname,top=TRUE)
+  } else {
+    FlexOut <- add_header(FlexOut,PL_Value=placename,top=TRUE)
+  }
+  
+  FlexOut <- add_header(FlexOut,geoname="Housing Units",top=TRUE)
+  FlexOut <- add_footer(FlexOut,geoname=captionSrc("ACS",ACS))
+  FlexOut <- merge_at(FlexOut,i=1, j = 1:3, part = "header")
+  FlexOut <- merge_at(FlexOut,i=2, j = 2:3, part = "header") 
+  FlexOut <- merge_at(FlexOut,i=1, j = 1:3, part = "footer")
+  FlexOut <- align(FlexOut,i=1:3, j=1, align="left",part="header")
+  FlexOut <- align(FlexOut,i=2:3, j=2:3, align="center",part="header")
+  FlexOut <- align(FlexOut,i=1, align="left",part="footer")
+  FlexOut <- align(FlexOut, j=1, align="left", part="body")
+  FlexOut <- autofit(FlexOut)
+  FlexOut <- width(FlexOut,j=1, width=3)
+  FlexOut <- width(FlexOut,j=2:3, width=1)
 
-  outList <- list("table" = Housing_tab, "data" = f.HouseTab)
+  outList <- list("table" = Housing_tab, "data" = f.HouseTab,"FlexTable" = FlexOut)
   return(outList)
  }
 
@@ -136,7 +162,7 @@ state <- "08"
         column_spec(3, width ="0.5in") %>%
         add_indent(c(3,4,6,7)) %>%
         add_header_above(header=tblHead1) %>%
-        add_footnote(captionSrc("ACS",ACS))
+        footnote(captionSrc("ACS",ACS))
 
 
   return(tabOut)

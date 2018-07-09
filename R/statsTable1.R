@@ -276,7 +276,43 @@ statsTable1 <- function(listID,sYr,eYr,ACS,oType){
         column_spec(4, width = "0.4in") %>%
         footnote(symbol=c("Source: State Demography Office",captionSrc("ACS",ACS)))
     } 
-    return(outKable)
+    #Generate Flextable
+    outTab <- gsub("<sup>"," ",outTab)
+    outTab <- gsub("</sup>","",outTab)
+    outTab <- gsub("&dagger;"," ^",outTab)
+    f.Flex <- as.data.frame(outTab)
+    FlexOut <- regulartable(f.Flex)
+    if(ncol(f.Flex) == 3) {
+      FlexOut <- set_header_labels(FlexOut, V1 = "", 
+                                   V2 = ctyname, V3 = "Colorado")
+      FlexOut <- add_header(FlexOut,V1 ="Basic Statistics Table", top=TRUE)
+      FlexOut <- add_footer(FlexOut,V1=paste0("* State Demography Office ||"," ^",captionSrc("ACS",ACS)))
+      FlexOut <- merge_at(FlexOut,i=1,j = 1:3,part="header")
+      FlexOut <- merge_at(FlexOut,i=1, j = 1:3, part = "footer")
+      FlexOut <- align(FlexOut,i=1,j = 1, align="left",part="header")
+      FlexOut <- align(FlexOut,i=2,j = 1:3, align="center",part="header")     
+      FlexOut <- align(FlexOut,i=1, align="left",part="footer")
+      FlexOut <- align(FlexOut, j=1, align="left", part="body")
+      FlexOut <- autofit(FlexOut)
+      FlexOut <- width(FlexOut, j = ~ V1, width = 4)
+    }
+    if(ncol(f.Flex) == 4) {
+      FlexOut <- set_header_labels(FlexOut, V1 = "", V2=placename,
+                                   V3 = ctyname, V4 = "Colorado")
+      FlexOut <- add_header(FlexOut,V1 ="Basic Statistics Table", top=TRUE)
+      FlexOut <- add_footer(FlexOut,V1=paste0("* State Demography Office ||"," ^",captionSrc("ACS",ACS)))
+      FlexOut <- merge_at(FlexOut,i=1,j = 1:3,part="header")
+      FlexOut <- merge_at(FlexOut, j = 1:4, part = "footer")
+      FlexOut <- align(FlexOut,i=1,j = 1, align="left",part="header")
+      FlexOut <- align(FlexOut,i=2,j = 1:4, align="center",part="header")     
+      FlexOut <- align(FlexOut,i=1, align="left",part="footer")
+      FlexOut <- align(FlexOut, j=1, align="left", part="body")
+      FlexOut <- autofit(FlexOut)
+      FlexOut <- width(FlexOut, j = ~ V1, width = 4)
+    }
+    
+    outList <- list("table" = outKable, "FlexTable" = FlexOut)
+    return(outList)
   }
   
   if(oType == "latex") {
@@ -308,6 +344,7 @@ statsTable1 <- function(listID,sYr,eYr,ACS,oType){
         kable_styling(latex_options=c("scale_down","HOLD_position"),font_size=10) %>%
         row_spec(0, align="c") %>%
         column_spec(1, width = "5in") 
+      
     }  else  {
       outKable <- outTab %>%
       kable(digits=1,
@@ -324,6 +361,8 @@ statsTable1 <- function(listID,sYr,eYr,ACS,oType){
     if(listID$multiCty == "T") {
       OutTxt <- "Note: For municipalities in multiple counties, comparison data from the largest county is displayed."
     }
+    
+    
     outList <- list("table" = outKable, "text" = OutTxt)
     return(outList)
   }

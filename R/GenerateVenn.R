@@ -91,9 +91,9 @@ if(nchar(placefips) != 0) {
   # Change labels for first three text grobs
   # hard-coded three, but it would be the number of text labels
   # minus the number of groups passed to venn.diagram
-  
+
  
-  idx <- sapply(diag, function(i) grepl("text", i$name))
+  idx <- sapply(diag, function(i) grepl("text", i$name))  # Identifying the text grobs
 
   for(i in 1:3){
     diag[idx][[i]]$label <-
@@ -201,8 +201,30 @@ if(nchar(placefips) != 0) {
     column_spec(1, width = "3in") %>%
     column_spec(2, width = "1in") %>%
     column_spec(3, width = "1in") %>%
-    add_footnote(captionSrc("LODES",""))
-
+    footnote(captionSrc("LODES",""))
+  
+ #Building FlexTable
+  Ft1 <- data.frame(m.work)
+  names(Ft1) <- c("V1","V2","V3")
+  Flextab1 <- regulartable(Ft1)
+  
+  Flextab1 <- set_header_labels(Flextab1, V1 = "Location", 
+                            V2="Count", V3="Percent"
+                              )
+  
+  Flextab1 <- add_header(Flextab1,V1=capstr1,top=TRUE)
+  Flextab1 <- add_footer(Flextab1,V1=captionSrc("LODES",""))
+  Flextab1 <- merge_at(Flextab1,i=1, j = 1:3, part = "header")
+  Flextab1 <- merge_at(Flextab1,i=1, j = 1:3, part = "footer")
+  Flextab1 <- align(Flextab1,i=1, align="left",part="header")
+  Flextab1 <- align(Flextab1,i=2, j=1, align="left",part="header")
+  Flextab1 <- align(Flextab1,i=2, j=2:3, align="center",part="header")
+  Flextab1 <- align(Flextab1,i=1, align="left",part="footer")
+  Flextab1 <- align(Flextab1, j=1, align="left", part="body")
+  Flextab1 <- autofit(Flextab1)
+  Flextab1 <- width(Flextab1,j=1, width=3)
+  Flextab1 <- width(Flextab1,j=2:3, width=1)
+  
 
   #formatting Live output table
   live_tab <- m.live %>%
@@ -216,13 +238,36 @@ if(nchar(placefips) != 0) {
     column_spec(1, width = "3in") %>%
     column_spec(2, width = "1in") %>%
     column_spec(3, width = "1in") %>%
-    add_footnote(captionSrc("LODES",""))
-
+    footnote(captionSrc("LODES",""))
+  
+  #Building FlexTable
+  Ft2 <- data.frame(m.live)
+  names(Ft2) <- c("V1","V2","V3")
+  Flextab2 <- regulartable(Ft2)
+  
+  Flextab2 <- set_header_labels(Flextab2, V1 = "Location", 
+                                V2="Count", V3="Percent"
+  )
+  
+  
+  Flextab2 <- add_header(Flextab2,V1=capstr1,top=TRUE)
+  Flextab2 <- add_footer(Flextab2,V1=captionSrc("LODES",""))
+  Flextab2 <- merge_at(Flextab2,i=1, j = 1:3, part = "header")
+  Flextab2 <- merge_at(Flextab2,i=1, j = 1:3, part = "footer")
+  Flextab2 <- align(Flextab2,i=1, align="left",part="header")
+  Flextab2 <- align(Flextab2,i=2, j=1, align="left",part="header")
+  Flextab2 <- align(Flextab2,i=2, j=2:3, align="center",part="header")
+  Flextab2 <- align(Flextab2,i=1, align="left",part="footer")
+  Flextab2 <- align(Flextab2, j=1, align="left", part="body")
+  Flextab2 <- autofit(Flextab2)
+  Flextab2 <- width(Flextab2,j=1, width=3)
+  Flextab2 <- width(Flextab2,j=2:3, width=1)
 
 
   # Binding List for Output
   outList <- list("plot" = outVenn, "tab1" = live_tab, "data1" = f.live_fin,
-                  "tab2" = work_tab, "data2" = f.work_fin)
+                  "tab2" = work_tab, "data2" = f.work_fin,
+                  "FlexTable1" = Flextab1, "FlexTable2" = Flextab2)
     }
 
   if(oType == "latex") {
@@ -235,7 +280,7 @@ if(nchar(placefips) != 0) {
                  format="latex", booktabs=TRUE) %>%
     kable_styling(font_size=10)  %>%
     row_spec(0, align = "c") %>%
-    add_footnote(captionSrc("LODES",""))
+    footnote(captionSrc("LODES",""))
 
 
   liveTab <-kable(m.live,
@@ -246,7 +291,7 @@ if(nchar(placefips) != 0) {
                   format="latex", booktabs=TRUE) %>%
     kable_styling(font_size=10)  %>%
     row_spec(0, align = "c") %>%
-    add_footnote(captionSrc("LODES",""))
+    footnote(captionSrc("LODES",""))
 
   outList <- list("plot" = outVenn, "workTab" = workTab,"liveTab" = liveTab)
   }

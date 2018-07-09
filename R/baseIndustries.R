@@ -187,7 +187,7 @@ baseIndustries <- function(listID, curyr, oType,base=10){
       column_spec(1, width = "2in") %>%
       column_spec(2, width = "0.75in") %>%
       column_spec(3, width = "0.75in") %>%
-      add_footnote(captionSrc("SDO",""))
+      footnote(captionSrc("SDO",""))
   }
 
   if(oType == "latex") {
@@ -202,7 +202,7 @@ baseIndustries <- function(listID, curyr, oType,base=10){
       column_spec(1, width = "2in") %>%
       column_spec(2, width = "0.75in") %>%
       column_spec(3, width = "0.75in") %>%
-      add_footnote(captionSrc("SDO",""))
+      footnote(captionSrc("SDO",""))
   }
   #preparing data
 
@@ -222,7 +222,30 @@ baseIndustries <- function(listID, curyr, oType,base=10){
     OutText <- paste0(OutText," \\textit{Government} typically only includes employment in Federal Government and State Government.")
     OutText <- paste0(OutText," \\textit{Tourism} not only includes traditional tourist services like accommodation and food, but also includes 2nd homes,")
     OutText <- paste0(OutText," property management and transportation of tourists by airlines, car rental, car sharing and shuttles.")
+    
+  #FlexTable
+   
+    Ft <- data.frame(m.jobs)
+    names(Ft) <- c("V1","V2","V3")
+    Flextab <- regulartable(Ft)
+    
+    Flextab <- set_header_labels(Flextab, V1 = "Employment Type", 
+                                  V2="Number of Jobs", V3="Percent"
+    )
+    
+    Flextab <- add_header(Flextab,V1=paste0("Jobs by Sector: ",ctyname, ", ",curyr),top=TRUE)
+    Flextab <- add_footer(Flextab,V1=captionSrc("SDO",""))
+    Flextab <- merge_at(Flextab,i=1, j = 1:3, part = "header")
+    Flextab <- merge_at(Flextab,i=1, j = 1:3, part = "footer")
+    Flextab <- align(Flextab,i=1, align="left",part="header")
+    Flextab <- align(Flextab,i=2, j=1, align="left",part="header")
+    Flextab <- align(Flextab,i=2, j=2:3, align="center",part="header")
+    Flextab <- align(Flextab,i=1, align="left",part="footer")
+    Flextab <- align(Flextab, j=1, align="left", part="body")
+    Flextab <- autofit(Flextab)
+    Flextab <- width(Flextab,j=1, width=3)
+    Flextab <- width(Flextab,j=2:3, width=1)
 
-  outList <- list("plot" = BaseBars,"table" = jobsTab, "data1"=f.jobsBaseFin, "data2" = f.jobsBaseTab, "text" = OutText)
+  outList <- list("plot" = BaseBars,"table" = jobsTab, "data1"=f.jobsBaseFin, "data2" = f.jobsBaseTab, "text" = OutText, "FlexTable" = Flextab)
   return(outList)
 }

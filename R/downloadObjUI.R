@@ -1,13 +1,12 @@
 #' downloadObjUI  File Download Modules
 #'
 #' downloadObjUI is the UI function that creates the download buttons
-#'
+#'  Updated 6/2018 to facilitate table downloads 
 #' @param id is the data name and creates the module/namespace ID
-#' @return output button type (plot or data)
+#' @return output button type (plot, table  or data)
 #' @export
 
 downloadObjUI <- function(id) {
-
   ns <- NS(id)
   #Identifying data object and type
   if(nchar(id) == 9) {
@@ -19,7 +18,8 @@ downloadObjUI <- function(id) {
 
 
   #setting button label
-  outLabel <- ifelse(dtype== "plot","Download Plot","Download Data")
+  outLabel <- ifelse(dtype == "plot","Download Plot",
+              ifelse(dtype == "data","Download Data","Download Table"))
 
   downloadButton(ns("download"),outLabel)
 }

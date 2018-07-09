@@ -293,8 +293,7 @@ if(nchar(placefips) == 0) { # output county table
     add_header_above(header=tblHead) %>%
     add_footnote(c("Source; 2000 Census",
                    "Source: 2010 Census",
-                   captionSrc("ACS",ACS)),
-                 notation = "symbol")
+                   captionSrc("ACS",ACS)))
 
   race_data <- data.frame(m.race)
   if(nchar(placefips) == 0) {
@@ -320,9 +319,9 @@ if(nchar(placefips) == 0) { # output county table
       add_indent(c(3:9)) %>%
       add_header_above(header=tblHead) %>%
       add_footnote(c("Source: 2010 Census",
-                     captionSrc("ACS",ACS)),
-                   notation = "symbol")
- 
+                     captionSrc("ACS",ACS)))
+    
+    # Output Data
     race_data <- data.frame(m.race)
     if(nchar(placefips) == 0) {
       race_data$geoname <- ctyname
@@ -333,7 +332,42 @@ if(nchar(placefips) == 0) { # output county table
     names(race_data) <- c("Geography","Race Category", "Census 2010",toupper(ACS))
   }
 
-  outList <- list("table" = race_tab, "data" = race_data)
+   
+   #Preparing Flextable
+   Acs_Str <- substr(captionSrc("ACS",ACS),29,63)
+   tab_date <- substr(captionSrc("ACS",ACS),66,87)
+   f.race_data <- race_data[-1]
+   
+   if(ncol(f.race_data) == 4) {
+      names(f.race_data) <- c("Race","Cens00","Cens10","ACS")
+   } else {
+     names(f.race_data) <- c("Race","Cens10","ACS")
+   }
+   
+   FlexOut <- regulartable(f.race_data)
+   if(ncol(f.race_data) == 4) {  
+     FlexOut <- set_header_labels(FlexOut, Race = "Race Category", Cens00 = "Census 2000",
+                                Cens10 = "Census 2010", ACS = Acs_Str)
+
+   } else {
+     FlexOut <- set_header_labels(FlexOut, Race = "Race Category", Cens10 = "Census 2010", ACS = Acs_Str)
+   }
+
+   if(nchar(placefips) == 0) {
+     FlexOut <- add_header(FlexOut,Race=ctyname,top=TRUE)
+   } else {
+     FlexOut <- add_header(FlexOut,Race=placename,top=TRUE)
+   }
+   
+   FlexOut <- add_header(FlexOut,Race="Race Trend",top=TRUE)
+   FlexOut <- add_footer(FlexOut,Race=tab_date)
+   FlexOut <- align(FlexOut,i=1:3, j=1, align="left",part="header")
+   FlexOut <- align(FlexOut,i=1, align="left",part="footer")
+   FlexOut <- align(FlexOut, j=1, align="left", part="body")
+   FlexOut <- autofit(FlexOut)
+ 
+   
+  outList <- list("table" = race_tab, "data" = race_data,"FlexTable"=FlexOut)
   return(outList)
  }
   
@@ -348,10 +382,9 @@ if(nchar(placefips) == 0) { # output county table
         row_spec(0, align = "c") %>%
         add_indent(c(3:9)) %>%
         add_header_above(header=tblHead) %>%
-        add_footnote(c("Source; 2000 Census",
+        footnote(c("Source; 2000 Census",
                        "Source: 2010 Census",
-                       captionSrc("ACS",ACS)),
-                     notation = "symbol")
+                       captionSrc("ACS",ACS)))
       
       #Preparing Text
       if(nchar(placefips) == 0) {
@@ -368,9 +401,8 @@ if(nchar(placefips) == 0) { # output county table
           row_spec(0, align = "c") %>%
           add_indent(c(3:9)) %>%
           add_header_above(header=tblHead) %>%
-          add_footnote(c("Source: 2010 Census",
-                         captionSrc("ACS",ACS)),
-                       notation = "symbol")
+          footnote(c("Source: 2010 Census",
+                         captionSrc("ACS",ACS)))
         
         #Preparing Text
         if(nchar(placefips) == 0) {

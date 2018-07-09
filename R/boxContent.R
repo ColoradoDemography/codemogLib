@@ -9,14 +9,13 @@
 #' @param stats A T/F value to output information about statistical tests
 #' @param muni  A T/F flag indicating whether information is available for municipalities
 #' @param PlFilter a TRUE/FALSE flag identifying municipalities smaller than 200 people
-#' @param table A T/F value to outout information about the output table
 #' @param urlList A list of output links to sources c(name, URL)
 #'
 #' @return  Content and buttons for a specified info box,
 #'
 #' @export
 #'
-boxContent <- function(title,description, source, MSA, stats, muni, multiCty, PlFilter, table, urlList) {
+boxContent <- function(title,description, source, MSA, stats, muni, multiCty, PlFilter, urlList) {
   outList <- list()
   i <- 1
   ui00 <- ""
@@ -85,12 +84,6 @@ boxContent <- function(title,description, source, MSA, stats, muni, multiCty, Pl
     i <- i + 1
   }
   
-  #Table block
-  if(table == "T") {
-    ui09 <- tags$p("To download the redered table, click on the 'Download PDF Report' button and copy the table from the output PDF report.")
-    outList[[i]] <- ui09
-    i <- i + 1
-  }
 
   # URLlinks
 

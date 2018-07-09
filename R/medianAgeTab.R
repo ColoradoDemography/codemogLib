@@ -138,10 +138,43 @@ medianAgeTab <- function(listID, ACS, oType, state="08"){
     column_spec(6, width = "1in") %>%
     column_spec(7, width = "0.75in") %>%
     add_header_above(header=tblHead) %>%
-    add_footnote(captionSrc("ACS",ACS))
+    footnote(captionSrc("ACS",ACS))
+  
+  # Building FlexTable
+  f.Flex <- as.data.frame(m.ageTab)
+  names(f.Flex) <- c("Gender","Age.1","MOE.1","Age.2","MOE.2","SD","Diff")
+  FlexOut <- regulartable(f.Flex)
+  FlexOut <- set_header_labels(FlexOut, Gender = "Gender", 
+                               Age.1 = "Estimate", MOE.1 = "Margin of Error", 
+                               Age.2 = "Estimate", MOE.2 = "Margin of Error",
+                               SD="Signficant Difference?", Diff="Direction of Difference")
+  if(nchar(placefips) == 0) {
+    FlexOut <- add_header(FlexOut,Gender = "", Age.1= ctyname, MOE.1="",
+                             Age.2 = "Colorado", MOE.2 = "",
+                             SD = "", Diff = "",top=TRUE)
+  } else {
+    FlexOut <- add_header(FlexOut,Gender = "", Age.1 = placename, MOE.1 = "",
+                          Age.2 = ctyname, MOE.2 ="",
+                          SD = "", Diff = "",top=TRUE)
+  }
+  FlexOut <- add_header(FlexOut,Gender ="Median Age by Gender", top=TRUE)
+  FlexOut <- add_footer(FlexOut,Gender=captionSrc("ACS",ACS))
+  FlexOut <- merge_at(FlexOut,i=1,j = 1:7,part="header")
+  FlexOut <- merge_at(FlexOut,i=2,j = 2:3, part="header")
+  FlexOut <- merge_at(FlexOut,i=2,j = 4:5, part="header")
+  FlexOut <- merge_at(FlexOut,i=1, j = 1:7, part = "footer")
+  FlexOut <- align(FlexOut,i=1,j = 1, align="left",part="header")
+  FlexOut <- align(FlexOut,i=2:3,j = 1:7, align="center",part="header")     
+  FlexOut <- align(FlexOut,i=1, align="left",part="footer")
+  FlexOut <- align(FlexOut, j=1, align="left", part="body")
+  FlexOut <- autofit(FlexOut)
+  FlexOut <- width(FlexOut, j = 1:5, width = 1)
+  
 
-  #preparint Output data
+  #preparing Output data
   f.ageTab2 <- f.ageTab[,c(1:5,7,8)]
+  
+
   
 if(nchar(placename) == 0)  {
   names(f.ageTab2) <- c("Gender", paste0("Median Age: ",ctyname), paste0("MOE: ",ctyname),
@@ -152,7 +185,7 @@ if(nchar(placename) == 0)  {
 }
   
 
-  outList <- list("table" = age_t, "data" = f.ageTab2)
+  outList <- list("table" = age_t, "FlexTable" = FlexOut, "data" = f.ageTab2)
   return(outList)
   }
 
@@ -167,7 +200,7 @@ if(nchar(placename) == 0)  {
     kable_styling(latex_options="HOLD_position",font_size=10)  %>%
     row_spec(0, align="c") %>%
     add_header_above(header=tblHead) %>%
-    add_footnote(captionSrc("ACS",ACS))
+    footnote(captionSrc("ACS",ACS))
 
   PlAge <- as.numeric(m.ageTab[3,2])
   StAge <- as.numeric(m.ageTab[3,4])

@@ -231,16 +231,46 @@ incomeSrc <- function(level, listID, ACS, oType) {
       column_spec(2, width="0.75in") %>%
       column_spec(3, width="0.75in") %>%
       column_spec(4, width="0.75in") %>%
-      column_spec(3, width="0.75in") %>%
+      column_spec(5, width="0.75in") %>%
       add_indent(c(2:7)) %>%
       add_header_above(header=tblHead2) %>%
       add_header_above(header=tblHead1) %>%
-      add_footnote(captionSrc("ACS",ACS))
+      footnote(captionSrc("ACS",ACS))
     
     f.outData <- as.data.frame(m.IncFin)
     names(f.outData) <- c(paste0("Income Source: ",fipsname),"Households: Estimate",
                           "Households: MOE", "Average Income: Estimate", "Average Income; MOE")
-    outList <- list("table" = inc_tab,"data" = f.outData)
+    
+    #FlexTable
+    
+    Ft <- data.frame(m.IncFin)
+    names(Ft) <- c("V1","V2","V3","V4","V5")
+    FlexOut <- regulartable(Ft)
+    
+    FlexOut <- set_header_labels(FlexOut, V1 = "Income Source(s)", 
+                                V2 = "Estimate", V3 = "Margin of Error", 
+                                 V4 = "Estimate", V5 = "Margin of Error")
+    
+      FlexOut <- add_header(FlexOut,V1 = "", V2 = "Total Households", V3 = "",
+                            V4 = "Mean Income", V5 ="",
+                            top=TRUE)
+   
+    FlexOut <- add_header(FlexOut,V1 =paste0("Household Income Source(s): ",fipsname), top=TRUE)
+    FlexOut <- add_footer(FlexOut,V1=captionSrc("ACS",ACS))
+    FlexOut <- merge_at(FlexOut,i=1,j = 1:5,part="header")
+    FlexOut <- merge_at(FlexOut,i=2,j = 2:3, part="header")
+    FlexOut <- merge_at(FlexOut,i=2,j = 4:5, part="header")
+    FlexOut <- merge_at(FlexOut,i=1, j = 1:5, part = "footer")
+    FlexOut <- align(FlexOut,i=1,j = 1, align="left",part="header")
+    FlexOut <- align(FlexOut,i=2:3,j = 1:5, align="center",part="header")     
+    FlexOut <- align(FlexOut,i=1, align="left",part="footer")
+    FlexOut <- align(FlexOut, j=1, align="left", part="body")
+    FlexOut <- autofit(FlexOut)
+    FlexOut <- width(FlexOut,j = 1, width = 2)
+    FlexOut <- width(FlexOut, j = 2:5, width = 1)
+    
+    
+    outList <- list("table" = inc_tab, "data" = f.outData,"FlexTable"=FlexOut)
     return(outList)
   } 
   
@@ -258,11 +288,11 @@ incomeSrc <- function(level, listID, ACS, oType) {
       column_spec(2, width="0.75in") %>%
       column_spec(3, width="0.75in") %>%
       column_spec(4, width="0.75in") %>%
-      column_spec(3, width="0.75in") %>%
+      column_spec(5, width="0.75in") %>%
       add_indent(c(2:7)) %>%
       add_header_above(header=tblHead2) %>%
       add_header_above(header=tblHead1) %>%
-      add_footnote(captionSrc("ACS",ACS))
+      footnote(captionSrc("ACS",ACS))
     
     # Text
     
