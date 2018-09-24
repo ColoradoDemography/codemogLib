@@ -75,7 +75,7 @@ state <- "08"
   #Reordering Table and prepating output
 
   f.HouseTab <- f.longTab
-  f.HouseTab[2] <- comma(f.HouseTab[2])
+  #f.HouseTab[2] <- comma(f.HouseTab[2])
 
   m.House <- as.matrix(f.HouseTab)
 
