@@ -7,8 +7,32 @@
 #' @export
 
 
-popPlace <- function(level) {
+popPlace <- function(level,curyr) {
 
+  if(level == "Region")  {
+    regList <- list(
+      "Region  1: Northern Eastern Plains",
+      "Region  2: Northern Front Range",
+      "Region  3: Denver Metropolitan Area",
+      "Region  4: Southern Front Range",
+      "Region  5: Central Eastern Plains",
+      "Region  6: Southern Eastern Plains",
+      "Region  7: Pueblo County",
+      "Region  8: San Juan Valley",
+      "Region  9: Southern Western Slope",
+      "Region 10: Central Western Slope",
+      "Region 11: Northern Western Slope",
+      "Region 12: Northern Mountains",
+      "Region 13: Central Mountains",
+      "Region 14: Southern Mountains")
+    return(regList)  
+  } else {
+  
+  # Create Connection Strings
+  clookupStr <- paste0("SELECT countyfips, placefips, municipalityname, year, totalpopulation FROM estimates.county_muni_timeseries WHERE year = ", curyr, " and placefips = 0;")
+  plookupStr <- paste0("SELECT countyfips, placefips, municipalityname, year, totalpopulation FROM estimates.county_muni_timeseries WHERE year = ", curyr, ";")
+  mlookupStr <- paste0("SELECT countyfips, placefips,  year, totalpopulation FROM estimates.county_muni_timeseries WHERE year = ", curyr, " and placefips != 0 and placefips != 99990 and countyfips = 999;")
+  
   # create a connection
   # save the password that we can "hide" it as best as we can by collapsing it
   pw <- {
@@ -84,5 +108,6 @@ popPlace <- function(level) {
     
     return(f.plac)
   }
+  }  
 }
 
