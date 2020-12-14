@@ -1,24 +1,17 @@
 #' GenerateVenn Generates a Venn diagram using LODES data
-#' V2 revised 2/15/2018 AB
+#' V3 revised 12/14/2020 AB
 #' @param listID Id list with fips and location names
-#' @param oType output type html or latex
 #' @return ggplot2 graphic, formatted datatables, and datasets
 #' @export
 #'
-GenerateVenn <- function(listID, oType){
+GenerateVenn <- function(DBPool,listID){
 
   # Collecting place ids from  idList, setting default values
-  
+
   ctyfips <- listID$ctyNum
   ctyname <- listID$ctyName
   placefips <- listID$plNum
   placename <- listID$plName
-  if(listID$PlFilter == "T") {
-    placefips <- ""
-    placename <- ""
-  }
-  
-  options(warn=-1)  # Suppressing warning messages produced by VennDiagram
 
 if(nchar(placefips) != 0) {
   sumSQL <- paste0("SELECT * FROM data.otm_place_summary WHERE fips = '",placefips,"' ;")
@@ -27,125 +20,80 @@ if(nchar(placefips) != 0) {
   sumSQL <- paste0("SELECT * FROM data.otm_county_summary WHERE fips = '",ctyfips,"' ;")
   placeSQL <- paste0("SELECT * FROM data.otm_county_place WHERE fips = '",ctyfips,"' ;")
 }
- 
-  #Reading data
-  pw <- {
-    "demography"
-  }
+  # reading Data 
+   f.summary <- dbGetQuery(DBPool, sumSQL)
+   f.place <- dbGetQuery(DBPool, placeSQL)
 
-  # loads the PostgreSQL driver
-  drv <- dbDriver("PostgreSQL")
-  # creates a connection to the postgres database
-  # note that "con" will be used later in each connection to the database
-  con <- dbConnect(drv, dbname = "dola",
-                   host = "104.197.26.248", port = 5433,
-                   user = "codemog", password = pw)
-  rm(pw) # removes the password
+     f.summary$livein_workout <- as.numeric(f.summary$livein_workout)
+     f.summary$liveout_workin <- as.numeric(f.summary$liveout_workin)
+     f.summary$livein_workin <-  as.numeric(f.summary$livein_workin)
+     
+  # Extracting Year Value
+     YRValue <- unlist(uniq(f.summary$year))
 
-  # Read data files f.xwalk and f.alljobs
-
-    f.summary <- dbGetQuery(con, sumSQL)
-    f.place <- dbGetQuery(con, placeSQL)
-
-  #closing the connections
-  dbDisconnect(con)
-  dbUnloadDriver(drv)
-  rm(con)
-  rm(drv)
-
-  if(nchar(placefips) != 0) {
-    location <- paste0(placename,"\n","All Jobs, ",as.character(f.summary$year))
-  } else {
-    location <- paste0(ctyname,"\n","All Jobs, ",as.character(f.summary$year))
-  }
+  rawVenn <- euler(c("A" = f.summary$liveout_workin, "B" = f.summary$livein_workout, "A&B" = f.summary$livein_workin ))
+  cols <- c("lightblue1", "lightyellow1","olivedrab1")
   
-# FIX THIS IN THE FUTURE
-  lin_wout <- as.numeric(f.summary$workin_liveout)
-  lout_win <- as.numeric(f.summary$livein_workout)
-  lin_win <-  as.numeric(f.summary$livein_workin)
-
-  region1 <- lout_win + lin_win #Live outside, work in
-  region2 <- lin_wout + lin_win #Live in, work outside
   
-  crossRegion <- lin_win 
-
- 
-  # By default, VennDiagram outputs the larger Region value in the left hand postion.
-  # This code block insures that the diagram is correct
-  if(lin_wout >= lout_win){
-    diag <- draw.pairwise.venn(region1, region2, crossRegion, inverted = TRUE,
-                               lty = rep("solid", 2), cat.col = rep("black", 2),
-                               cex = 1, cat.cex = 1, cat.default.pos= "text", ext.text = FALSE,
-                               fill = c("chartreuse4", "aquamarine2"), alpha = rep(0.5, 2),
-                               euler.d=TRUE,scaled=TRUE, ind = FALSE, print.mode="raw")
-  } else{
-    diag <- draw.pairwise.venn(region1, region2, crossRegion, inverted = FALSE,
-                               lty = rep("solid", 2), cat.col = rep("black", 2),
-                               cex = 1, cat.cex = 1,  cat.default.pos= "text", ext.text  = FALSE,
-                               fill = c("chartreuse4", "aquamarine2"), alpha = rep(0.5, 2),
-                               euler.d=TRUE,scaled=TRUE, ind = FALSE, print.mode="raw")
-  }
-
-
-  # Formatting the labels for the output diagram
-  # Change labels for first three text grobs
-  # hard-coded three, but it would be the number of text labels
-  # minus the number of groups passed to venn.diagram
-
- 
-  idx <- sapply(diag, function(i) grepl("text", i$name))  # Identifying the text grobs
-
-  for(i in 1:3){
-    diag[idx][[i]]$label <-
-      format(as.numeric(diag[idx][[i]]$label), big.mark=",", scientific=FALSE)
-    if(diag[idx][[i]]$label == "NA") {
-      diag[idx][[i]]$label <- ""
-    }
-  } #End I Loop
-
-
+  Vdiag <- plot(rawVenn,
+             #   quantities = format(rawVenn$original.values, big.mark = ",",scientific = FALSE),
+                fill = cols,
+                fill_opacity = 0.5, border = "black",
+                labels=FALSE,
+                counts = TRUE)
+  
   #Building Legend
+    legstr1 <- paste0("Employed in Selected Area, Live Outside: ", format(f.summary$liveout_workin, big.mark = ",",scientific = FALSE) )
+    legstr2 <- paste0("Live in Selected Area, Employed Outside: ", format(f.summary$livein_workout, big.mark = ",",scientific = FALSE) )
+    legstr3 <- paste0("Employed and Live in Selected Area: ", format(f.summary$livein_workin, big.mark = ",",scientific = FALSE) )
+
   
   if(nchar(placefips) != 0) {
-    legstr1 <- paste0("Employees in ",placename," living elsewhere")
-    legstr2 <- paste0("Residents of ",placename," working elsewhere")
-    legstr3 <- paste0("Employed and Live in ",placename)
+      plot_title <- paste0(placename,": All Jobs, ",YRValue)
   } else {
-    legstr1 <- paste0("Employees in ",ctyname," living elsewhere")
-    legstr2 <- paste0("Residents of ",ctyname," working elsewhere")
-    legstr3 <- paste0("Employed and Live in ",ctyname)
+    plot_title <- paste0(ctyname,": All Jobs, ",YRValue)
   }
   
-  cols <- c("chartreuse4", "aquamarine2","aquamarine3")
+  
   lg <- legendGrob(labels=c(legstr1,
                             legstr2,
                             legstr3),
                    pch=rep(19,length(c(legstr1,
                                        legstr2,
                                        legstr3))),
-
+                   
                    gp=gpar(col=cols, fill="gray", fontsize=12),
                    byrow=TRUE)
-
-  g <- gTree(children = gList(diag))
-
+  
+  
+  g <- gTree(children = gList(Vdiag))
 
   #outVenn is the final VennDiagram
   #Formatting citation
-  sub.label = textGrob(captionSrc("LODES",""),
+  captionGrob = textGrob(captionSrc("LODES",""),
                        gp=gpar(fontsize=12),
                        x = unit(1, "npc"),
                        hjust = 1,
                        vjust = 0)
+  titleGrob <- textGrob(plot_title, gp=gpar(fontsize=12,fontface="bold"))
+  
+  gridvenn <- arrangeGrob(titleGrob, g, lg, captionGrob, nrow=4, heights=unit(c(1,2,1,1),"in"))
+  
+  
+  
+  outVenn <- as.ggplot(gridvenn)
 
-    outVenn <- arrangeGrob(g, lg, nrow=3, ncol=1, heights=c(4,1,1),
-                         top=textGrob(location, gp=gpar(fontsize=15,font=8)), sub=sub.label)
-
-  options(warn=0)  # restoring Warning Messages
   # Finalizing the output data sets
   #selecting the top 10 places
 
+if(nchar(placefips) != 0) {
+  f.work_fin <- f.place[which(f.place$type == 2),c(5:7)]
+  f.live_fin <- f.place[which(f.place$type == 1),c(5:7)]
+} else {
   f.work_fin <- f.place[which(f.place$type == 1),c(5:7)]
+  f.live_fin <- f.place[which(f.place$type == 2),c(5:7)]
+}
+
   names(f.work_fin) <- c("Location","Count","Percent")
   f.work_sum <- f.work_fin %>%
       summarize(Count = sum(Count),
@@ -159,7 +107,7 @@ if(nchar(placefips) != 0) {
   f.work_fin$Location <- gsub("City City","City",f.work_fin$Location)
 
 
-  f.live_fin <- f.place[which(f.place$type == 2),c(5:7)]
+
   names(f.live_fin) <- c("Location","Count","Percent")
   f.live_sum <- f.live_fin %>%
     summarize(Count = sum(Count),
@@ -178,56 +126,19 @@ if(nchar(placefips) != 0) {
   names_spaced <- c("Location","Count","Percent")
   
   if(nchar(placefips) != 0) {
-  capstr1 <- paste0("Employees in ",placename," living elsewhere")
-  capstr2 <- paste0("Residents of ",placename," working elsewhere")
+    capstr1 <- paste0("Employees in ",placename," living elsewhere")
+    capstr2 <- paste0("Residents of ",placename," working elsewhere")
+    tabCap <- paste0("Commuting Patterns for ",placename)
   } else {
-    capstr1 <- paste0("Employees in ",ctyname," living elsewhere")
-    capstr2 <- paste0("Residents of ",ctyname," working elsewhere")
+    capstr2 <- paste0("Employees in ",ctyname," living elsewhere")
+    capstr1 <- paste0("Residents of ",ctyname," working elsewhere")
+    tabCap <- paste0("Commuting Patterns for ",ctyname)
   }
-
+  
   m.work <- as.matrix(f.work_fin)
   m.live <- as.matrix(f.live_fin)
 
-  if(oType == "html") {
-
-  work_tab <- m.work %>%
-    kable(format='html', table.attr='class="cleanTable"',
-          row.names=FALSE,
-          align='lrr',
-          caption=capstr2,
-          col.names = names_spaced,
-          escape = FALSE)  %>%
-    kable_styling(bootstrap_options = "condensed",full_width = T) %>%
-    column_spec(1, width = "3in") %>%
-    column_spec(2, width = "1in") %>%
-    column_spec(3, width = "1in") %>%
-    footnote(captionSrc("LODES",""))
-  
- #Building FlexTable
-  Ft1 <- data.frame(m.work)
-  names(Ft1) <- c("V1","V2","V3")
-  Flextab1 <- regulartable(Ft1)
-  
-  Flextab1 <- set_header_labels(Flextab1, V1 = "Location", 
-                            V2="Count", V3="Percent"
-                              )
-  
-  Flextab1 <- add_header(Flextab1,V1=capstr1,top=TRUE)
-  Flextab1 <- add_footer(Flextab1,V1=captionSrc("LODES",""))
-  Flextab1 <- merge_at(Flextab1,i=1, j = 1:3, part = "header")
-  Flextab1 <- merge_at(Flextab1,i=1, j = 1:3, part = "footer")
-  Flextab1 <- align(Flextab1,i=1, align="left",part="header")
-  Flextab1 <- align(Flextab1,i=2, j=1, align="left",part="header")
-  Flextab1 <- align(Flextab1,i=2, j=2:3, align="center",part="header")
-  Flextab1 <- align(Flextab1,i=1, align="left",part="footer")
-  Flextab1 <- align(Flextab1, j=1, align="left", part="body")
-  Flextab1 <- autofit(Flextab1)
-  Flextab1 <- width(Flextab1,j=1, width=3)
-  Flextab1 <- width(Flextab1,j=2:3, width=1)
-  
-
-  #formatting Live output table
-  live_tab <- m.live %>%
+  workTabH <- m.work %>%
     kable(format='html', table.attr='class="cleanTable"',
           row.names=FALSE,
           align='lrr',
@@ -238,64 +149,111 @@ if(nchar(placefips) != 0) {
     column_spec(1, width = "3in") %>%
     column_spec(2, width = "1in") %>%
     column_spec(3, width = "1in") %>%
-    footnote(captionSrc("LODES",""))
-  
-  #Building FlexTable
-  Ft2 <- data.frame(m.live)
-  names(Ft2) <- c("V1","V2","V3")
-  Flextab2 <- regulartable(Ft2)
-  
-  Flextab2 <- set_header_labels(Flextab2, V1 = "Location", 
-                                V2="Count", V3="Percent"
-  )
-  
-  
-  Flextab2 <- add_header(Flextab2,V1=capstr1,top=TRUE)
-  Flextab2 <- add_footer(Flextab2,V1=captionSrc("LODES",""))
-  Flextab2 <- merge_at(Flextab2,i=1, j = 1:3, part = "header")
-  Flextab2 <- merge_at(Flextab2,i=1, j = 1:3, part = "footer")
-  Flextab2 <- align(Flextab2,i=1, align="left",part="header")
-  Flextab2 <- align(Flextab2,i=2, j=1, align="left",part="header")
-  Flextab2 <- align(Flextab2,i=2, j=2:3, align="center",part="header")
-  Flextab2 <- align(Flextab2,i=1, align="left",part="footer")
-  Flextab2 <- align(Flextab2, j=1, align="left", part="body")
-  Flextab2 <- autofit(Flextab2)
-  Flextab2 <- width(Flextab2,j=1, width=3)
-  Flextab2 <- width(Flextab2,j=2:3, width=1)
+    kableExtra::footnote(captionSrc("LODES",""))
 
+  #formatting Live output table
+  liveTabH <- m.live %>%
+    kable(format='html', table.attr='class="cleanTable"',
+          row.names=FALSE,
+          align='lrr',
+          caption=capstr2,
+          col.names = names_spaced,
+          escape = FALSE)  %>%
+    kable_styling(bootstrap_options = "condensed",full_width = T) %>%
+    column_spec(1, width = "3in") %>%
+    column_spec(2, width = "1in") %>%
+    column_spec(3, width = "1in") %>%
+    kableExtra::footnote(captionSrc("LODES",""))
+  
+ #Creating Latex and Flextables
+  
+   f.work_fin$id <- 0
+  for(i in 1:nrow(f.work_fin)) {
+    f.work_fin[i,4] <- i
+  }
+  f.live_fin$id <- 0
+  for(i in 1:nrow(f.live_fin)) {
+    f.live_fin[i,4] <- i
+  }
+  
+  f.comb2 <- full_join(f.work_fin,f.live_fin,"id")
+  f.comb2 <- f.comb2[,c(1:3,5:7)]
+  m.comb2 <- as.matrix(f.comb2)
+  
 
-  # Binding List for Output
-  outList <- list("plot" = outVenn, "tab1" = live_tab, "data1" = f.live_fin,
-                  "tab2" = work_tab, "data2" = f.work_fin,
-                  "FlexTable1" = Flextab1, "FlexTable2" = Flextab2)
-    }
-
-  if(oType == "latex") {
-
-  workTab <-kable(m.work,
-                  col.names = names_spaced,
+  m.capstr1 <- matrix(c(capstr1,"",""),nrow=1,ncol=3)
+  m.workmat <- as.matrix(f.work_fin[,1:3])
+  m.workmat <- rbind(m.capstr1,m.workmat)
+  
+  m.capstr2 <- matrix(c(capstr2,"",""),nrow=1,ncol=3)
+  m.livemat <- as.matrix(f.live_fin[,1:3])
+  m.livemat <- rbind(m.capstr2,m.livemat)  
+ 
+  m.comb <- rbind(m.workmat,m.livemat)
+ 
+ # Formatting Work Output table.
+ names_spacedL <- c("Location","Count","Percent")
+ 
+ tblHead <- c(capstr1 = 3,capstr2 = 3)
+ # set vector names
+ names(tblHead) <- c(capstr1,capstr2)
+ 
+  combTabL <-kable(m.comb,
+                  col.names = names_spacedL,
                  row.names=FALSE,
                  align='lrr',
-                 caption=capstr2,
+                 caption=tabCap,
                  format="latex", booktabs=TRUE) %>%
-    kable_styling(font_size=10)  %>%
-    row_spec(0, align = "c") %>%
-    footnote(captionSrc("LODES",""))
+    kable_styling(latex_options="hold_position",font_size=9)  %>%
+    column_spec(1, width="3in") %>%
+    column_spec(2, width = "0.5in") %>%
+    column_spec(3, width = "0.5in") %>%
+    row_spec(c(1,14),bold = T) %>%
+    kableExtra::footnote(captionSrc("LODES",""),threeparttable = T)
 
-
-  liveTab <-kable(m.live,
-                  col.names = names_spaced,
-                  row.names=FALSE,
-                  align='lrr',
-                  caption=capstr1,
-                  format="latex", booktabs=TRUE) %>%
-    kable_styling(font_size=10)  %>%
-    row_spec(0, align = "c") %>%
-    footnote(captionSrc("LODES",""))
-
-  outList <- list("plot" = outVenn, "workTab" = workTab,"liveTab" = liveTab)
+  
+ 
+  #Building FlexTable
+  Ft1 <- data.frame(m.comb2)
+  names(Ft1) <- c("V1","V2","V3","V4","V5","V6")
+  Flexcomb <- regulartable(Ft1) %>%
+              set_header_labels(V1 = "Location", V2="Count", V3="Percent",
+                                V4 = "Location", V5="Count", V6="Percent" ) %>%
+              add_header(V1=capstr1,V4=capstr2,top=TRUE) %>%
+              add_footer(V1=captionSrc("LODES","")) %>%
+              merge_at(i=1, j = 1:3, part = "header") %>%
+              merge_at(i=1, j = 4:6, part = "header") %>%
+              merge_at(i=1, j = 1:6, part = "footer") %>%
+              align(j=2:3, align="center", part="header") %>%
+              align(i=2, j=1, align="left",part="header") %>%
+              align(i=2, j=2:3, align="center",part="header") %>%
+              align(i=1, align="left",part="footer") %>%
+              align(j=1, align="left", part="body") %>%
+              align(j=4, align="left", part="body") %>%
+              width(j=1, width=2.5) %>%
+              width(j=2:3, width=0.8) %>%
+              width(j=4, width=2.5) %>%
+              width(j=5:6, width=0.8)
+  
+ #Building output data set
+  
+  f.data_out <- f.comb2
+  
+  if(nchar(placefips) != 0) {
+    f.data_out$Geography <- placename
+  } else {
+    f.data_out$Geography <- ctyname
   }
-
+  f.data_out <- f.data_out[,c(7,1:6)]
+  
+  
+  names(f.data_out) <- c("Geography",capstr2, "Number","Percentage",capstr1, "Number","Percentage")
+  
+  # Binding List for Output
+  outList <- list("plot" = outVenn, "liveTabH" = liveTabH, "data1" = f.summary,
+                  "workTabH" = workTabH, "data2" = f.data_out,
+                  "Flexcomb" = Flexcomb, "combTabL" = combTabL)
+ 
   return(outList)
   }
 
